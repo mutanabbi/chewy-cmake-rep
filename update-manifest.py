@@ -14,6 +14,7 @@ import urllib.parse
 log = portage.output.EOutput()
 _SCAN_RANGE = 10
 _CHEWY_REPOSITORY_DEFAULT_URL = 'https://raw.github.com/mutanabbi/chewy-cmake-rep/master/'
+_X_META_REPOBASE = '# X-Chewy-RepoBase: '
 _IGNORE_PATH = [
     re.compile('\\.git')
   , re.compile('README.md')
@@ -84,7 +85,7 @@ def main():
     # Walk throught the current directory down and find all files
     result = scanDir(os.curdir)
     manifest = open(_MANIFEST_FILENAME, 'wt')
-    manifest.write(_MANIFEST_HEADER + '\n'.join(result) + '\n')
+    manifest.write(_X_META_REPOBASE + repo_url + '\n' + _MANIFEST_HEADER + '\n'.join(result) + '\n')
 
 if __name__ == '__main__':
     main()
