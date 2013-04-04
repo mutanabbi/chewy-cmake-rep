@@ -37,3 +37,4 @@ endif()
 
 # X-Chewy-URL: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/DefineDoxyDocsTargetIfPossible.cmake
 # X-Chewy-Version: 1.3
+# X-Chewy-Description: Define `make doxygen` target to build API documentation using `doxygen`

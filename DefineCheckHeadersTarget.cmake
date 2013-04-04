@@ -11,3 +11,4 @@ add_dependencies(check-headers ${CMAKE_BINARY_DIR}/cmake/support/check_headers.s
 
 # X-Chewy-URL: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/DefineCheckHeadersTarget.cmake
 # X-Chewy-Version: 1.0
+# X-Chewy-Description: Check header files for self-sufficiency
