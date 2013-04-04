@@ -1,3 +1,6 @@
+#
+# Registered CMake modules in a repo
+#
 https://raw.github.com/mutanabbi/chewy-cmake-rep/master/AddBoostTests.cmake 2.0
 https://raw.github.com/mutanabbi/chewy-cmake-rep/master/DefineCheckHeadersTarget.cmake 1.0
 https://raw.github.com/mutanabbi/chewy-cmake-rep/master/DefineDoxyDocsTargetIfPossible.cmake 1.3
