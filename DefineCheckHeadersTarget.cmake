@@ -1,4 +1,5 @@
 # Copyright 2011-2013 by Alex Turbov <i.zaufi@gmail.com>
+#
 
 # prepare shell script file
 configure_file(
