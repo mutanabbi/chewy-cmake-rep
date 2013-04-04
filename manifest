@@ -1,0 +1,4 @@
+https://raw.github.com/mutanabbi/chewy-cmake-rep/master/AddBoostTests.cmake 2.0
+https://raw.github.com/mutanabbi/chewy-cmake-rep/master/DefineCheckHeadersTarget.cmake 1.0
+https://raw.github.com/mutanabbi/chewy-cmake-rep/master/DefineDoxyDocsTargetIfPossible.cmake 1.3
+https://raw.github.com/mutanabbi/chewy-cmake-rep/master/GetDistribInfo.cmake 1.2
