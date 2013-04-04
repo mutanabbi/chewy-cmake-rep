@@ -9,6 +9,7 @@ import portage.output
 import os
 import re
 import sys
+import urllib.parse
 
 log = portage.output.EOutput()
 _SCAN_RANGE = 10
@@ -47,7 +48,7 @@ def getMetaInfo(filename):
         return
     result = meta[_URL_META] + ' ' + meta[_VERSION_META]
     if _DESCRIPTION_META in meta:
-        result += ' ' + meta[_DESCRIPTION_META]
+        result += ' ' + urllib.parse.quote_plus(meta[_DESCRIPTION_META])
     return result
 
 def mustBeIgnored(entry):
@@ -83,7 +84,7 @@ def main():
     # Walk throught the current directory down and find all files
     result = scanDir(os.curdir)
     manifest = open(_MANIFEST_FILENAME, 'wt')
-    manifest.write(_MANIFEST_HEADER + '\n'.join(result))
+    manifest.write(_MANIFEST_HEADER + '\n'.join(result) + '\n')
 
 if __name__ == '__main__':
     main()
