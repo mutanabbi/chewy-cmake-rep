@@ -82,7 +82,7 @@ def main():
         repo_url = sys.argv[1]
 
     log.einfo('Set repo base directory to ' + repo_url)
-    # Walk throught the current directory down and find all files
+    # Walk through the current directory down and find all files
     result = scanDir(os.curdir)
     manifest = open(_MANIFEST_FILENAME, 'wt')
     manifest.write(_X_META_REPOBASE + repo_url + '\n' + _MANIFEST_HEADER + '\n'.join(result) + '\n')
