@@ -16,6 +16,7 @@ if(NOT DISTRIB_CODENAME)
 endif()
 
 # kate: hl cmake;
-# X-Chewy-URL: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/GetDistribInfo.cmake
+# X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
+# X-Chewy-Path: GetDistribInfo.cmake
 # X-Chewy-Version: 1.2
 # X-Chewy-Description: Get a distribution codename according LSB spec

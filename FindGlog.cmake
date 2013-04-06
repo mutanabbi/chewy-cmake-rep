@@ -16,7 +16,8 @@ pkg_check_modules(GLOG libglog)
 
 find_package_handle_standard_args(Glog DEFAULT_MSG GLOG_LIBRARIES)
 
-# X-Chewy-URL: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/FindGlog.cmake
+# X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
+# X-Chewy-Path: FindGlog.cmake
 # X-Chewy-Version: 1.0
 # X-Chewy-Description: Find Google Log library using `pkg-config`
 

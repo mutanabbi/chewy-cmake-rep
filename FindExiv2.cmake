@@ -16,6 +16,7 @@ pkg_check_modules(Exiv2 exiv2)
 
 find_package_handle_standard_args(Exiv2 DEFAULT_MSG Exiv2_LIBRARIES)
 
-# X-Chewy-URL: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/FindExiv2.cmake
+# X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
+# X-Chewy-Path: FindExiv2.cmake
 # X-Chewy-Version: 1.0
 # X-Chewy-Description: Find Exiv2 library using `pkg-config`

@@ -23,6 +23,7 @@ find_path(OpenLDAP_INCLUDE_DIRS ldap.h)
 
 find_package_handle_standard_args(OpenLDAP DEFAULT_MSG OpenLDAP_LIBRARIES OpenLDAP_INCLUDE_DIRS)
 
-# X-Chewy-URL: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/FindOpenLDAP.cmake
+# X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
+# X-Chewy-Path: FindOpenLDAP.cmake
 # X-Chewy-Version: 1.0
 # X-Chewy-Description: Find OpenLDAP libraries

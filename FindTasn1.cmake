@@ -16,6 +16,7 @@ pkg_check_modules(TASN1 libtasn1)
 
 find_package_handle_standard_args(Tasn1 DEFAULT_MSG TASN1_LIBRARIES)
 
-# X-Chewy-URL: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/FindTasn1.cmake
+# X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
+# X-Chewy-Path: FindTasn1.cmake
 # X-Chewy-Version: 1.0
 # X-Chewy-Description: Find Tasn1 librarary using `pkg-config`

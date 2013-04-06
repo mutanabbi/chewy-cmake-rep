@@ -35,6 +35,7 @@ else()
     set_property(TARGET doxygen PROPERTY EchoString "Generate API documentation")
 endif()
 
-# X-Chewy-URL: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/DefineDoxyDocsTargetIfPossible.cmake
+# X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
+# X-Chewy-Path: DefineDoxyDocsTargetIfPossible.cmake
 # X-Chewy-Version: 1.3
 # X-Chewy-Description: Define `make doxygen` target to build API documentation using `doxygen`

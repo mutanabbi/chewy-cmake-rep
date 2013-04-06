@@ -16,6 +16,7 @@ pkg_check_modules(XERCESC xerces-c)
 
 find_package_handle_standard_args(XercesC DEFAULT_MSG XERCESC_LIBRARIES)
 
-# X-Chewy-URL: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/FindXercesC.cmake
+# X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
+# X-Chewy-Path: FindXercesC.cmake
 # X-Chewy-Version: 1.0
 # X-Chewy-Description: Find Xerces-C librarary using `pkg-config`

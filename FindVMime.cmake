@@ -16,6 +16,7 @@ pkg_check_modules(VMime vmime)
 
 find_package_handle_standard_args(VMime DEFAULT_MSG VMime_LIBRARIES)
 
-# X-Chewy-URL: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/FindVMime.cmake
+# X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
+# X-Chewy-Path: FindVMime.cmake
 # X-Chewy-Version: 1.0
 # X-Chewy-Description: Find VMime librarary using `pkg-config`
