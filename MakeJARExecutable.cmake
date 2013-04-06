@@ -26,6 +26,7 @@ function(make_jar_executable VAR_TARGET VAR_ENTRY)
   unset(JAR_NAME)
 endfunction(make_jar_executable)
 
-# X-Chewy-URL: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/FindVMime.cmake
+# X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
+# X-Chewy-URL: FindVMime.cmake
 # X-Chewy-Version: 1.0
 # X-Chewy-Description: Function to set an entry point in the JAR file, so it become 'executable'
