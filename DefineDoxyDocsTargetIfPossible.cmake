@@ -39,3 +39,4 @@ endif()
 # X-Chewy-Path: DefineDoxyDocsTargetIfPossible.cmake
 # X-Chewy-Version: 1.3
 # X-Chewy-Description: Define `make doxygen` target to build API documentation using `doxygen`
+# X-Chewy-AddonFile: Doxyfile.in
