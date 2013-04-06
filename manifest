@@ -5,12 +5,14 @@
 FindMagic.cmake 1.0 Find+MIME-type+detection+library
 AddBoostTests.cmake 2.1 Integrate+Boost+unit+tests+into+CMake+infrastructure
 FindLog4Cxx.cmake 1.0 Find+Log4Cxx+library+using+%60pkg-config%60
+UsePCHFile.cmake 2.5 Add+Precompiled+Header+Support PreparePCHHeader.cmake.in pch-template.h.in
 FindVMime.cmake 1.0 Function+to+set+an+entry+point+in+the+JAR+file%2C+so+it+become+%27executable%27
 FindVMime.cmake 1.0 Find+VMime+librarary+using+%60pkg-config%60
 FindGlog.cmake 1.0 Find+Google+Log+library+using+%60pkg-config%60
 DefineCheckHeadersTarget.cmake 1.0 Check+header+files+for+self-sufficiency check_headers.sh.in
 FindPoco.cmake 1.0 Find+Poco+libraries
 FindXercesC.cmake 1.0 Find+Xerces-C+librarary+using+%60pkg-config%60
+AddPackage.cmake 2.5 Add+a+target+to+make+a+.deb+package
 FindTasn1.cmake 1.0 Find+Tasn1+librarary+using+%60pkg-config%60
 FindUnixODBC.cmake 1.0 Find+UnixODBC+librarary
 FindOpenLDAP.cmake 1.0 Find+OpenLDAP+libraries
