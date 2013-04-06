@@ -86,5 +86,5 @@ endfunction(add_boost_tests)
 # kate: hl cmake;
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddBoostTests.cmake
-# X-Chewy-Version: 2.0
+# X-Chewy-Version: 2.1
 # X-Chewy-Description: Integrate Boost unit tests into CMake infrastructure
