@@ -1,7 +1,7 @@
 #
 # Copyright 2011-2013 by Alex Turbov <i.zaufi@gmail.com>
 #
-# Find `doxygen` (and `mscgen`), render a `Doxyfile` and define 
+# Find `doxygen` (and `mscgen`), render a `Doxyfile` and define
 # a target 'doxygen' to build a project documentation.
 #
 
@@ -21,7 +21,7 @@ else()
     endif()
 
     # prepare doxygen configuration file
-    configure_file(${CMAKE_SOURCE_DIR}/cmake/support/Doxyfile.in ${CMAKE_BINARY_DIR}/Doxyfile)
+    configure_file(${CMAKE_CURRENT_LIST_DIR}/Doxyfile.in ${CMAKE_BINARY_DIR}/Doxyfile)
 
     # add doxygen as target
     add_custom_target(

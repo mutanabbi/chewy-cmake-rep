@@ -3,12 +3,12 @@
 
 # prepare shell script file
 configure_file(
-    ${CMAKE_SOURCE_DIR}/cmake/modules/check_headers.sh.in
+    ${CMAKE_CURRENT_LIST_DIR}/check_headers.sh.in
     ${CMAKE_BINARY_DIR}/check_headers.sh
   )
 # add `check-headers' target w/ deps
 add_custom_target(check-headers /bin/sh ${CMAKE_BINARY_DIR}/check_headers.sh)
-add_dependencies(check-headers ${CMAKE_SOURCE_DIR}/cmake/modules/check_headers.sh.in)
+add_dependencies(check-headers ${CMAKE_CURRENT_LIST_DIR}/check_headers.sh.in)
 
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: DefineCheckHeadersTarget.cmake
