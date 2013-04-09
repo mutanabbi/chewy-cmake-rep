@@ -60,7 +60,7 @@ find_package_handle_standard_args(
 
 # kate: hl cmake;
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
-# X-Chewy-Path: DefineCheckHeadersTarget.cmake
+# X-Chewy-Path: FindLibClang.cmake
 # X-Chewy-Version: 1.1
 # X-Chewy-Description: Find clang C API library
 # X-Chewy-AddonFile: libclang-get-version.cpp

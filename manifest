@@ -11,7 +11,7 @@ FindVMime.cmake 1.0 Find+VMime+librarary+using+%60pkg-config%60
 FindGlog.cmake 1.0 Find+Google+Log+library+using+%60pkg-config%60
 DefineCheckHeadersTarget.cmake 1.1 Check+header+files+for+self-sufficiency check_headers.sh.in
 FindPoco.cmake 1.0 Find+Poco+libraries
-DefineCheckHeadersTarget.cmake 1.1 Find+clang+C+API+library libclang-get-version.cpp
+FindLibClang.cmake 1.1 Find+clang+C+API+library libclang-get-version.cpp
 PythonMacros.cmake 1.4 Helper+to+install+Python+scripts PythonCompile.py
 FindXercesC.cmake 1.0 Find+Xerces-C+librarary+using+%60pkg-config%60
 AddPackage.cmake 2.5 Add+a+target+to+make+a+.deb+package
