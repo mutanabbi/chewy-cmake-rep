@@ -1,0 +1,47 @@
+#
+# Copyright 2012-2013 by Alex Turbov <i.zaufi@gmail.com>
+#
+# TODO Move some common/generic options to loadable configuration
+# w/ ability to override 'em on per package basis
+#
+# TODO Get rid also from all 'hardcoded' options to make this
+# script really generic!
+#
+
+set(ZENCXX_VERSION ${ZENCXX_VERSION})
+
+set(CPACK_GENERATOR ${CPACK_GENERATOR})
+set(CPACK_SOURCE_GENERATOR ${CPACK_SOURCE_GENERATOR})
+set(CPACK_CMAKE_GENERATOR "${CMAKE_GENERATOR}")
+
+set(CPACK_BUILD_FLAVOUR ${CPACK_BUILD_FLAVOUR})
+
+set(CPACK_PACKAGE_VENDOR "Alex Turbov")
+set(CPACK_PACKAGE_CONTACT "i.zaufi@gmail.com")
+
+set(CPACK_RESOURCE_FILE_LICENSE ${PACKAGE_SOURCE_DIR}/LICENSE)
+set(CPACK_RESOURCE_FILE_README ${PACKAGE_SOURCE_DIR}/README.md)
+
+set(CPACK_INSTALL_CMAKE_PROJECTS "${CMAKE_BINARY_DIR};${PACKAGE_NAME};${PACKAGE_NAME};/")
+set(CPACK_INSTALL_PREFIX "/usr")
+
+set(CPACK_PACKAGE_NAME ${PACKAGE_NAME})
+set(CPACK_PACKAGE_VERSION ${CPACK_PACKAGE_VERSION})
+set(CPACK_PACKAGE_DESCRIPTION "${CPACK_PACKAGE_DESCRIPTION}")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${CPACK_PACKAGE_DESCRIPTION_SUMMARY}")
+set(CPACK_SET_DESTDIR "ON")
+
+# Debian specifics
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}")
+set(CPACK_DEBIAN_PACKAGE_REPLACES "${CPACK_DEBIAN_PACKAGE_REPLACES}")
+set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "${CPACK_DEBIAN_PACKAGE_HOMEPAGE}")
+
+configure_file(
+    ${CMAKE_SOURCE_DIR}/cmake/cpack/CMakeCPackOptions.cmake.in
+    ${CMAKE_BINARY_DIR}/CMakeCPackOptions.cmake
+    @ONLY
+  )
+# NOTE This file will be automaticaly included during CPack run
+set(CPACK_PROJECT_CONFIG_FILE ${CMAKE_BINARY_DIR}/CMakeCPackOptions.cmake)
+
+# kate: hl cmake;
