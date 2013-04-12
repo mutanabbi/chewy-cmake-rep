@@ -50,12 +50,21 @@ function(define_skeleton_generation_targets)
     #
     if(define_skeleton_generation_targets_PROJECT_OWNER)
         set(PROJECT_OWNER "${define_skeleton_generation_targets_PROJECT_OWNER}")
+    else()
+        set(PROJECT_OWNER "respectful authors listed in AUTHORS file")
     endif()
     if(define_skeleton_generation_targets_PROJECT_YEARS)
         set(PROJECT_YEARS "${define_skeleton_generation_targets_PROJECT_YEARS}")
+    else()
+        # Get current year
+        execute_process(
+            COMMAND date "+%G"
+            OUTPUT_VARIABLE PROJECT_YEARS
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+          )
     endif()
     if(define_skeleton_generation_targets_PROJECT_PREFIX)
-        set(PROJECT_PREFIX "${define_skeleton_generation_targets_PROJECT_OWNER}")
+        set(PROJECT_PREFIX "${define_skeleton_generation_targets_PROJECT_PREFIX}")
     else()
         set(PROJECT_PREFIX "${PROJECT_NAME}")
     endif()
@@ -68,14 +77,8 @@ function(define_skeleton_generation_targets)
     elseif(define_skeleton_generation_targets_PROJECT_LICENSE STREQUAL "LGPL")
         set(PROJECT_LICENSE "lgpl")
     elseif(define_skeleton_generation_targets_PROJECT_LICENSE STREQUAL "BSD")
-        if(NOT PROJECT_OWNER)
-            message(FATAL_ERROR "PROJECT_OWNER missed")
-        endif()
         set(PROJECT_LICENSE "bsd")
     else()
-        if(NOT PROJECT_OWNER)
-            message(FATAL_ERROR "PROJECT_OWNER missed")
-        endif()
         set(PROJECT_LICENSE "${define_skeleton_generation_targets_PROJECT_LICENSE}")
     endif()
 
@@ -136,7 +139,7 @@ endfunction()
 # kate: hl cmake;
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: DefineSkeletonGenerationTargetsIfPossible.cmake
-# X-Chewy-Version: 5.0
+# X-Chewy-Version: 5.1
 # X-Chewy-Description: Integrate Boost unit tests into CMake infrastructure
 # X-Chewy-AddonFile: TestCMakeLists.txt.in
 # X-Chewy-AddonFile: class.tpl.in
