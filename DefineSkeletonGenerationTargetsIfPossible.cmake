@@ -140,7 +140,7 @@ endfunction()
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: DefineSkeletonGenerationTargetsIfPossible.cmake
 # X-Chewy-Version: 5.3
-# X-Chewy-Description: Integrate Boost unit tests into CMake infrastructure
+# X-Chewy-Description: Add targets to generate class header/implementation and unit-tests skeleton files
 # X-Chewy-AddonFile: TestCMakeLists.txt.in
 # X-Chewy-AddonFile: class.tpl.in
 # X-Chewy-AddonFile: class_tester.tpl.in
