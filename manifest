@@ -24,4 +24,4 @@ FindOpenLDAP.cmake 1.0 Find+OpenLDAP+libraries
 GetDistribInfo.cmake 1.2 Get+a+distribution+codename+according+LSB+spec
 FindExiv2.cmake 1.0 Find+Exiv2+library+using+%60pkg-config%60
 GuessBuildType.cmake 1.2 Helper+to+install+Python+scripts
-DefineDoxyDocsTargetIfPossible.cmake 1.5 Define+%60make+doxygen%60+target+to+build+API+documentation+using+%60doxygen%60 Doxyfile.in DoxygenInstall.cmake.in
+DefineDoxyDocsTargetIfPossible.cmake 2.0 Define+%60make+doxygen%60+target+to+build+API+documentation+using+%60doxygen%60 Doxyfile.in DoxygenInstall.cmake.in DoxygenDefaults.cmake
