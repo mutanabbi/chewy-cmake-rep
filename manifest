@@ -6,9 +6,9 @@ details/TestModule.cmake 1.3 Define+%60make+doxygen%60+target+to+build+API+docum
 FindMagic.cmake 1.0 Find+MIME-type+detection+library
 AddBoostTests.cmake 2.1 Integrate+Boost+unit+tests+into+CMake+infrastructure
 FindLog4Cxx.cmake 1.0 Find+Log4Cxx+library+using+%60pkg-config%60
-UsePCHFile.cmake 2.6 Add+Precompiled+Header+Support PreparePCHHeader.cmake.in pch-template.h.in
+UsePCHFile.cmake 2.7 Add+Precompiled+Header+Support PreparePCHHeader.cmake.in pch-template.h.in
 MakeJARExecutable.cmake 1.0 Function+to+set+an+entry+point+in+the+JAR+file%2C+so+it+become+%27executable%27
-FindVMime.cmake 1.0 Find+VMime+librarary+using+%60pkg-config%60
+FindVMime.cmake 1.2 Find+VMime+librarary+using+%60pkg-config%60
 FindGlog.cmake 1.0 Find+Google+Log+library+using+%60pkg-config%60
 DefineCheckHeadersTarget.cmake 1.1 Check+header+files+for+self-sufficiency check_headers.sh.in
 FindPoco.cmake 1.0 Find+Poco+libraries
