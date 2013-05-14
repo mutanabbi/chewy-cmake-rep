@@ -32,5 +32,5 @@ message(STATUS "Configuration type choosen: ${CMAKE_BUILD_TYPE}")
 # kate: hl cmake;
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GuessBuildType.cmake
-# X-Chewy-Version: 1.3
-# X-Chewy-Description: Helper to install Python scripts
+# X-Chewy-Version: 1.4
+# X-Chewy-Description: Guess build type if not specified explicitly
