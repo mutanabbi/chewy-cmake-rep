@@ -1,22 +1,63 @@
-# Copyright 2011 by Alex Turbov <i.zaufi@gmail.com>
-#
-# - Find XERCESC library.
-#
-# Search for XERCESC library and set variables:
-#
-#  XERCESC_FOUND        - is library found.
-#  XERCESC_LIBRARIES    - libs for dynamic linkage.
-#  XERCESC_INCLUDE_DIRS - dir w/ header files.
+# - Find Xerces-C library using `pkg-config`
+# Search for Xerces-C library and set the following variables:
+#  XERCESC_FOUND        - is package found
+#  XERCESC_VERSION      - found package version
+#  XERCESC_INCLUDE_DIRS - dir w/ header files
+#  XERCESC_DEFINITIONS  - other than `-I' compiler flags
+#  XERCESC_LIBRARIES    - libs for dynamic linkage
 #
 
-include(FindPackageHandleStandardArgs)
-include(FindPkgConfig)
+#=============================================================================
+# Copyright 2010 by Alex Turbov <i.zaufi@gmail.com>
+#
+# Distributed under the OSI-approved BSD License (the "License");
+# see accompanying file LICENSE for details.
+#
+# This software is distributed WITHOUT ANY WARRANTY; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the License for more information.
+#=============================================================================
+# (To distribute this file outside of this repository, substitute the full
+#  License text for the above reference.)
 
-pkg_check_modules(XERCESC xerces-c)
+# Check if already in cache
+# NOTE Feel free to check/change/add any other vars
+if(XERCESC_LIBRARIES)
 
-find_package_handle_standard_args(XercesC DEFAULT_MSG XERCESC_LIBRARIES)
+    if(XERCESC_FIND_QUIETLY)
+        set(_pkg_find_quietly QUIET)
+    endif()
+
+    set(_pkg_module_name "xerces-c")
+    if(XERCESC_FIND_VERSION)
+        if(XERCESC_FIND_VERSION_EXACT)
+            set(_pkg_module_name "${_pkg_module_name}=${XERCESC_FIND_VERSION}")
+        else()
+            set(_pkg_module_name "${_pkg_module_name}>=${XERCESC_FIND_VERSION}")
+        endif()
+    endif()
+
+    find_package(PkgConfig ${_pkg_find_quietly})
+    pkg_check_modules(XERCESC ${_pkg_module_name} ${_pkg_find_quietly})
+
+    include(FindPackageHandleStandardArgs)
+    find_package_handle_standard_args(
+        XercesC
+        FOUND_VAR XERCESC_FOUND
+        REQUIRED_VARS XERCESC_LIBRARIES
+        VERSION_VAR XERCESC_VERSION
+      )
+
+    if(XERCESC_FOUND)
+        # Copy other than `-I' flags to `XXX_DEFINITIONS' variable,
+        # according CMake guide (/usr/share/cmake/Modules/readme.txt)
+        set(XERCESC_DEFINITIONS ${XERCESC_CFLAGS_OTHER})
+        # Unset non-standard variable
+        unset(XERCESC_CFLAGS_OTHER)
+    endif()
+endif()
 
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: FindXercesC.cmake
-# X-Chewy-Version: 1.0
+# X-Chewy-Version: 1.1
 # X-Chewy-Description: Find Xerces-C librarary using `pkg-config`

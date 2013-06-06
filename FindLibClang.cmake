@@ -1,7 +1,20 @@
-# Copyright 2012 by Alex Turbov <i.zaufi@gmail.com>
 #
 # Find clang C API library
 #
+
+#=============================================================================
+# Copyright 2010 by Alex Turbov <i.zaufi@gmail.com>
+#
+# Distributed under the OSI-approved BSD License (the "License");
+# see accompanying file LICENSE for details.
+#
+# This software is distributed WITHOUT ANY WARRANTY; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the License for more information.
+#=============================================================================
+# (To distribute this file outside of this repository, substitute the full
+#  License text for the above reference.)
+
 
 include(FindPackageHandleStandardArgs)
 
@@ -58,7 +71,6 @@ find_package_handle_standard_args(
     VERSION_VAR LIBCLANG_VERSION
   )
 
-# kate: hl cmake;
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: FindLibClang.cmake
 # X-Chewy-Version: 1.1
