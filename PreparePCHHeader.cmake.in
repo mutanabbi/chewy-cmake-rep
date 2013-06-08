@@ -31,6 +31,6 @@ string(RANDOM LENGTH 15 ALPHABET "QWERTYUIOPASDFGHJKLZXCVBNM0123456789" use_pch_
 set(use_pch_file_GUARD "__PCH_${use_pch_file_GUARD}__")
 
 # Render a PCH file
-configure_file(@CMAKE_SOURCE_DIR@/cmake/modules/pch-template.h.in @use_pch_file_PCH_FILE@ @ONLY)
+configure_file(@CMAKE_SOURCE_DIR@/cmake/modules/pch_template.h.in @use_pch_file_PCH_FILE@ @ONLY)
 
 # kate: hl cmake;

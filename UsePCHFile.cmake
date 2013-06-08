@@ -73,13 +73,12 @@ function(use_pch_file)
         MAIN_DEPENDENCY ${CMAKE_BINARY_DIR}/PreparePCHHeader.cmake
         COMMENT "Updating ${use_pch_file_PCH_FILE}"
       )
-
 endfunction()
 
 # kate: hl cmake;
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: UsePCHFile.cmake
-# X-Chewy-Version: 2.7
+# X-Chewy-Version: 2.8
 # X-Chewy-Description: Add Precompiled Header Support
 # X-Chewy-AddonFile: PreparePCHHeader.cmake.in
-# X-Chewy-AddonFile: pch-template.h.in
+# X-Chewy-AddonFile: pch_template.h.in
