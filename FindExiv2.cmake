@@ -22,7 +22,7 @@
 
 # Check if already in cache
 # NOTE Feel free to check/change/add any other vars
-if(EXIV2_LIBRARIES)
+if(NOT EXIV2_LIBRARIES)
 
     if(EXIV2_FIND_QUIETLY)
         set(_pkg_find_quietly QUIET)
@@ -59,5 +59,5 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: FindExiv2.cmake
-# X-Chewy-Version: 1.1
+# X-Chewy-Version: 1.2
 # X-Chewy-Description: Find Exiv2 library using `pkg-config`

@@ -22,7 +22,7 @@
 
 # Check if already in cache
 # NOTE Feel free to check/change/add any other vars
-if(XERCESC_LIBRARIES)
+if(NOT XERCESC_LIBRARIES)
 
     if(XERCESC_FIND_QUIETLY)
         set(_pkg_find_quietly QUIET)
@@ -59,5 +59,5 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: FindXercesC.cmake
-# X-Chewy-Version: 1.1
+# X-Chewy-Version: 1.2
 # X-Chewy-Description: Find Xerces-C librarary using `pkg-config`

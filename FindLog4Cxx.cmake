@@ -22,7 +22,7 @@
 
 # Check if already in cache
 # NOTE Feel free to check/change/add any other vars
-if(LOG4CXX_LIBRARIES)
+if(NOT LOG4CXX_LIBRARIES)
 
     if(LOG4CXX_FIND_QUIETLY)
         set(_pkg_find_quietly QUIET)
@@ -59,5 +59,5 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: FindLog4Cxx.cmake
-# X-Chewy-Version: 1.1
+# X-Chewy-Version: 1.2
 # X-Chewy-Description: Find Log4Cxx library using `pkg-config`

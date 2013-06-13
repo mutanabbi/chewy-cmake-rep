@@ -22,7 +22,7 @@
 
 # Check if already in cache
 # NOTE Feel free to check/change/add any other vars
-if(TASN1_LIBRARIES)
+if(NOT TASN1_LIBRARIES)
 
     if(TASN1_FIND_QUIETLY)
         set(_pkg_find_quietly QUIET)
