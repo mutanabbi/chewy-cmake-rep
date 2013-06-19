@@ -74,7 +74,6 @@ function(use_pch_file)
     foreach(ext ${use_pch_file_SOURCE_EXTENSIONS})
         set(use_pch_file_include_options "${use_pch_file_include_options} --include=*.${ext}")
     endforeach()
-    message("use_pch_file_include_options=${use_pch_file_include_options}")
 
     # Render a script to produce a header file w/ most used external headers
     configure_file(
@@ -94,7 +93,7 @@ endfunction()
 # kate: hl cmake;
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: UsePCHFile.cmake
-# X-Chewy-Version: 2.9
+# X-Chewy-Version: 2.10
 # X-Chewy-Description: Add Precompiled Header Support
 # X-Chewy-AddonFile: PreparePCHHeader.cmake.in
 # X-Chewy-AddonFile: pch_template.h.in

@@ -5,7 +5,7 @@
 FindMagic.cmake 1.0 Find+MIME-type+detection+library
 AddBoostTests.cmake 2.2 Integrate+Boost+unit+tests+into+CMake+infrastructure
 FindLog4Cxx.cmake 1.2 Find+Log4Cxx+library+using+%60pkg-config%60
-UsePCHFile.cmake 2.9 Add+Precompiled+Header+Support PreparePCHHeader.cmake.in pch_template.h.in
+UsePCHFile.cmake 2.10 Add+Precompiled+Header+Support PreparePCHHeader.cmake.in pch_template.h.in
 MakeJARExecutable.cmake 1.0 Function+to+set+an+entry+point+in+the+JAR+file%2C+so+it+become+%27executable%27
 FindVMime.cmake 1.2 Find+VMime+librarary+using+%60pkg-config%60
 FindGlog.cmake 1.2 Find+Google+Log+library+using+%60pkg-config%60
