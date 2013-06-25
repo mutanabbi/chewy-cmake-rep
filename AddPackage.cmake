@@ -236,7 +236,7 @@ function(add_package)
                     ${add_package_PRE_BUILD}
                     ${CMAKE_BINARY_DIR}/CPackCommonPackageOptions.cmake
                 COMMENT "Making signed package ${add_package_NAME}"
-            )
+              )
         else()
             set(_make_pkg_target_name "${add_package_NAME}-${_lgen}-package")
             add_custom_target(
@@ -246,7 +246,7 @@ function(add_package)
                     ${add_package_PRE_BUILD}
                     ${CMAKE_BINARY_DIR}/CPackCommonPackageOptions.cmake
                 COMMENT "Making package ${add_package_NAME}"
-            )
+              )
         endif()
         if(${_gen} MATCHES "DEB" AND REPREPRO_EXECUTABLE)
             add_custom_target(
@@ -254,14 +254,14 @@ function(add_package)
                 COMMAND ${REPREPRO_EXECUTABLE} -b ${CPACK_DEB_PACKAGES_REPO} -C ${CPACK_DEB_PACKAGES_REPO_COMPONENT} includedeb ${CPACK_DISTRIB_CODENAME} ${add_package_FILE_NAME}.deb
                 DEPENDS ${_make_pkg_target_name}
                 COMMENT "Deploying package ${add_package_NAME} to ${CPACK_DEB_PACKAGES_REPO} [${CPACK_DISTRIB_CODENAME}/${CPACK_DEB_PACKAGES_REPO_COMPONENT}]"
-            )
+              )
         endif()
     endforeach()
 endfunction()
 
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddPackage.cmake
-# X-Chewy-Version: 3.3
+# X-Chewy-Version: 3.4
 # X-Chewy-Description: Add a target to make a .deb package
 # X-Chewy-AddonFile: CPackCommonPackageOptions.cmake.in
 # X-Chewy-AddonFile: CPackPackageConfig.cmake.in
