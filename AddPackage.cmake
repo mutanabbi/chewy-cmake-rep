@@ -261,7 +261,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddPackage.cmake
-# X-Chewy-Version: 3.4
+# X-Chewy-Version: 3.5
 # X-Chewy-Description: Add a target to make a .deb package
 # X-Chewy-AddonFile: CPackCommonPackageOptions.cmake.in
 # X-Chewy-AddonFile: CPackPackageConfig.cmake.in
