@@ -166,12 +166,12 @@ function(add_package)
     set(options SET_DEFAULT_CONFIG_CPACK)
     set(
         one_value_args
-            NAME
-            SUMMARY
             DESCRIPTION
-            VERSION
-            SECTION
             HOMEPAGE
+            NAME
+            SECTION
+            SUMMARY
+            VERSION
       )
     set(multi_value_args DEPENDS REPLACES PRE_BUILD CONTROL_FILES)
     cmake_parse_arguments(add_package "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
@@ -243,6 +243,7 @@ function(add_package)
                 DEPENDS
                     ${add_package_PRE_BUILD}
                     ${CMAKE_BINARY_DIR}/CPackCommonPackageOptions.cmake
+                    ${CMAKE_BINARY_DIR}/${config_file}
                 COMMENT "Making signed package ${add_package_NAME}"
               )
         else()
@@ -253,6 +254,7 @@ function(add_package)
                 DEPENDS
                     ${add_package_PRE_BUILD}
                     ${CMAKE_BINARY_DIR}/CPackCommonPackageOptions.cmake
+                    ${CMAKE_BINARY_DIR}/${config_file}
                 COMMENT "Making package ${add_package_NAME}"
               )
         endif()
@@ -269,7 +271,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddPackage.cmake
-# X-Chewy-Version: 3.6
+# X-Chewy-Version: 3.7
 # X-Chewy-Description: Add a target to make a .deb package
 # X-Chewy-AddonFile: CPackCommonPackageOptions.cmake.in
 # X-Chewy-AddonFile: CPackPackageConfig.cmake.in
