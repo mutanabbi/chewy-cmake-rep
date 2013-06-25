@@ -1,0 +1,18 @@
+#
+# Copyright 2013 by Alex Turbov <i.zaufi@gmail.com>
+#
+# Options common to all generated packages
+#
+
+set(CPACK_PROJECT_VERSION "@set_common_package_options_PROJECT_VERSION@")
+set(CPACK_BUILD_FLAVOUR "@set_common_package_options_BUILD_FLAVOUR@")
+
+set(CPACK_PACKAGE_VENDOR "@set_common_package_options_VENDOR_NAME@")
+set(CPACK_PACKAGE_CONTACT "@set_common_package_options_VENDOR_CONTACT@")
+
+set(CPACK_RESOURCE_FILE_LICENSE "@set_common_package_options_LICENSE_FILE@")
+set(CPACK_RESOURCE_FILE_README "@set_common_package_options_README_FILE@")
+
+set(CPACK_INSTALL_PREFIX "@set_common_package_options_PACKAGE_INSTALL_PREFIX@")
+
+# kate: hl cmake;
