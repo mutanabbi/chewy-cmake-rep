@@ -15,9 +15,6 @@
 #
 # TODO Add `cpack' programs detection
 #
-# TODO Add param to specify more .deb specific params like:
-#   CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA
-#
 # TODO Add help about generic usage and about set_common_package_options() particularly
 #
 
@@ -173,7 +170,20 @@ function(add_package)
             SUMMARY
             VERSION
       )
-    set(multi_value_args DEPENDS REPLACES PRE_BUILD CONTROL_FILES)
+    set(
+        multi_value_args
+            BREAKS
+            CONFLICTS
+            CONTROL_FILES
+            DEPENDS
+            ENHANCES
+            PRE_BUILD
+            PRE_DEPENDS
+            PRIORITY
+            RECOMMENDS
+            REPLACES
+            SUGGESTS
+      )
     cmake_parse_arguments(add_package "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
     # Make sure set_common_package_options() was called before
@@ -208,15 +218,32 @@ function(add_package)
     if(NOT add_package_VERSION)
         set(add_package_VERSION "${CPACK_PROJECT_VERSION}-0ubuntu1")
     endif()
-    # dependencies list
+    # various dependency lists
+    # NOTE Form a comma separated list of dependencies from a cmake's list
+    # as required by Debian control file
+    if(add_package_BREAKS)
+        string(REPLACE ";" ", " add_package_BREAKS "${add_package_BREAKS}")
+    endif()
+    if(add_package_CONFLICTS)
+        string(REPLACE ";" ", " add_package_CONFLICTS "${add_package_CONFLICTS}")
+    endif()
     if(add_package_DEPENDS)
-        # Form a comma separated list of dependencies from a cmake's list
         string(REPLACE ";" ", " add_package_DEPENDS "${add_package_DEPENDS}")
     endif()
-    # replaces list
+    if(add_package_ENHANCES)
+        string(REPLACE ";" ", " add_package_ENHANCES "${add_package_ENHANCES}")
+    endif()
+    if(add_package_PRE_DEPENDS)
+        string(REPLACE ";" ", " add_package_PRE_DEPENDS "${add_package_PRE_DEPENDS}")
+    endif()
+    if(add_package_RECOMMENDS)
+        string(REPLACE ";" ", " add_package_RECOMMENDS "${add_package_RECOMMENDS}")
+    endif()
     if(add_package_REPLACES)
-        # Form a comma separated list of dependencies from a cmake's list
         string(REPLACE ";" ", " add_package_REPLACES "${add_package_REPLACES}")
+    endif()
+    if(add_package_SUGGESTS)
+        string(REPLACE ";" ", " add_package_SUGGESTS "${add_package_SUGGESTS}")
     endif()
 
     # Define package filename
@@ -271,7 +298,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddPackage.cmake
-# X-Chewy-Version: 3.7
+# X-Chewy-Version: 3.8
 # X-Chewy-Description: Add a target to make a .deb package
 # X-Chewy-AddonFile: CPackCommonPackageOptions.cmake.in
 # X-Chewy-AddonFile: CPackPackageConfig.cmake.in
