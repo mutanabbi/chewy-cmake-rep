@@ -43,7 +43,6 @@ if(NOT EXIV2_LIBRARIES)
     include(FindPackageHandleStandardArgs)
     find_package_handle_standard_args(
         Exiv2
-        FOUND_VAR EXIV2_FOUND
         REQUIRED_VARS EXIV2_LIBRARIES
         VERSION_VAR EXIV2_VERSION
       )
@@ -59,5 +58,5 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: FindExiv2.cmake
-# X-Chewy-Version: 1.2
+# X-Chewy-Version: 1.3
 # X-Chewy-Description: Find Exiv2 library using `pkg-config`

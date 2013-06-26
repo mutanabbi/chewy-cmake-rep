@@ -43,7 +43,6 @@ if(NOT LOG4CXX_LIBRARIES)
     include(FindPackageHandleStandardArgs)
     find_package_handle_standard_args(
         Log4Cxx
-        FOUND_VAR LOG4CXX_FOUND
         REQUIRED_VARS LOG4CXX_LIBRARIES
         VERSION_VAR LOG4CXX_VERSION
       )
@@ -59,5 +58,5 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: FindLog4Cxx.cmake
-# X-Chewy-Version: 1.2
+# X-Chewy-Version: 1.3
 # X-Chewy-Description: Find Log4Cxx library using `pkg-config`

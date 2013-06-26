@@ -43,7 +43,6 @@ if(NOT GLOG_LIBRARIES)
     include(FindPackageHandleStandardArgs)
     find_package_handle_standard_args(
         Glog
-        FOUND_VAR GLOG_FOUND
         REQUIRED_VARS GLOG_LIBRARIES
         VERSION_VAR GLOG_VERSION
       )
@@ -59,5 +58,5 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: FindGlog.cmake
-# X-Chewy-Version: 1.2
+# X-Chewy-Version: 1.3
 # X-Chewy-Description: Find Google Log library using `pkg-config`

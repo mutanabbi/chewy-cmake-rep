@@ -43,7 +43,6 @@ if(NOT TASN1_LIBRARIES)
     include(FindPackageHandleStandardArgs)
     find_package_handle_standard_args(
         Tasn1
-        FOUND_VAR TASN1_FOUND
         REQUIRED_VARS TASN1_LIBRARIES
         VERSION_VAR TASN1_VERSION
       )
@@ -59,5 +58,5 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: FindTasn1.cmake
-# X-Chewy-Version: 1.1
+# X-Chewy-Version: 1.2
 # X-Chewy-Description: Find Tasn1 librarary using `pkg-config`

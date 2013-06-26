@@ -48,7 +48,6 @@ if(NOT URIPARSER_LIBRARIES)
     include(FindPackageHandleStandardArgs)
     find_package_handle_standard_args(
         LibURIParser
-        FOUND_VAR URIPARSER_FOUND
         REQUIRED_VARS URIPARSER_LIBRARIES
         VERSION_VAR URIPARSER_VERSION
       )
@@ -65,5 +64,5 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: FindLibURIParser.cmake
-# X-Chewy-Version: 1.2
+# X-Chewy-Version: 1.3
 # X-Chewy-Description: Find uriparser library using `pkg-config`
