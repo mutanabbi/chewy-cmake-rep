@@ -13,7 +13,7 @@ DefineCheckHeadersTarget.cmake 1.3 Check+header+files+for+self-sufficiency check
 FindPoco.cmake 1.0 Find+Poco+libraries
 FindLibClang.cmake 1.2 Find+clang+C+API+library libclang_get_version.cpp
 FindLibURIParser.cmake 1.3 Find+uriparser+library+using+%60pkg-config%60
-DefineSkeletonGenerationTargetsIfPossible.cmake 5.6 Add+targets+to+generate+class+header%2Fimplementation+and+unit-tests+skeleton+files TestCMakeLists.txt.in class.tpl.in class_tester.tpl.in mknslist.awk new_class_tester_wrapper.sh.in new_class_wrapper.sh.in output_helpers.sh tpl_defaults.def.in
+DefineSkeletonGenerationTargetsIfPossible.cmake 5.7 Add+targets+to+generate+class+header%2Fimplementation+and+unit-tests+skeleton+files TestCMakeLists.txt.in class.tpl.in class_tester.tpl.in mknslist.awk new_class_tester_wrapper.sh.in new_class_wrapper.sh.in output_helpers.sh tpl_defaults.def.in
 PythonMacros.cmake 1.4 Helper+to+install+Python+scripts PythonCompile.py
 FindXercesC.cmake 1.2 Find+Xerces-C+librarary+using+%60pkg-config%60
 AddPackage.cmake 3.8 Add+a+target+to+make+a+.deb+package CPackCommonPackageOptions.cmake.in CPackPackageConfig.cmake.in
