@@ -47,7 +47,7 @@ else()
         set(DOXYGEN_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/doc")
     endif()
     if(NOT DEFINED DOXYGEN_EXCLUDE_PATTERNS)
-        set(DOXYGEN_EXCLUDE_PATTERNS "*/.git/* */.svn/* */.hg/* */tests/* *_tester.cc */CMakeFiles/* */cmake/*")
+        set(DOXYGEN_EXCLUDE_PATTERNS "*/.git/* */.svn/* */.hg/* */tests/* *_tester.cc */CMakeFiles/* */cmake/* */_CPack_Packages/*")
     endif()
     if(NOT DEFINED DOXYGEN_DOT_IMAGE_FORMAT)
         set(DOXYGEN_DOT_IMAGE_FORMAT svg)
@@ -152,7 +152,7 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: DefineDoxyDocsTargetIfPossible.cmake
-# X-Chewy-Version: 2.2
+# X-Chewy-Version: 2.3
 # X-Chewy-Description: Define `make doxygen` target to build API documentation using `doxygen`
 # X-Chewy-AddonFile: Doxyfile.in
 # X-Chewy-AddonFile: DoxygenInstall.cmake.in

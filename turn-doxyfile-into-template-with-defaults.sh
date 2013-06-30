@@ -55,6 +55,6 @@ cat <<EOF >${template_file}
 #
 EOF
 cat ${input_file} \
-  | sed 's,^\([A-Z][A-Z0-9_]\+\)\(\s\+=\)\s*\([^\\]\+\)$,\1\2 @DOXYGEN_\1@,' \
+  | sed 's,^\([A-Z][A-Z0-9_]\+\)\(\s\+=\).*$,\1\2 @DOXYGEN_\1@,' \
   >>${template_file}
 eend $?
