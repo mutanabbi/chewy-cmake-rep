@@ -8,12 +8,13 @@
 #       [CATCH_SYSTEM_ERRORS | NO_CATCH_SYSTEM_ERRORS]
 #     )
 #   executable -- name of unit tests binary (if ommited, `unit_tests' will be used)
-#   source1-N  -- list of source files scanned to be scanned
-#   dir        -- cd to this directory before run test
+#   source1-N  -- list of source files to be scanned for test cases
+#   dir        -- `cd` to this directory before run any test
 #
-# Source files will be canned for automatic test cases.
+# Source files will be scanned for automatic test cases.
 # Every found test will be added to ctest list.
-# This function can be considered as 'improved' add_executable(unit_tests <sources>).
+# This function can be considered as 'improved' add_executable(unit_tests <sources>)
+# to build boost based unit tests and integrate them into cmake's `make test`.
 #
 
 #=============================================================================
@@ -93,8 +94,7 @@ function(add_boost_tests)
     endforeach()
 endfunction(add_boost_tests)
 
-# kate: hl cmake;
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddBoostTests.cmake
-# X-Chewy-Version: 2.3
+# X-Chewy-Version: 2.4
 # X-Chewy-Description: Integrate Boost unit tests into CMake infrastructure
