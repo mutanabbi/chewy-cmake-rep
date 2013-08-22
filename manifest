@@ -5,7 +5,7 @@
 FindMagic.cmake 1.0 Find+MIME-type+detection+library
 AddBoostTests.cmake 2.4 Integrate+Boost+unit+tests+into+CMake+infrastructure
 FindLog4Cxx.cmake 1.3 Find+Log4Cxx+library+using+%60pkg-config%60
-UsePCHFile.cmake 2.10 Add+Precompiled+Header+Support PreparePCHHeader.cmake.in pch_template.h.in
+UsePCHFile.cmake 2.11 Add+Precompiled+Header+Support PreparePCHHeader.cmake.in pch_template.h.in
 MakeJARExecutable.cmake 1.0 Function+to+set+an+entry+point+in+the+JAR+file%2C+so+it+become+%27executable%27
 FindVMime.cmake 1.2 Find+VMime+librarary+using+%60pkg-config%60
 FindGlog.cmake 1.3 Find+Google+Log+library+using+%60pkg-config%60
@@ -13,15 +13,15 @@ DefineCheckHeadersTarget.cmake 1.3 Check+header+files+for+self-sufficiency check
 FindPoco.cmake 1.0 Find+Poco+libraries
 FindLibClang.cmake 1.2 Find+clang+C+API+library libclang_get_version.cpp
 FindLibURIParser.cmake 1.3 Find+uriparser+library+using+%60pkg-config%60
-DefineSkeletonGenerationTargetsIfPossible.cmake 5.8 Add+targets+to+generate+class+header%2Fimplementation+and+unit-tests+skeleton+files TestCMakeLists.txt.in class.tpl.in class_tester.tpl.in mknslist.awk new_class_tester_wrapper.sh.in new_class_wrapper.sh.in output_helpers.sh tpl_defaults.def.in
-PythonMacros.cmake 1.4 Helper+to+install+Python+scripts PythonCompile.py
+DefineSkeletonGenerationTargetsIfPossible.cmake 5.9 Add+targets+to+generate+class+header%2Fimplementation+and+unit-tests+skeleton+files TestCMakeLists.txt.in class.tpl.in class_tester.tpl.in mknslist.awk new_class_tester_wrapper.sh.in new_class_wrapper.sh.in output_helpers.sh tpl_defaults.def.in
+PythonMacros.cmake 1.5 Helper+to+install+Python+scripts PythonCompile.py
 FindXercesC.cmake 1.2 Find+Xerces-C+librarary+using+%60pkg-config%60
 AddPackage.cmake 3.8 Add+a+target+to+make+a+.deb+package CPackCommonPackageOptions.cmake.in CPackPackageConfig.cmake.in
 FindTasn1.cmake 1.2 Find+Tasn1+librarary+using+%60pkg-config%60
 FindUnixODBC.cmake 1.0 Find+UnixODBC+librarary
 FindOpenLDAP.cmake 1.0 Find+OpenLDAP+libraries
-GetDistribInfo.cmake 1.2 Get+a+distribution+codename+according+LSB+spec
+GetDistribInfo.cmake 1.3 Get+a+distribution+codename+according+LSB+spec
 FindExiv2.cmake 1.3 Find+Exiv2+library+using+%60pkg-config%60
 MacroUseCompilerOption.cmake 1.4 Append+an+option+to+compiler%27s+flags+if+supported
-GuessBuildType.cmake 1.4 Guess+build+type+if+not+specified+explicitly
+GuessBuildType.cmake 1.5 Guess+build+type+if+not+specified+explicitly
 DefineDoxyDocsTargetIfPossible.cmake 2.5 Define+%60make+doxygen%60+target+to+build+API+documentation+using+%60doxygen%60 Doxyfile.in DoxygenInstall.cmake.in DoxygenDefaults.cmake

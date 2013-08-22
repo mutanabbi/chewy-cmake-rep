@@ -79,7 +79,6 @@ endmacro(python_install)
 
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: PythonMacros.cmake
-# X-Chewy-Version: 1.4
+# X-Chewy-Version: 1.5
 # X-Chewy-Description: Helper to install Python scripts
 # X-Chewy-AddonFile: PythonCompile.py
-# kate: hl cmake;
