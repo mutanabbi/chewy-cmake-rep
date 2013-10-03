@@ -9,28 +9,31 @@ test -f /etc/init.d/functions.sh && source /etc/init.d/functions.sh
 
 # Declare homecooked (simplified) spam functions if not available on this system
 if test "x${RC_GOT_FUNCTIONS}" != "xyes"; then
-ebegin()
-{
-    echo "${indent_level}$1"
-}
-eend()
-{
-    echo
-}
-eindent()
-{
-    indent_level="    "
-}
-eoutdent()
-{
-    indent_level=""
-}
-einfo()
-{
-    echo "* $1"
-}
-eerror()
-{
-    echo "! $1"
-}
+    ebegin()
+    {
+        echo "${indent_level}$1"
+    }
+    eend()
+    {
+        echo
+    }
+    eindent()
+    {
+        indent_level="    "
+    }
+    eoutdent()
+    {
+        indent_level=""
+    }
+    einfo()
+    {
+        echo "* $1"
+    }
+    eerror()
+    {
+        echo "! $1"
+    }
+else
+    # Force color output
+    export EINFO_COLOR=YES
 fi
