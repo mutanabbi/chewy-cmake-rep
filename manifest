@@ -11,7 +11,7 @@ FindVMime.cmake 1.2 Find+VMime+librarary+using+%60pkg-config%60
 FindGlog.cmake 1.3 Find+Google+Log+library+using+%60pkg-config%60
 DefineCheckHeadersTarget.cmake 1.3 Check+header+files+for+self-sufficiency check_headers.sh.in output_helpers.sh
 FindPoco.cmake 1.0 Find+Poco+libraries
-FindLibClang.cmake 1.5 Find+clang+C+API+library libclang_get_version.cpp
+FindLibClang.cmake 2.0 Find+clang+C+API+library libclang_get_version.cpp
 PythonInstall.cmake 2.0 Helper+to+install+Python+3.x+scripts PythonSourceInstallTemplate.cmake.in
 FindLibURIParser.cmake 1.3 Find+uriparser+library+using+%60pkg-config%60
 DefineSkeletonGenerationTargetsIfPossible.cmake 5.13 Add+targets+to+generate+class+header%2Fimplementation+and+unit-tests+skeleton+files TestCMakeLists.txt.in class.tpl.in class_tester.tpl.in mknslist.awk new_class_tester_wrapper.sh.in new_class_wrapper.sh.in output_helpers.sh tpl_defaults.def.in
