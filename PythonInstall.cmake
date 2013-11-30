@@ -66,6 +66,7 @@ function(python_install)
         configure_file(
             ${PYTHON_INSTALL_MODULE_PATH}/PythonSourceInstallTemplate.cmake.in
             ${_py_install_script}
+            @ONLY
           )
         install(SCRIPT ${_py_install_script})
     endforeach()
@@ -74,6 +75,6 @@ endfunction(python_install)
 
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: PythonInstall.cmake
-# X-Chewy-Version: 2.0
+# X-Chewy-Version: 2.1
 # X-Chewy-Description: Helper to install Python 3.x scripts
 # X-Chewy-AddonFile: PythonSourceInstallTemplate.cmake.in
