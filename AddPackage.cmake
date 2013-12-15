@@ -17,6 +17,10 @@
 #
 # TODO Add help about generic usage and about set_common_package_options() particularly
 #
+# TODO One more way to deploy: `dput` to upload to launchpad's PPA
+#
+# TODO Add some way to pass more options to `reprepro` (for example, if key needs a passphrase)
+#
 
 include(CMakeParseArguments)
 
@@ -299,7 +303,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddPackage.cmake
-# X-Chewy-Version: 3.9
+# X-Chewy-Version: 3.10
 # X-Chewy-Description: Add a target to make a .deb package
 # X-Chewy-AddonFile: CPackCommonPackageOptions.cmake.in
 # X-Chewy-AddonFile: CPackPackageConfig.cmake.in
