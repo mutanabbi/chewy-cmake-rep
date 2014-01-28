@@ -25,4 +25,4 @@ GetDistribInfo.cmake 1.3 Get+a+distribution+codename+according+LSB+spec
 FindExiv2.cmake 1.3 Find+Exiv2+library+using+%60pkg-config%60
 MacroUseCompilerOption.cmake 1.4 Append+an+option+to+compiler%27s+flags+if+supported
 GuessBuildType.cmake 1.5 Guess+build+type+if+not+specified+explicitly
-DefineDoxyDocsTargetIfPossible.cmake 2.6 Define+%60make+doxygen%60+target+to+build+API+documentation+using+%60doxygen%60 Doxyfile.in DoxygenInstall.cmake.in DoxygenDefaults.cmake
+DefineDoxyDocsTargetIfPossible.cmake 2.7 Define+%60make+doxygen%60+target+to+build+API+documentation+using+%60doxygen%60 Doxyfile.in DoxygenInstall.cmake.in DoxygenDefaults.cmake
