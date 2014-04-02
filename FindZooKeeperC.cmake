@@ -77,7 +77,7 @@ endif()
 
 
 # X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
-# X-Chewy-Path: FindOTL.cmake
+# X-Chewy-Path: FindZooKeeperC.cmake
 # X-Chewy-Version: 1.0
 # X-Chewy-Description: Find OTL header
 # X-Chewy-AddonFile: zookeeper_get_version.cc
