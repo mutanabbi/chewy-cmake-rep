@@ -43,7 +43,7 @@ function(write_export_dependencies)
     endif()
 endfunction()
 
-# X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
+# X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: WriteExportDependencies.cmake
 # X-Chewy-Version: 1.0
 # X-Chewy-Description: Write an export dependencies file

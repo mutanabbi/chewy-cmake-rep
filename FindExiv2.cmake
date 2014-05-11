@@ -56,7 +56,7 @@ if(NOT EXIV2_LIBRARIES)
     endif()
 endif()
 
-# X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
+# X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: FindExiv2.cmake
 # X-Chewy-Version: 1.3
 # X-Chewy-Description: Find Exiv2 library using `pkg-config`

@@ -56,7 +56,7 @@ if(NOT TASN1_LIBRARIES)
     endif()
 endif()
 
-# X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
+# X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: FindTasn1.cmake
 # X-Chewy-Version: 1.2
 # X-Chewy-Description: Find Tasn1 librarary using `pkg-config`

@@ -56,7 +56,7 @@ if(NOT GLOG_LIBRARIES)
     endif()
 endif()
 
-# X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
+# X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: FindGlog.cmake
 # X-Chewy-Version: 1.3
 # X-Chewy-Description: Find Google Log library using `pkg-config`

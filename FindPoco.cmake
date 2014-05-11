@@ -39,7 +39,7 @@ find_package_handle_standard_args(
     VERSION_VAR POCO_VERSION
   )
 
-# X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
+# X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: FindPoco.cmake
 # X-Chewy-Version: 1.0
 # X-Chewy-Description: Find Poco libraries

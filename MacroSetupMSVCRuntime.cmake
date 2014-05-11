@@ -81,7 +81,7 @@ macro(setup_msvc_runtime runtime_type)
     endforeach()
 endmacro()
 
-# X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
+# X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: MacroSetupMSVCRuntime.cmake
 # X-Chewy-Version: 1.0
 # X-Chewy-Description: Configure MSVC runtime library compiler options

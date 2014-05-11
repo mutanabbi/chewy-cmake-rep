@@ -77,7 +77,7 @@ macro(python_install DESINATION_DIR)
 
 endmacro(python_install)
 
-# X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
+# X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: PythonMacros.cmake
 # X-Chewy-Version: 1.5
 # X-Chewy-Description: Helper to install Python scripts

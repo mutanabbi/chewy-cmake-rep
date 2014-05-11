@@ -15,7 +15,7 @@ find_package_handle_standard_args(Magic DEFAULT_MSG MAGIC_LIBRARIES MAGIC_INCLUD
 
 # TODO Check for some symbols?
 
-# X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
+# X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: FindMagic.cmake
 # X-Chewy-Version: 1.0
 # X-Chewy-Description: Find MIME-type detection library

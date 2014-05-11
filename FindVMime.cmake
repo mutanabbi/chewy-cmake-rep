@@ -50,7 +50,7 @@ if(VMime_FOUND)
     set(VMime_DEFINITIONS ${VMime_CFLAGS_OTHER})
 endif()
 
-# X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
+# X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: FindVMime.cmake
 # X-Chewy-Version: 1.2
 # X-Chewy-Description: Find VMime librarary using `pkg-config`

@@ -88,7 +88,7 @@ macro(use_compiler_option)
     endif()
 endmacro(use_compiler_option)
 
-# X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
+# X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: MacroUseCompilerOption.cmake
 # X-Chewy-Version: 1.4
 # X-Chewy-Description: Append an option to compiler's flags if supported

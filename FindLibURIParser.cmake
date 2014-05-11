@@ -62,7 +62,7 @@ if(NOT URIPARSER_LIBRARIES)
 endif()
 
 
-# X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
+# X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: FindLibURIParser.cmake
 # X-Chewy-Version: 1.3
 # X-Chewy-Description: Find uriparser library using `pkg-config`

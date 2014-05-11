@@ -24,7 +24,7 @@ configure_file(
 add_custom_target(check-headers /bin/sh ${CMAKE_BINARY_DIR}/check_headers.sh)
 add_dependencies(check-headers ${CMAKE_CURRENT_LIST_DIR}/check_headers.sh.in)
 
-# X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
+# X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: DefineCheckHeadersTarget.cmake
 # X-Chewy-Version: 1.3
 # X-Chewy-Description: Check header files for self-sufficiency

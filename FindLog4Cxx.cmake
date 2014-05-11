@@ -56,7 +56,7 @@ if(NOT LOG4CXX_LIBRARIES)
     endif()
 endif()
 
-# X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
+# X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: FindLog4Cxx.cmake
 # X-Chewy-Version: 1.3
 # X-Chewy-Description: Find Log4Cxx library using `pkg-config`

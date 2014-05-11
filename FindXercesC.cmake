@@ -57,7 +57,7 @@ if(NOT XERCESC_LIBRARIES)
     endif()
 endif()
 
-# X-Chewy-RepoBase: https://raw.github.com/mutanabbi/chewy-cmake-rep/master/
+# X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: FindXercesC.cmake
 # X-Chewy-Version: 1.2
 # X-Chewy-Description: Find Xerces-C librarary using `pkg-config`
