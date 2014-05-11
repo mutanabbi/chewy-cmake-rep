@@ -21,6 +21,7 @@ PythonMacros.cmake 1.5 Helper+to+install+Python+scripts PythonCompile.py
 FindXercesC.cmake 1.2 Find+Xerces-C+librarary+using+%60pkg-config%60
 AddPackage.cmake 3.12 Add+a+target+to+make+a+.deb+package CPackCommonPackageOptions.cmake.in CPackPackageConfig.cmake.in
 FindTasn1.cmake 1.2 Find+Tasn1+librarary+using+%60pkg-config%60
+FindACE.cmake 1.0 Find+ACE+library+%28and+components%29+using+%60pkg-config%60+if+available ace_get_version.cpp
 FindUnixODBC.cmake 1.0 Find+UnixODBC+librarary
 FindOpenLDAP.cmake 1.0 Find+OpenLDAP+libraries
 GetDistribInfo.cmake 2.0 Get+a+distribution+codename+according+LSB+spec+or+vendor+specific+files

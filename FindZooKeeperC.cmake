@@ -14,12 +14,18 @@
 # else than default (well known system-wide locations).
 #
 
-#
-# Copyright (C) 2014, Alex Turbov <i.zaufi@gmail.com>
+#=============================================================================
+# Copyright 2014 by Alex Turbov <i.zaufi@gmail.com>
 #
 # Distributed under the OSI-approved BSD License (the "License");
 # see accompanying file LICENSE for details.
 #
+# This software is distributed WITHOUT ANY WARRANTY; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the License for more information.
+#=============================================================================
+# (To distribute this file outside of this repository, substitute the full
+#  License text for the above reference.)
 
 # Check if already in cache
 # NOTE Feel free to check/change/add any other vars
@@ -44,7 +50,7 @@ if(NOT ZOO_INCLUDE_DIRS)
     check_library_exists(zookeeper_mt zookeeper_init "${ZOO_LIBRARY}" HAVE_LIBZOOKEEPER)
 
     if(HAVE_ZOOKEEPER_H AND HAVE_LIBZOOKEEPER)
-        # Try to compile sample test which would (try to) output the OTL version
+        # Try to compile sample test which would (try to) output the ZooKeeper version
         try_run(
             _zoo_get_version_run_result
             _zoo_get_version_compile_result

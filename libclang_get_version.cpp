@@ -1,4 +1,3 @@
-// kate: hl C++11;
 #include <iostream>
 #include <clang-c/Index.h>
 
