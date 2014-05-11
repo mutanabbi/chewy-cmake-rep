@@ -48,7 +48,7 @@ if(NOT ZOO_INCLUDE_DIRS)
         try_run(
             _zoo_get_version_run_result
             _zoo_get_version_compile_result
-            ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_LIST_DIR}/zookeeper_get_version
+            ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_LIST_DIR}/zookeeper_get_version.cc
             CMAKE_FLAGS
                 -DINCLUDE_DIRECTORIES:STRING=${ZOO_INCLUDE_DIR}
             COMPILE_OUTPUT_VARIABLE _zoo_get_version_compile_output

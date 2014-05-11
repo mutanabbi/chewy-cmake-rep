@@ -6,6 +6,7 @@ FindMagic.cmake 1.0 Find+MIME-type+detection+library
 AddBoostTests.cmake 3.3 Integrate+Boost+unit+tests+into+CMake+infrastructure unit_tests_main_skeleton.cc
 WriteExportDependencies.cmake 1.0 Write+an+export+dependencies+file export-dependencies.cmake.in
 FindLog4Cxx.cmake 1.3 Find+Log4Cxx+library+using+%60pkg-config%60
+MacroSetupMSVCRuntime.cmake 1.0 Configure+MSVC+runtime+library+compiler+options
 UsePCHFile.cmake 2.11 Add+Precompiled+Header+Support PreparePCHHeader.cmake.in pch_template.h.in
 MakeJARExecutable.cmake 1.0 Function+to+set+an+entry+point+in+the+JAR+file%2C+so+it+become+%27executable%27
 FindVMime.cmake 1.2 Find+VMime+librarary+using+%60pkg-config%60
