@@ -31,3 +31,4 @@ FindZooKeeperC.cmake 1.0 Find+Apache+ZooKeeper+C+API+libraries zookeeper_get_ver
 GuessBuildType.cmake 1.5 Guess+build+type+if+not+specified+explicitly
 DefineDoxyDocsTargetIfPossible.cmake 2.8 Define+%60make+doxygen%60+target+to+build+API+documentation+using+%60doxygen%60 Doxyfile.in DoxygenInstall.cmake.in DoxygenDefaults.cmake
 FindOTL.cmake 1.0 Find+OTL+header otl_get_version.cc
+GetGNULibCVersion.cmake 1.0 Helper+to+get+GNU+libc+version glibc_get_version.c
