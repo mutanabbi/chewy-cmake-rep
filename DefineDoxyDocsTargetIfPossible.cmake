@@ -151,20 +151,22 @@ else()
     # cleanup $build/docs on "make clean"
     set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES ${DOXYGEN_OUTPUT_DIRECTORY})
 
-    find_program(
-        XDG_OPEN_EXECUTABLE
-        NAMES xdg-open
-        DOC "opens a file or URL in the user's preferred application"
-      )
-    if(XDG_OPEN_EXECUTABLE)
-        message(STATUS "Enable 'show-api-documentation' target via ${XDG_OPEN_EXECUTABLE}")
-        add_custom_target(
-            show-api-documentation
-            COMMAND ${XDG_OPEN_EXECUTABLE} ${DOXYGEN_OUTPUT_DIRECTORY}/html/index.html
-            DEPENDS ${CMAKE_BINARY_DIR}/Doxyfile
-            COMMENT "Open API documentation"
+    if(NOT WIN32)
+        find_program(
+            XDG_OPEN_EXECUTABLE
+            NAMES xdg-open
+            DOC "opens a file or URL in the user's preferred application"
           )
-        add_dependencies(show-api-documentation doxygen)
+        if(XDG_OPEN_EXECUTABLE)
+            message(STATUS "Enable 'show-api-documentation' target via ${XDG_OPEN_EXECUTABLE}")
+            add_custom_target(
+                show-api-documentation
+                COMMAND ${XDG_OPEN_EXECUTABLE} ${DOXYGEN_OUTPUT_DIRECTORY}/html/index.html
+                DEPENDS ${CMAKE_BINARY_DIR}/Doxyfile
+                COMMENT "Open API documentation"
+              )
+            add_dependencies(show-api-documentation doxygen)
+        endif()
     endif()
 
     if(NOT NO_DOXY_DOCS OR NOT NO_DOXY_DOCS STREQUAL "ON")
@@ -182,7 +184,7 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: DefineDoxyDocsTargetIfPossible.cmake
-# X-Chewy-Version: 2.8
+# X-Chewy-Version: 2.9
 # X-Chewy-Description: Define `make doxygen` target to build API documentation using `doxygen`
 # X-Chewy-AddonFile: Doxyfile.in
 # X-Chewy-AddonFile: DoxygenInstall.cmake.in
