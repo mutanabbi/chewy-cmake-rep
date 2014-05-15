@@ -1,0 +1,12 @@
+/*
+ * ATTENTION DO NOT EDIT!
+ */
+
+#cmakedefine BOOST_AUTO_TEST_MAIN
+#cmakedefine BOOST_TEST_MODULE @BOOST_TEST_MODULE@
+#cmakedefine BOOST_TEST_DYN_LINK
+
+// Standard includes
+#include <@BOOST_TEST_INCLUDE@>
+
+// kate: hl C++;
