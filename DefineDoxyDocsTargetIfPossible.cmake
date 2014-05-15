@@ -50,7 +50,7 @@ else()
 
     # set some variables before generate a config file
     set(DOXYGEN_HAVE_DOT ${DOXYGEN_DOT_FOUND})
-    set(DOXYGEN_STRIP_FROM_PATH "${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR}")
+    set(DOXYGEN_STRIP_FROM_PATH "\"${PROJECT_SOURCE_DIR}\" \"${PROJECT_BINARY_DIR}\"")
 
     # override some defaults, but allow to redefine from CMakeLists.txt
     if(NOT DEFINED DOXYGEN_PROJECT_NAME)
@@ -66,10 +66,10 @@ else()
         set(DOXYGEN_RECURSIVE YES)
     endif()
     if(NOT DEFINED DOXYGEN_INPUT)
-        set(DOXYGEN_INPUT "${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR}")
+        set(DOXYGEN_INPUT "\"${PROJECT_SOURCE_DIR}\" \"${PROJECT_BINARY_DIR}\"")
     endif()
     if(NOT DEFINED DOXYGEN_OUTPUT_DIRECTORY)
-        set(DOXYGEN_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/doc")
+        set(DOXYGEN_OUTPUT_DIRECTORY "doc")
     endif()
     if(NOT DEFINED DOXYGEN_DOT_IMAGE_FORMAT)
         set(DOXYGEN_DOT_IMAGE_FORMAT svg)
@@ -136,15 +136,15 @@ else()
       )
 
     # get other defaults from generated file
-    include(${CMAKE_CURRENT_LIST_DIR}/DoxygenDefaults.cmake)
+    include("${CMAKE_CURRENT_LIST_DIR}/DoxygenDefaults.cmake")
     # prepare doxygen configuration file
-    configure_file(${CMAKE_CURRENT_LIST_DIR}/Doxyfile.in ${CMAKE_BINARY_DIR}/Doxyfile)
+    configure_file("${CMAKE_CURRENT_LIST_DIR}/Doxyfile.in" "${CMAKE_BINARY_DIR}/Doxyfile")
 
     # add doxygen as target
     add_custom_target(
         doxygen
-        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_BINARY_DIR}/Doxyfile
-        DEPENDS ${CMAKE_BINARY_DIR}/Doxyfile
+        COMMAND ${DOXYGEN_EXECUTABLE} "${CMAKE_BINARY_DIR}/Doxyfile"
+        DEPENDS "${CMAKE_BINARY_DIR}/Doxyfile"
         COMMENT "Generate API documentation"
       )
 
@@ -162,7 +162,7 @@ else()
             add_custom_target(
                 show-api-documentation
                 COMMAND ${XDG_OPEN_EXECUTABLE} ${DOXYGEN_OUTPUT_DIRECTORY}/html/index.html
-                DEPENDS ${CMAKE_BINARY_DIR}/Doxyfile
+                DEPENDS "${CMAKE_BINARY_DIR}/Doxyfile"
                 COMMENT "Open API documentation"
               )
             add_dependencies(show-api-documentation doxygen)
@@ -172,11 +172,11 @@ else()
     if(NOT NO_DOXY_DOCS OR NOT NO_DOXY_DOCS STREQUAL "ON")
         # make sure documentation will be produced before (possible) install
         configure_file(
-            ${CMAKE_CURRENT_LIST_DIR}/DoxygenInstall.cmake.in
-            ${CMAKE_BINARY_DIR}/DoxygenInstall.cmake
+            "${CMAKE_CURRENT_LIST_DIR}/DoxygenInstall.cmake.in"
+            "${CMAKE_BINARY_DIR}/DoxygenInstall.cmake"
             @ONLY
           )
-        install(SCRIPT ${CMAKE_BINARY_DIR}/DoxygenInstall.cmake)
+        install(SCRIPT "${CMAKE_BINARY_DIR}/DoxygenInstall.cmake")
     else()
         message(STATUS "Doxygened documentation will not be installed!")
     endif()
@@ -184,7 +184,7 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: DefineDoxyDocsTargetIfPossible.cmake
-# X-Chewy-Version: 2.11
+# X-Chewy-Version: 2.12
 # X-Chewy-Description: Define `make doxygen` target to build API documentation using `doxygen`
 # X-Chewy-AddonFile: Doxyfile.in
 # X-Chewy-AddonFile: DoxygenInstall.cmake.in
