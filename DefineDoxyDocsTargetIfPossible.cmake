@@ -184,7 +184,7 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: DefineDoxyDocsTargetIfPossible.cmake
-# X-Chewy-Version: 2.10
+# X-Chewy-Version: 2.11
 # X-Chewy-Description: Define `make doxygen` target to build API documentation using `doxygen`
 # X-Chewy-AddonFile: Doxyfile.in
 # X-Chewy-AddonFile: DoxygenInstall.cmake.in

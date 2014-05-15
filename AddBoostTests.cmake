@@ -169,10 +169,10 @@ function(add_boost_tests)
                     endif()
                 endif()
             endforeach()
-            #message(STATUS "  found tests: ${found_tests}")
+
             # Register found tests
             foreach(test_name ${found_tests})
-                message(STATUS "Add test[$<TARGET_FILE:${add_boost_tests_TARGET}>]: ${test_name}")
+                #message(STATUS "Add test[$<TARGET_FILE:${add_boost_tests_TARGET}>]: ${test_name}")
                 add_test(
                     NAME ${test_name}
                     COMMAND $<TARGET_FILE:${add_boost_tests_TARGET}> --run_test=${test_name} ${extra_args}
@@ -185,6 +185,6 @@ endfunction(add_boost_tests)
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddBoostTests.cmake
-# X-Chewy-Version: 4.0
+# X-Chewy-Version: 4.1
 # X-Chewy-Description: Integrate Boost unit tests into CMake infrastructure
 # X-Chewy-AddonFile: unit_tests_main_skeleton.cc.in
