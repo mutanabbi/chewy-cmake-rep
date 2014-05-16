@@ -41,7 +41,7 @@ if(NOT DISTRIB_CODENAME)
             endif()
         endif()
         # Make a string suitable to be a filename part to identify a target system
-        string(TOLOWER DISTRIB_FILE_PART "${DISTRIB_ID}")
+        string(TOLOWER "${DISTRIB_ID}" DISTRIB_FILE_PART)
 
     # Trying LSB conformant distros (like Ubuntu. What else?)
     elseif(EXISTS /etc/lsb-release)
@@ -58,14 +58,14 @@ if(NOT DISTRIB_CODENAME)
         # Set native packages format
         set(DISTRIB_PKG_FMT "DEB")
         # Make a string suitable to be a filename part to identify a target system
-        string(TOLOWER DISTRIB_FILE_PART "${DISTRIB_ID}-${DISTRIB_VERSION}")
+        string(TOLOWER "${DISTRIB_ID}-${DISTRIB_VERSION}" DISTRIB_FILE_PART)
 
     # Trying RedHat distros
     elseif(EXISTS /etc/redhat-release)
 
         file(STRINGS /etc/redhat-release DISTRIB_CODENAME)
         string(REGEX REPLACE ".*\((.*)\)" "\\1" DISTRIB_CODENAME "${DISTRIB_CODENAME}")
-        string(TOLOWER DISTRIB_CODENAME "${DISTRIB_CODENAME}")
+        string(TOLOWER "${DISTRIB_CODENAME}" DISTRIB_CODENAME)
         # Set native packages format
         set(DISTRIB_PKG_FMT "RPM")
         # TODO Get more details
@@ -86,5 +86,5 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GetDistribInfo.cmake
-# X-Chewy-Version: 2.2
+# X-Chewy-Version: 2.3
 # X-Chewy-Description: Get a distribution codename

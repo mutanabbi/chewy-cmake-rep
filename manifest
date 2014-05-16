@@ -24,7 +24,7 @@ FindTasn1.cmake 1.2 Find+Tasn1+librarary+using+%60pkg-config%60
 FindACE.cmake 1.0 Find+ACE+library+%28and+components%29+using+%60pkg-config%60+if+available ace_get_version.cpp
 FindUnixODBC.cmake 1.0 Find+UnixODBC+librarary
 FindOpenLDAP.cmake 1.0 Find+OpenLDAP+libraries
-GetDistribInfo.cmake 2.2 Get+a+distribution+codename
+GetDistribInfo.cmake 2.3 Get+a+distribution+codename
 FindExiv2.cmake 1.3 Find+Exiv2+library+using+%60pkg-config%60
 MacroUseCompilerOption.cmake 1.4 Append+an+option+to+compiler%27s+flags+if+supported
 FindZooKeeperC.cmake 1.0 Find+Apache+ZooKeeper+C+API+libraries zookeeper_get_version.cc
