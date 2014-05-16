@@ -53,12 +53,12 @@ if(NOT DISTRIB_CODENAME)
         file(STRINGS /etc/lsb-release DISTRIB_CODENAME REGEX "DISTRIB_CODENAME=")
         string(REGEX REPLACE "DISTRIB_CODENAME=\"?(.*)\"?" "\\1" DISTRIB_CODENAME "${DISTRIB_CODENAME}")
         # Get DISTRIB_VERSION
-        file(STRINGS /etc/lsb-release DISTRIB_VERSION REGEX "DISTRIB_VERSION=")
-        string(REGEX REPLACE "DISTRIB_VERSION=\"?(.*)\"?" "\\1" DISTRIB_VERSION "${DISTRIB_VERSION}")
+        file(STRINGS /etc/lsb-release DISTRIB_VERSION REGEX "DISTRIB_RELEASE=")
+        string(REGEX REPLACE "DISTRIB_RELEASE=\"?(.*)\"?" "\\1" DISTRIB_VERSION "${DISTRIB_VERSION}")
         # Set native packages format
         set(DISTRIB_PKG_FMT "DEB")
         # Make a string suitable to be a filename part to identify a target system
-        string(TOLOWER DISTRIB_FILE_PART "${DISTRIB_ID}_${DISTRIB_VERSION}")
+        string(TOLOWER DISTRIB_FILE_PART "${DISTRIB_ID}-${DISTRIB_VERSION}")
 
     # Trying RedHat distros
     elseif(EXISTS /etc/redhat-release)
@@ -72,19 +72,19 @@ if(NOT DISTRIB_CODENAME)
 
     elseif(EXISTS /etc/gentoo-release)
 
-        set(DISTRIB_CODENAME "gentoo")
+        set(DISTRIB_ID "gentoo")
         set(DISTRIB_PKG_FMT "")
         # Make a string suitable to be a filename part to identify a target system
-        string(TOLOWER DISTRIB_FILE_PART "gentoo")
+        set(DISTRIB_FILE_PART "gentoo")
         # TODO Get more details
 
     else()
         set(DISTRIB_CODENAME "${DEFAULT_DISTRIB_CODENAME}" CACHE INTERNAL "Target distribution codename")
     endif()
-    message(STATUS "Target distribution codename: ${DISTRIB_CODENAME}")
+    message(STATUS "Target distribution: ${DISTRIB_ID} ${DISTRIB_VERSION} ${DISTRIB_CODENAME}")
 endif()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GetDistribInfo.cmake
-# X-Chewy-Version: 2.1
+# X-Chewy-Version: 2.2
 # X-Chewy-Description: Get a distribution codename
