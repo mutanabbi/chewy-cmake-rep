@@ -169,7 +169,9 @@ else()
         endif()
     endif()
 
-    if(NOT NO_DOXY_DOCS OR NOT NO_DOXY_DOCS STREQUAL "ON")
+    if(NO_DOXY_DOCS)
+        message(STATUS "Doxygened documentation will not be installed!")
+    else()
         # make sure documentation will be produced before (possible) install
         configure_file(
             "${CMAKE_CURRENT_LIST_DIR}/DoxygenInstall.cmake.in"
@@ -177,14 +179,12 @@ else()
             @ONLY
           )
         install(SCRIPT "${CMAKE_BINARY_DIR}/DoxygenInstall.cmake")
-    else()
-        message(STATUS "Doxygened documentation will not be installed!")
     endif()
 endif()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: DefineDoxyDocsTargetIfPossible.cmake
-# X-Chewy-Version: 2.12
+# X-Chewy-Version: 2.13
 # X-Chewy-Description: Define `make doxygen` target to build API documentation using `doxygen`
 # X-Chewy-AddonFile: Doxyfile.in
 # X-Chewy-AddonFile: DoxygenInstall.cmake.in
