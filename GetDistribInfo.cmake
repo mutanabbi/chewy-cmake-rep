@@ -60,6 +60,19 @@ if(NOT DISTRIB_CODENAME)
         # Make a string suitable to be a filename part to identify a target system
         string(TOLOWER "${DISTRIB_ID}-${DISTRIB_VERSION}" DISTRIB_FILE_PART)
 
+    # Trying CentOS distros
+    elseif(EXISTS /etc/centos-release)
+        # ATTENTION CentOS has a symlink /etc/redhat-release -> /etc/centos-release,
+        # so it mut be handled before!
+        # NOTE /etc/centos-release
+        set(DISTRIB_ID "CentOS")
+        set(DISTRIB_FILE_PART "centos")
+        file(STRINGS /etc/centos-release DISTRIB_VERSION)
+        string(REGEX REPLACE "CentOS release ([0-9.]+) .*" "\\1" DISTRIB_VERSION "${DISTRIB_VERSION}")
+        # Set native packages format
+        set(DISTRIB_PKG_FMT "RPM")
+        # TODO Get more details
+
     # Trying RedHat distros
     elseif(EXISTS /etc/redhat-release)
 
@@ -86,5 +99,5 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GetDistribInfo.cmake
-# X-Chewy-Version: 2.3
+# X-Chewy-Version: 2.4
 # X-Chewy-Description: Get a distribution codename
