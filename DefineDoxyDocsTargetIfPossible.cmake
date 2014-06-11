@@ -37,6 +37,7 @@ find_package(Doxygen)
 
 if(NOT DOXYGEN_FOUND)
     message(STATUS "WARNING: Doxygen not found. Please get a copy http://www.doxygen.org to produce HTML documentation")
+    set(NO_DOXY_DOCS ON)
 else()
     # Try to find `mscgen` as well
     find_program(
@@ -184,7 +185,7 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: DefineDoxyDocsTargetIfPossible.cmake
-# X-Chewy-Version: 2.14
+# X-Chewy-Version: 2.15
 # X-Chewy-Description: Define `make doxygen` target to build API documentation using `doxygen`
 # X-Chewy-AddonFile: Doxyfile.in
 # X-Chewy-AddonFile: DoxygenInstall.cmake.in
