@@ -84,12 +84,12 @@ function(add_boost_tests)
     endif()
 
     if(add_boost_tests_DYN_LINK)
-        set(BOOST_TEST_DYN_LINK)
+        set(BOOST_TEST_DYN_LINK "1")
     endif()
     if(add_boost_tests_MODULE)
         set(BOOST_TEST_MODULE "${add_boost_tests_MODULE}")
     else()
-        set(BOOST_AUTO_TEST_MAIN)
+        set(BOOST_AUTO_TEST_MAIN "1")
     endif()
 
     configure_file(
@@ -185,6 +185,6 @@ endfunction(add_boost_tests)
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddBoostTests.cmake
-# X-Chewy-Version: 4.2
+# X-Chewy-Version: 4.3
 # X-Chewy-Description: Integrate Boost unit tests into CMake infrastructure
 # X-Chewy-AddonFile: unit_tests_main_skeleton.cc.in
