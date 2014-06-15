@@ -96,7 +96,6 @@ function(add_compile_tests)
       )
     # 1. Get defines
     get_directory_property(_defines_list COMPILE_DEFINITIONS)
-    message(STATUS "_defines_list=${_defines_list}")
     foreach(_def ${_defines_list})
         # TODO Handle -D option for other compilers
         # ATTENTION Workaround for old versions of cmake.
