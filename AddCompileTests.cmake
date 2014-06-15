@@ -84,6 +84,9 @@ function(add_compile_tests)
 
     # Prepare compiler command
     # 0. Remove compiler executable
+    if(add_compile_tests_DEBUG)
+        message(STATUS "Compiler command tempalte: '${CMAKE_${_lang}_COMPILE_OBJECT}'")
+    endif()
     string(
         REPLACE
             "<CMAKE_${_lang}_COMPILER>"
@@ -93,11 +96,15 @@ function(add_compile_tests)
       )
     # 1. Get defines
     get_directory_property(_defines_list COMPILE_DEFINITIONS)
+    message(STATUS "_defines_list=${_defines_list}")
     foreach(_def ${_defines_list})
         # TODO Handle -D option for other compilers
-        set(_defines "${_defines} -D${_def}")
+        # ATTENTION Workaround for old versions of cmake.
+        # (possible due some policies applied for KDE based projects -- it won't
+        # expand #defines collected to some variable... like done for include paths)
+        string(REPLACE "<DEFINES>" "-D${_def} <DEFINES>" _compile_options "${_compile_options}")
     endforeach()
-    string(REPLACE "<DEFINES>" "${_defines}" _compile_options "${_compile_options}")
+    string(REPLACE "<DEFINES>" "" _compile_options "${_compile_options}")
     # 2. Get #include paths
     get_directory_property(_includes_list INCLUDE_DIRECTORIES)
     foreach(_inc ${_includes_list})
@@ -156,6 +163,6 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddCompileTests.cmake
-# X-Chewy-Version: 1.0
+# X-Chewy-Version: 1.1
 # X-Chewy-Description: Check if source(s) can be compiled well (or not)
 # X-Chewy-AddonFile: compile_test.cmake.in
