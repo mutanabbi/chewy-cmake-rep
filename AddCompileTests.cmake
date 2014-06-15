@@ -104,7 +104,7 @@ function(add_compile_tests)
         # expand #defines collected to some variable... like done for include paths)
         string(REPLACE "<DEFINES>" "-D${_def} <DEFINES>" _compile_options "${_compile_options}")
     endforeach()
-    string(REPLACE "<DEFINES>" "" _compile_options "${_compile_options}")
+    string(REPLACE " <DEFINES>" "" _compile_options "${_compile_options}")
     # 2. Get #include paths
     get_directory_property(_includes_list INCLUDE_DIRECTORIES)
     foreach(_inc ${_includes_list})
