@@ -30,18 +30,25 @@
 set(DEFAULT_DISTRIB_CODENAME "auto" CACHE STRING "Target distribution codename")
 set(DEFAULT_DISTRIB_ID "auto" CACHE STRING "Target distribution")
 
+#
+# ATTENTION Macro arguments are not variables!
+# So they can't be checked just w/ `if(PARAM)`!
+#
 macro(_clue_file_part PART DELIMITER STATE OUTPUT)
-    if(STATE)
-        if(PART)
+    if(NOT STATE STREQUAL "")
+        if(NOT PART STREQUAL "")
             set(${OUTPUT} "${STATE}${DELIMITER}${PART}")
         else()
             set(${OUTPUT} "${STATE}")
         endif()
-    elseif(PART)
+    elseif(NOT PART STREQUAL "")
         set(${OUTPUT} "${PART}")
     endif()
 endmacro()
 
+#
+# Form a filename part for the current distro
+#
 macro(_make_distrib_file_part)
     _clue_file_part("${DISTRIB_ID}" "" "" DISTRIB_FILE_PART)
     if(WIN32)
@@ -54,6 +61,9 @@ macro(_make_distrib_file_part)
     string(TOLOWER "${DISTRIB_FILE_PART}" DISTRIB_FILE_PART)
 endmacro()
 
+#
+# Ok, lets collect come info about this distro...
+#
 if(NOT DISTRIB_CODENAME)
     if(NOT WIN32)
         find_program(
@@ -63,7 +73,7 @@ if(NOT DISTRIB_CODENAME)
           )
         if(UNAME_EXECUTABLE)
             execute_process(
-                COMMAND "${UNAME_EXECUTABLE}" -r
+                COMMAND "${UNAME_EXECUTABLE}" -m
                 OUTPUT_VARIABLE DISTRIB_ARCH
                 OUTPUT_STRIP_TRAILING_WHITESPACE
                 ERROR_QUIET
@@ -131,6 +141,11 @@ if(NOT DISTRIB_CODENAME)
 
         set(DISTRIB_ID "gentoo")
         set(DISTRIB_PKG_FMT "")
+        # Try tune DISTRIB_ARCH
+        if(DISTRIB_ARCH STREQUAL "x86_64")
+            # 64-bit packets usualy named amd64 here...
+            set(DISTRIB_ARCH "amd64")
+        endif()
         # TODO Get more details
 
     else()
@@ -154,7 +169,7 @@ if(NOT DISTRIB_CODENAME)
         if(DISTRIB_ID STREQUAL "Solaris")
             if(EXISTS /etc/release)
                 file(STRINGS /etc/release DISTRIB_CODENAME REGEX "SmartOS")
-                if(DISTRIB_CODENAME)
+                if(NOT DISTRIB_CODENAME STREQUAL "")
                     set(DISTRIB_ID "SmartOS")
                     set(DISTRIB_CODENAME "")
                     # NOTE According docs, SmartOS has no version.
@@ -170,10 +185,10 @@ if(NOT DISTRIB_CODENAME)
 
     _make_distrib_file_part()
 
-    message(STATUS "Target distribution: ${DISTRIB_ID} ${DISTRIB_VERSION} ${DISTRIB_CODENAME}")
+    message(STATUS "Target distribution: ${DISTRIB_ID} ${DISTRIB_VERSION} ${DISTRIB_CODENAME} [${DISTRIB_FILE_PART}]")
 endif()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GetDistribInfo.cmake
-# X-Chewy-Version: 2.6
+# X-Chewy-Version: 2.7
 # X-Chewy-Description: Get a distribution codename
