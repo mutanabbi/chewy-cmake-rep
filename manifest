@@ -18,7 +18,7 @@ FindLibClang.cmake 2.0 Find+clang+C+API+library libclang_get_version.cpp
 PythonInstall.cmake 2.1 Helper+to+install+Python+3.x+scripts PythonSourceInstallTemplate.cmake.in
 FindLibURIParser.cmake 1.3 Find+uriparser+library+using+%60pkg-config%60
 DefineSkeletonGenerationTargetsIfPossible.cmake 5.14 Add+targets+to+generate+class+header%2Fimplementation+and+unit-tests+skeleton+files TestCMakeLists.txt.in class.tpl.in class_tester.tpl.in mknslist.awk new_class_tester_wrapper.sh.in new_class_wrapper.sh.in output_helpers.sh tpl_defaults.def.in
-TeamCityIntegration.cmake 1.0 Interact+w%2F+TeamCity+via+service+messages
+TeamCityIntegration.cmake 1.1 Interact+w%2F+TeamCity+via+service+messages
 PythonMacros.cmake 1.5 Helper+to+install+Python+scripts PythonCompile.py
 FindXercesC.cmake 1.2 Find+Xerces-C+librarary+using+%60pkg-config%60
 AddPackage.cmake 3.12 Add+a+target+to+make+a+.deb+package CPackCommonPackageOptions.cmake.in CPackPackageConfig.cmake.in

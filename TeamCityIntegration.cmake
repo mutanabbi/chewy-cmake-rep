@@ -20,8 +20,24 @@
 
 include(CMakeParseArguments)
 
+macro(is_running_under_teamcity VAR)
+    if(NOT "$ENV{TEAMCITY_PROCESS_FLOW_ID}" STREQUAL "")
+        set(${VAR} TRUE)
+    else()
+        set(${VAR} FALSE)
+    endif()
+endmacro()
+
+macro(tc_escape_string VAR)
+    string(REPLACE "|"   "||" ${VAR} "${${VAR}}")
+    string(REPLACE "\n" "|n" ${VAR} "${${VAR}}")
+    string(REPLACE "'"   "|'" ${VAR} "${${VAR}}")
+    string(REPLACE "["   "|[" ${VAR} "${${VAR}}")
+    string(REPLACE "]"   "|]" ${VAR} "${${VAR}}")
+endmacro()
+
 function(_tc_bare_message NAME )
-    if("$ENV{TEAMCITY_PROCESS_FLOW_ID}")
+    if(NOT "$ENV{TEAMCITY_PROCESS_FLOW_ID}" STREQUAL "")
         # Setup message start
         set(_message "##teamcity[${NAME}")
 
@@ -36,7 +52,7 @@ function(_tc_bare_message NAME )
 endfunction()
 
 function(_tc_message NAME )
-    if("$ENV{TEAMCITY_PROCESS_FLOW_ID}")
+    if(NOT "$ENV{TEAMCITY_PROCESS_FLOW_ID}" STREQUAL "")
         # Setup message start
         string(TIMESTAMP _timestamp "%Y-%m-%dT%H:%M:%S.000" UTC)
         set(_message "##teamcity[${NAME} flowId='$ENV{TEAMCITY_PROCESS_FLOW_ID}' timestamp='${_timestamp}'")
@@ -106,6 +122,7 @@ endfunction()
 
 ##teamcity[blockOpened name='<blockName>']
 function(tc_block_start NAME)
+    tc_escape_string(NAME)
     _tc_generic_block_start("blockOpened" "BLOCK" "name='${NAME}'")
 endfunction()
 
@@ -123,7 +140,10 @@ function(tc_message STATUS TEXT)
         message(FATAL_ERROR "tc_message called with invalid status")
     endif()
 
+    tc_escape_string(TEXT)
+    tc_escape_string(STATUS)
     if(STATUS STREQUAL "ERROR" AND (NOT ARG2 STREQUAL ""))
+        tc_escape_string(ARGV2)
         _tc_message("message" "text='${TEXT}'" "status='${STATUS}'" "errorDetails='${ARGV2}'")
     else()
         _tc_message("message" "text='${TEXT}'" "status='${STATUS}'")
@@ -132,6 +152,7 @@ endfunction()
 
 ##teamcity[compilationStarted compiler='<compiler name>']
 function(tc_compile_start COMPILER)
+    tc_escape_string(COMPILER)
     _tc_generic_block_start("compilationStarted" "COMPILE" "compiler='${COMPILER}'")
 endfunction()
 
@@ -142,6 +163,7 @@ endfunction()
 
 ##teamcity[progressStart '<message>']
 function(tc_progress_start TEXT)
+    tc_escape_string(TEXT)
     _tc_generic_bare_block_start("progressStart" "PROGRESS" "'${TEXT}'")
 endfunction()
 
@@ -152,11 +174,13 @@ endfunction()
 
 ##teamcity[progressMessage '<message>']
 function(tc_progress MESSAGE)
+    tc_escape_string(MESSAGE)
     _tc_bare_message("progressMessage" "'${MESSAGE}'")
 endfunction()
 
 ##teamcity[testSuiteStarted name='suiteName']
 function(tc_test_suite_start NAME)
+    tc_escape_string(NAME)
     _tc_generic_bare_block_start("testSuiteStarted" "TEST_SUITE" "name='${NAME}'")
 endfunction()
 
@@ -167,6 +191,7 @@ endfunction()
 
 ##teamcity[testStarted name='testName' captureStandardOutput='<true/false>']
 function(tc_test_start NAME)
+    tc_escape_string(NAME)
     if(ARGV1 STREQUAL "CAPTURE_OUTPUT")
         _tc_generic_bare_block_start("testStarted" "TEST" "name='${NAME}'" "captureStandardOutput='true'")
     else()
@@ -179,7 +204,9 @@ function(tc_test_end)
     set(one_value_args DURATION)
     cmake_parse_arguments(tc_test_end "" "${one_value_args}" "" ${ARGN})
 
+    tc_escape_string(TEST)
     if(tc_test_end_DURATION)
+        tc_escape_string(tc_test_end_DURATION)
         _tc_generic_bare_block_end("testFinished" "TEST" "duration='${tc_test_end_DURATION}'")
     else()
         _tc_generic_bare_block_end("testFinished" "TEST")
@@ -195,19 +222,24 @@ function(tc_test_failed MESSAGE)
 
     set(_aux_args)
     if(tc_test_failed_DETAILS)
+        tc_escape_string(tc_test_failed_DETAILS)
         list(APPEND _aux_args "details='${tc_test_failed_DETAILS}'")
     endif()
     if(tc_test_failed_TYPE)
+        tc_escape_string(tc_test_failed_TYPE)
         list(APPEND _aux_args "type='${tc_test_failed_TYPE}'")
     endif()
     if(tc_test_failed_EXPECTED)
+        tc_escape_string(tc_test_failed_EXPECTED)
         list(APPEND _aux_args "expected='${tc_test_failed_EXPECTED}'")
     endif()
     if(tc_test_failed_ACTUAL)
+        tc_escape_string(tc_test_failed_ACTUAL)
         list(APPEND _aux_args "actual='${tc_test_failed_ACTUAL}'")
     endif()
 
     _tc_get_prop_from_list("TEST" _name)
+    tc_escape_string(MESSAGE)
     _tc_bare_message("testFailed" "${_name}" "message='${MESSAGE}'" ${_aux_args})
     unset(_name)
 endfunction()
@@ -215,12 +247,14 @@ endfunction()
 ##teamcity[testIgnored name='testName' message='ignore comment']
 function(tc_test_ignored MESSAGE)
     _tc_get_prop_from_list("TEST" _name)
+    tc_escape_string(MESSAGE)
     _tc_bare_message("testIgnored" "${_name}" "message='${MESSAGE}'")
     unset(_name)
 endfunction()
 
 ##teamcity[testStdOut name='className.testName' out='text']
 function(tc_test_output TEXT)
+    tc_escape_string(TEXT)
     _tc_get_prop_from_list("TEST" _name)
     _tc_bare_message("testStdOut" "${_name}" "out='${TEXT}'")
     unset(_name)
@@ -228,6 +262,7 @@ endfunction()
 
 ##teamcity[testStdErr name='className.testName' out='error text']
 function(tc_test_error_output TEXT)
+    tc_escape_string(TEXT)
     _tc_get_prop_from_list("TEST" _name)
     _tc_bare_message("testStdErr" "${_name}" "out='${TEXT}'")
     unset(_name)
@@ -235,12 +270,15 @@ endfunction()
 
 ##teamcity[publishArtifacts '<path>']
 function(tc_publish_artefacts PATH)
+    tc_escape_string(PATH)
     _tc_bare_message("publishArtifacts" "'${PATH}'")
 endfunction()
 
 ##teamcity[buildProblem description='<description>' identity='<identity>']
 function(tc_build_problem TEXT)
+    tc_escape_string(TEXT)
     if(ARGV1)
+        tc_escape_string(ARGV1)
         _tc_bare_message("buildProblem" "description='${TEXT}'" "identity='${ARGV1}'")
     else()
         _tc_bare_message("buildProblem" "description='${TEXT}'")
@@ -250,24 +288,31 @@ endfunction()
 ##teamcity[buildStatus status='<status value>' text='{build.status.text} and some aftertext']
 function(tc_build_status TEXT)
     if(TEXT STREQUAL "SUCCESS")
+        tc_escape_string(ARGV1)
         _tc_bare_message("buildStatus" "status='SUCCESS'" "text='${ARGV1}'")
     else()
+        tc_escape_string(TEXT)
         _tc_bare_message("buildStatus" "text='${TEXT}'")
     endif()
 endfunction()
 
 ##teamcity[buildNumber '<new build number>']
 function(tc_set_build_number NEW_NUMBER)
+    tc_escape_string(NEW_NUMBER)
     _tc_bare_message("buildNumber" "'${NEW_NUMBER}'")
 endfunction()
 
 ##teamcity[setParameter name='ddd' value='fff']
 function(tc_set_param NAME VALUE)
+    tc_escape_string(NAME)
+    tc_escape_string(VALUE)
     _tc_bare_message("setParameter" "'name=${NAME}'" "value='${VALUE}'")
 endfunction()
 
 ##teamcity[buildStatisticValue key='<valueTypeKey>' value='<value>']
 function(tc_build_stats KEY VALUE)
+    tc_escape_string(KEY)
+    tc_escape_string(VALUE)
     _tc_bare_message("buildStatisticValue" "'key=${KEY}'" "value='${VALUE}'")
 endfunction()
 
@@ -283,5 +328,5 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: TeamCityIntegration.cmake
-# X-Chewy-Version: 1.0
+# X-Chewy-Version: 1.1
 # X-Chewy-Description: Interact w/ TeamCity via service messages
