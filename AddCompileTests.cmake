@@ -222,6 +222,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddCompileTests.cmake
-# X-Chewy-Version: 1.1
+# X-Chewy-Version: 1.2
 # X-Chewy-Description: Check if source(s) can be compiled well (or not)
+# X-Chewy-AddonFile: TeamCityIntegration.cmake
 # X-Chewy-AddonFile: compile_test.cmake.in
