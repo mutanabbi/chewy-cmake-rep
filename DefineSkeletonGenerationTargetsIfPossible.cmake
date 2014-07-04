@@ -46,8 +46,15 @@ function(define_skeleton_generation_targets)
             STATUS
             "WARNING: You need to install GNU Autogen to be able to produce new C++ sources from skeletons"
           )
+        return()
     endif()
-
+    if(NOT CMAKE_GENERATOR STREQUAL "Unix Makefiles")
+        message(
+            STATUS
+            "WARNING: Skeleton generation targets are reasonable for Unix Makefiles only (nowadays), so disabled"
+          )
+        return()
+    endif()
     # Parse function arguments
     set(options ENABLE_TESTS USE_PRAGMA_ONCE)
     set(
@@ -191,7 +198,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: DefineSkeletonGenerationTargetsIfPossible.cmake
-# X-Chewy-Version: 6.0
+# X-Chewy-Version: 6.1
 # X-Chewy-Description: Add targets to generate class header/implementation and unit-tests skeleton files
 # X-Chewy-AddonFile: TestCMakeLists.txt.in
 # X-Chewy-AddonFile: class.tpl.in
