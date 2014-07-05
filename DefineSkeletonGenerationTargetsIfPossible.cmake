@@ -14,7 +14,7 @@
 #
 # NOTE GNU Autogen used internally.
 #
-# TODO Rewrite this stuff using pure CMake and Python + jinja2
+# TODO Rewrite this stuff using Python + jinja2 (really?)
 # TODO How to deal w/ dependency on output_helpers.sh, which
 # is required by two modules??!
 #
@@ -46,7 +46,6 @@ function(define_skeleton_generation_targets)
             STATUS
             "WARNING: You need to install GNU Autogen to be able to produce new C++ sources from skeletons"
           )
-        return()
     endif()
     if(NOT CMAKE_GENERATOR STREQUAL "Unix Makefiles")
         message(
@@ -198,7 +197,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: DefineSkeletonGenerationTargetsIfPossible.cmake
-# X-Chewy-Version: 6.1
+# X-Chewy-Version: 6.2
 # X-Chewy-Description: Add targets to generate class header/implementation and unit-tests skeleton files
 # X-Chewy-AddonFile: TestCMakeLists.txt.in
 # X-Chewy-AddonFile: class.tpl.in

@@ -16,13 +16,14 @@ FindPoco.cmake 1.0 Find+Poco+libraries
 FindLibClang.cmake 2.0 Find+clang+C+API+library libclang_get_version.cpp
 PythonInstall.cmake 2.1 Helper+to+install+Python+3.x+scripts PythonSourceInstallTemplate.cmake.in
 FindLibURIParser.cmake 1.3 Find+uriparser+library+using+%60pkg-config%60
-DefineSkeletonGenerationTargetsIfPossible.cmake 6.1 Add+targets+to+generate+class+header%2Fimplementation+and+unit-tests+skeleton+files TestCMakeLists.txt.in class.tpl.in class_tester.tpl.in new_class_tester_post.cmake.in render_template.cmake.in
+DefineSkeletonGenerationTargetsIfPossible.cmake 6.2 Add+targets+to+generate+class+header%2Fimplementation+and+unit-tests+skeleton+files TestCMakeLists.txt.in class.tpl.in class_tester.tpl.in new_class_tester_post.cmake.in render_template.cmake.in
 TeamCityIntegration.cmake 1.1 Interact+w%2F+TeamCity+via+service+messages
 PythonMacros.cmake 1.5 Helper+to+install+Python+scripts PythonCompile.py
 FindXercesC.cmake 1.2 Find+Xerces-C+librarary+using+%60pkg-config%60
 AddPackage.cmake 3.13 Add+a+target+to+make+a+.deb+package CPackCommonPackageOptions.cmake.in CPackPackageConfig.cmake.in
 AddCompileTests.cmake 1.2 Check+if+source%28s%29+can+be+compiled+well+%28or+not%29 TeamCityIntegration.cmake compile_test.cmake.in
 FindTasn1.cmake 1.2 Find+Tasn1+librarary+using+%60pkg-config%60
+AddOpenTarget.cmake 1.0 Define+a+target+to+open+a+file%2FURI+in+the+user%27s+preferred+application
 FindACE.cmake 1.0 Find+ACE+library+%28and+components%29+using+%60pkg-config%60+if+available ace_get_version.cpp
 FindUnixODBC.cmake 1.0 Find+UnixODBC+librarary
 FindOpenLDAP.cmake 1.0 Find+OpenLDAP+libraries
@@ -30,6 +31,6 @@ GetDistribInfo.cmake 2.7 Get+a+distribution+codename
 FindExiv2.cmake 1.3 Find+Exiv2+library+using+%60pkg-config%60
 FindZooKeeperC.cmake 1.0 Find+Apache+ZooKeeper+C+API+libraries zookeeper_get_version.cc
 GuessBuildType.cmake 1.5 Guess+build+type+if+not+specified+explicitly
-DefineDoxyDocsTargetIfPossible.cmake 2.15 Define+%60make+doxygen%60+target+to+build+API+documentation+using+%60doxygen%60 Doxyfile.in DoxygenInstall.cmake.in DoxygenDefaults.cmake
+DefineDoxyDocsTargetIfPossible.cmake 2.16 Define+%60make+doxygen%60+target+to+build+API+documentation+using+%60doxygen%60 Doxyfile.in DoxygenInstall.cmake.in DoxygenDefaults.cmake
 FindOTL.cmake 1.0 Find+OTL+header otl_get_version.cc
 GetGNULibCVersion.cmake 1.0 Helper+to+get+GNU+libc+version glibc_get_version.c
