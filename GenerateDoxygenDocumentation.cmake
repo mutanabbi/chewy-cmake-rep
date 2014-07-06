@@ -129,7 +129,6 @@ function(generate_doxygen_documentation target)
       )
 
     # Get other defaults from generated file
-    message(STATUS "_GDD_BASE_DIR=${_GDD_BASE_DIR}")
     include("${_GDD_BASE_DIR}/DoxygenDefaults.cmake")
 
     # Prepare doxygen configuration file
@@ -149,7 +148,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GenerateDoxygenDocumentation.cmake
-# X-Chewy-Version: 1.0
+# X-Chewy-Version: 1.1
 # X-Chewy-Description: Add a target to generate doxygen documentation
 # X-Chewy-AddonFile: Doxyfile.in
 # X-Chewy-AddonFile: DoxygenDefaults.cmake
