@@ -40,6 +40,8 @@
 # (To distribute this file outside of this repository, substitute the full
 #  License text for the above reference.)
 
+include(CMakeParseArguments)
+
 if(NOT WIN32)
     find_program(
         XDG_OPEN_EXECUTABLE
@@ -109,5 +111,5 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddOpenTarget.cmake
-# X-Chewy-Version: 1.0
+# X-Chewy-Version: 1.1
 # X-Chewy-Description: Define a target to open a file/URI in the user's preferred application
