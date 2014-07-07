@@ -85,13 +85,15 @@ if(NOT DISTRIB_CODENAME)
     # Trying Windows
     if(WIN32)
 
-        set(DISTRIB_PKG_FMT "NSIS;WIX")
+        set(DISTRIB_PKG_FMT "WIX")
         if(MSVC)
             set(DISTRIB_ID "Win")
             if(CMAKE_CL_64)
                 set(DISTRIB_ARCH "64")
+                list(APPEND DISTRIB_PKG_FMT "NSIS64")
             else()
                 set(DISTRIB_ARCH "32")
+                list(APPEND DISTRIB_PKG_FMT "NSIS")
             endif()
         endif()
 
@@ -131,6 +133,7 @@ if(NOT DISTRIB_CODENAME)
     elseif(EXISTS /etc/redhat-release)
 
         file(STRINGS /etc/redhat-release DISTRIB_CODENAME)
+        string(REGEX REPLACE ".*\s+([0-9\.]+)\s+\(.*\)" "\\1" DISTRIB_VERSION "${DISTRIB_CODENAME}")
         string(REGEX REPLACE ".*\((.*)\)" "\\1" DISTRIB_CODENAME "${DISTRIB_CODENAME}")
         string(TOLOWER "${DISTRIB_CODENAME}" DISTRIB_CODENAME)
         # Set native packages format
@@ -190,5 +193,5 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GetDistribInfo.cmake
-# X-Chewy-Version: 2.7
+# X-Chewy-Version: 2.8
 # X-Chewy-Description: Get a distribution codename

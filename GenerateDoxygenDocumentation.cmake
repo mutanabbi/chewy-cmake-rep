@@ -84,7 +84,14 @@ function(generate_doxygen_documentation target)
         set(_gdd_CONFIG "${_GDD_BASE_DIR}/Doxyfile.in")
     endif()
     if(NOT _gdd_OUTPUT_CONFIG)
-        set(_gdd_OUTPUT_CONFIG "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile")
+        get_filename_component(_cfg_ext "${_gdd_CONFIG}" EXT)
+        if(_cfg_ext MATCHES "\\.in$")
+            get_filename_component(_cfg_name "${_gdd_CONFIG}" NAME)
+            string(REGEX REPLACE "\\.in$" "" _cfg_name "${_cfg_name}")
+        else()
+            get_filename_component(_cfg_name "${_gdd_CONFIG}" NAME)
+        endif()
+        set(_gdd_OUTPUT_CONFIG "${CMAKE_CURRENT_BINARY_DIR}/${_cfg_name}")
     endif()
     if(NOT _gdd_COMMENT)
         set(_gdd_COMMENT "Generate API documentation")
@@ -137,8 +144,8 @@ function(generate_doxygen_documentation target)
     # Add a new target
     add_custom_target(
         ${target}
-        COMMAND ${DOXYGEN_EXECUTABLE} "${CMAKE_BINARY_DIR}/Doxyfile"
-        DEPENDS "${CMAKE_BINARY_DIR}/Doxyfile"
+        COMMAND "${DOXYGEN_EXECUTABLE}" "${_gdd_OUTPUT_CONFIG}"
+        DEPENDS "${_gdd_CONFIG}" "${_gdd_OUTPUT_CONFIG}"
         COMMENT "${_gdd_COMMENT}"
       )
 
@@ -148,7 +155,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GenerateDoxygenDocumentation.cmake
-# X-Chewy-Version: 1.1
+# X-Chewy-Version: 1.2
 # X-Chewy-Description: Add a target to generate doxygen documentation
 # X-Chewy-AddonFile: Doxyfile.in
 # X-Chewy-AddonFile: DoxygenDefaults.cmake
