@@ -63,6 +63,10 @@ endmacro()
 
 # Try to find ACE component via `pkg-config`
 macro(_ace_find_component_via_pkg_config _ace_comp)
+    if(ACE_DEBUG)
+        message(STATUS "Trying to find ACE component ${_ace_comp} via pkg-config")
+    endif()
+
     string(TOUPPER "${_ace_comp}" _ace_comp_up)
 
     _ace_component_to_package(_pkg_module_name ${_ace_comp})
@@ -106,6 +110,10 @@ endmacro()
 
 # Try to find ACE component using CMake helpers
 macro(_ace_find_component_via_cmake _ace_comp)
+    if(ACE_DEBUG)
+        message(STATUS "Trying to find ACE component ${_ace_comp} via cmake")
+    endif()
+
     string(TOUPPER "${_ace_comp}" _ace_comp_up)
 
     # Try to find header first
@@ -156,6 +164,10 @@ macro(_ace_find_component _ace_comp)
         _ace_find_component_via_cmake(${_ace_comp})
     else()
         _ace_find_component_via_pkg_config(${_ace_comp})
+        string(TOUPPER "${_ace_comp}" _ace_comp_up)
+        if(ACE_${_ace_comp_up}_FOUND)
+            _ace_find_component_via_cmake(${_ace_comp})
+        endif()
     endif()
 endmacro()
 
@@ -167,6 +179,9 @@ if(NOT ACE_LIBRARIES)
     if(NOT ACE_FIND_COMPONENTS)
         # No! Just find ACE library...
         set(ACE_FIND_COMPONENTS "ace")
+    endif()
+    if(ACE_DEBUG)
+        message(STATUS "ACE_FIND_COMPONENTS=${ACE_FIND_COMPONENTS}")
     endif()
 
     # Look for components
@@ -215,6 +230,6 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: FindACE.cmake
-# X-Chewy-Version: 1.0
+# X-Chewy-Version: 1.1
 # X-Chewy-Description: Find ACE library (and components) using `pkg-config` if available
 # X-Chewy-AddonFile: ace_get_version.cpp
