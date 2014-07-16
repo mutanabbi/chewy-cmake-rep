@@ -66,7 +66,6 @@ macro(_try_check_centos _release_file)
     file(STRINGS ${_release_file} _release_string)
     # NOTE CentOS 6.0 has a word "Linux" in release string
     string(REGEX REPLACE "CentOS release ([0-9\\.]+) .*" "\\1" DISTRIB_VERSION "${_release_string}")
-    message(STATUS "DISTRIB_VERSION=${DISTRIB_VERSION}")
     # Set native packages format
     set(DISTRIB_PKG_FMT "RPM")
     # TODO Get more details
@@ -197,5 +196,5 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GetDistribInfo.cmake
-# X-Chewy-Version: 2.9
+# X-Chewy-Version: 2.10
 # X-Chewy-Description: Get a distribution codename
