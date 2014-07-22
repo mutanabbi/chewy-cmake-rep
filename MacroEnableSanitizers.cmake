@@ -23,11 +23,12 @@
 
 include(UseCompilerOption)
 
-macro(enable_sanitizers WITH_SANITIZERS)
-    if(WITH_SANITIZER)
+macro(enable_sanitizers)
+    set(_with_sanitizers ${ARGN})
+    if(_with_sanitizers)
         set(_asan_used FALSE)
         set(_tsan_used FALSE)
-        foreach(_san ${WITH_SANITIZER})
+        foreach(_san ${_with_sanitizers})
             string(TOUPPER "${_san}" WITH_SANITIZER_UP)
             if(_san STREQUAL thread)
                 if(_asan_used)
