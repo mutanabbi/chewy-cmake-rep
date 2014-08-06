@@ -165,7 +165,7 @@ macro(_ace_find_component _ace_comp)
     else()
         _ace_find_component_via_pkg_config(${_ace_comp})
         string(TOUPPER "${_ace_comp}" _ace_comp_up)
-        if(ACE_${_ace_comp_up}_FOUND)
+        if(NOT ACE_${_ace_comp_up}_FOUND)
             _ace_find_component_via_cmake(${_ace_comp})
         endif()
     endif()
@@ -230,6 +230,6 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: FindACE.cmake
-# X-Chewy-Version: 1.1
+# X-Chewy-Version: 1.2
 # X-Chewy-Description: Find ACE library (and components) using `pkg-config` if available
 # X-Chewy-AddonFile: ace_get_version.cpp
