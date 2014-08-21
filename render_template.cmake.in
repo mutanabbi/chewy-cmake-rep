@@ -128,9 +128,11 @@ execute_process(
   )
 
 if(NOT _result EQUAL "0")
-    message(FATAL_ERROR "Fail to generate files")
-    message(FATAL_ERROR "GNU Autogen output:\n${_out}")
-    message(FATAL_ERROR "GNU Autogen error output:\n${_err}")
+    message(
+        FATAL_ERROR "Fail to generate files!\n"
+            "GNU Autogen output:\n${_out}\n"
+            "GNU Autogen error output:\n${_err}\n"
+      )
 endif()
 
 set(_dst_dir "${_top_srcdir}/${_subdir}")
