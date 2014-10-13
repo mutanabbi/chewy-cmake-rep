@@ -71,6 +71,26 @@ macro(_try_check_centos _release_file)
     # TODO Get more details
 endmacro()
 
+macro(_try_check_redhat _release_string)
+    if(_release_string MATCHES "Red Hat Enterprise Linux Server")
+        set(DISTRIB_ID "RHEL")
+        string(
+            REGEX REPLACE
+                "Red Hat Enterprise Linux Server release ([0-9\\.]+) .*" "\\1"
+            DISTRIB_VERSION
+            "${_release_string}"
+          )
+        string(
+            REGEX REPLACE
+                "Red Hat Enterprise Linux Server release [0-9\\.]+ \((.*)\)" "\\1"
+            DISTRIB_CODENAME
+            "${_release_string}"
+          )
+    # Set native packages format
+    set(DISTRIB_PKG_FMT "RPM")
+    endif()
+endmacro()
+
 #
 # Ok, lets collect come info about this distro...
 #
@@ -140,6 +160,8 @@ if(NOT DISTRIB_CODENAME)
         file(STRINGS /etc/redhat-release _release_string)
         if(_release_string MATCHES "CentOS")
             _try_check_centos(/etc/redhat-release)
+        elseif(_release_string MATCHES "Red Hat")
+            _try_check_redhat(${_release_string})
         endif()
         # TODO Detect a real RH releases
 
@@ -196,5 +218,5 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GetDistribInfo.cmake
-# X-Chewy-Version: 2.10
+# X-Chewy-Version: 2.11
 # X-Chewy-Description: Get a distribution codename
