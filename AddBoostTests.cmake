@@ -130,14 +130,14 @@ function(add_boost_tests)
                 if(line MATCHES "BOOST_AUTO_TEST_CASE\\([A-Za-z0-9_]+\\)")
                     string(
                         REGEX REPLACE
-                            "BOOST_AUTO_TEST_CASE\\(([A-Za-z0-9_]+)\\)" "\\1"
+                            "BOOST_AUTO_TEST_CASE\\(([A-Za-z0-9_]+)\\).*" "\\1"
                         found_test
                         "${line}"
                       )
                 elseif(line MATCHES "BOOST_FIXTURE_TEST_CASE\\([A-Za-z_0-9]+, [A-Za-z_0-9]+\\)")
                     string(
                         REGEX REPLACE
-                            "BOOST_FIXTURE_TEST_CASE\\(([A-Za-z_0-9]+), [A-Za-z_0-9]+\\)"
+                            "BOOST_FIXTURE_TEST_CASE\\(([A-Za-z_0-9]+), [A-Za-z_0-9]+\\).*"
                             "\\1"
                         found_test
                         "${line}"
@@ -145,7 +145,7 @@ function(add_boost_tests)
                 elseif(line MATCHES "BOOST_FIXTURE_TEST_SUITE\\([A-Za-z_0-9]+, [A-Za-z_0-9]+\\)")
                     string(
                         REGEX REPLACE
-                            "BOOST_FIXTURE_TEST_SUITE\\(([A-Za-z_0-9]+), [A-Za-z_0-9]+\\)"
+                            "BOOST_FIXTURE_TEST_SUITE\\(([A-Za-z_0-9]+), [A-Za-z_0-9]+\\).*"
                             "\\1"
                         current_suite
                         "${line}"
@@ -153,7 +153,7 @@ function(add_boost_tests)
                 elseif(line MATCHES "BOOST_AUTO_TEST_SUITE\\([A-Za-z_0-9]+\\)")
                     string(
                         REGEX REPLACE
-                            "BOOST_AUTO_TEST_SUITE\\(([A-Za-z0-9_]+)\\)" "\\1"
+                            "BOOST_AUTO_TEST_SUITE\\(([A-Za-z0-9_]+)\\).*" "\\1"
                         current_suite
                         "${line}"
                       )
@@ -185,6 +185,6 @@ endfunction(add_boost_tests)
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddBoostTests.cmake
-# X-Chewy-Version: 4.3
+# X-Chewy-Version: 4.4
 # X-Chewy-Description: Integrate Boost unit tests into CMake infrastructure
 # X-Chewy-AddonFile: unit_tests_main_skeleton.cc.in
