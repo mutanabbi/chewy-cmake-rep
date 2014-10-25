@@ -22,20 +22,26 @@ set(_WED_BASE_DIR "${CMAKE_CURRENT_LIST_DIR}")
 
 function(write_export_dependencies)
     set(options)
-    set(one_value_args TARGET)
+    set(one_value_args TARGET FILE_PREFIX)
     set(multi_value_args DEPENDENCIES)
     cmake_parse_arguments(_WED "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
+
+    if(NOT _WED_FILE_PREFIX)
+        set(_WED_FILE_PREFIX "${CMAKE_PROJECT_NAME}")
+    endif()
 
     # Check if TARGET given
     if(_WED_TARGET)
         get_target_property(_wed_export_filename_part ${_WED_TARGET} EXPORT_NAME)
+    else()
+        message(FATAL_ERROR "TARGET parameter is mandatory when call write_export_dependencies()")
     endif()
 
     # Produce dependencies file only if there some dependencies provided
     if(_WED_DEPENDENCIES)
         configure_file(
             "${_WED_BASE_DIR}/export-dependencies.cmake.in"
-            "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}-${_wed_export_filename_part}-dependencies.cmake"
+            "${CMAKE_CURRENT_BINARY_DIR}/${_WED_FILE_PREFIX}-${_wed_export_filename_part}-dependencies.cmake"
             @ONLY
           )
     else()
@@ -45,6 +51,6 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: WriteExportDependencies.cmake
-# X-Chewy-Version: 1.0
+# X-Chewy-Version: 1.1
 # X-Chewy-Description: Write an export dependencies file
 # X-Chewy-AddonFile: export-dependencies.cmake.in
