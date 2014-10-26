@@ -51,6 +51,6 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: WriteExportDependencies.cmake
-# X-Chewy-Version: 1.1
+# X-Chewy-Version: 1.2
 # X-Chewy-Description: Write an export dependencies file
 # X-Chewy-AddonFile: export-dependencies.cmake.in

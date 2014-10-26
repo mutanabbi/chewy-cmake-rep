@@ -4,7 +4,7 @@ list(INSERT _WDE_IMPORT_PREFIX_STACK 0 "${_IMPORT_PREFIX}")
 
 # Include (and import) dependencies
 foreach(_module @_WED_DEPENDENCIES@)
-    include("${CMAKE_CURRENT_LIST_DIR}/${CMAKE_PROJECT_NAME}-${_module}.cmake" OPTIONAL)
+    include("${CMAKE_CURRENT_LIST_DIR}/@_WED_FILE_PREFIX@-${_module}.cmake" OPTIONAL)
 endforeach()
 
 # Restore _IMPORT_PREFIX from a "stack"
