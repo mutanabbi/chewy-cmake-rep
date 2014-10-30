@@ -21,13 +21,17 @@ include(CMakeParseArguments)
 set(_WED_BASE_DIR "${CMAKE_CURRENT_LIST_DIR}")
 
 function(write_export_dependencies)
-    set(options)
-    set(one_value_args TARGET FILE_PREFIX)
+    set(options APPEND)
+    set(one_value_args TARGET FILE_PREFIX DEPENDED_FILE_PREFIX)
     set(multi_value_args DEPENDENCIES)
     cmake_parse_arguments(_WED "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
     if(NOT _WED_FILE_PREFIX)
         set(_WED_FILE_PREFIX "${CMAKE_PROJECT_NAME}")
+    endif()
+
+    if(NOT _WED_DEPENDED_FILE_PREFIX)
+        set(_WED_DEPENDED_FILE_PREFIX "${_WED_FILE_PREFIX}")
     endif()
 
     # Check if TARGET given
@@ -38,12 +42,20 @@ function(write_export_dependencies)
     endif()
 
     # Produce dependencies file only if there some dependencies provided
+    set(_wed_input_file "${_WED_BASE_DIR}/export-dependencies.cmake.in")
+    set(
+        _wed_output_file
+        "${CMAKE_CURRENT_BINARY_DIR}/${_WED_FILE_PREFIX}-${_wed_export_filename_part}-dependencies.cmake"
+      )
     if(_WED_DEPENDENCIES)
-        configure_file(
-            "${_WED_BASE_DIR}/export-dependencies.cmake.in"
-            "${CMAKE_CURRENT_BINARY_DIR}/${_WED_FILE_PREFIX}-${_wed_export_filename_part}-dependencies.cmake"
-            @ONLY
-          )
+        if(NOT _WED_APPEND OR (NOT EXISTS "${_wed_input_file}" AND _WED_APPEND))
+            configure_file("${_wed_input_file}" "${_wed_output_file}" @ONLY)
+        else()
+            configure_file("${_wed_input_file}" "${_wed_output_file}.tmp" @ONLY)
+            file(READ "${_wed_output_file}.tmp" _wed_generated_content)
+            file(APPEND "${_wed_output_file}" "${_wed_generated_content}")
+            file(REMOVE "${_wed_output_file}.tmp")
+        endif()
     else()
         message(FATAL_ERROR "DEPENDENCIES parameter is mandatory when call write_export_dependencies()")
     endif()
@@ -51,6 +63,6 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: WriteExportDependencies.cmake
-# X-Chewy-Version: 1.2
+# X-Chewy-Version: 1.3
 # X-Chewy-Description: Write an export dependencies file
 # X-Chewy-AddonFile: export-dependencies.cmake.in
