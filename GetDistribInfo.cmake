@@ -65,7 +65,7 @@ macro(_try_check_centos _release_file)
     set(DISTRIB_ID "CentOS")
     file(STRINGS ${_release_file} _release_string)
     # NOTE CentOS 6.0 has a word "Linux" in release string
-    string(REGEX REPLACE "CentOS release ([0-9\\.]+) .*" "\\1" DISTRIB_VERSION "${_release_string}")
+    string(REGEX REPLACE "CentOS (Linux )?release ([0-9\\.]+) .*" "\\2" DISTRIB_VERSION "${_release_string}")
     # Set native packages format
     set(DISTRIB_PKG_FMT "RPM")
     # TODO Get more details
@@ -127,24 +127,44 @@ if(NOT DISTRIB_CODENAME)
             endif()
         endif()
 
-    # Trying LSB conformant distros (like Ubuntu. What else?)
-    elseif(EXISTS /etc/lsb-release)
+    # Trying LSB conformant distros like Ubuntu, RHEL or CentOS w/
+    # corresponding package installed. What else?
+    elseif(EXISTS /usr/bin/lsb_release)
 
         # Get DISTRIB_ID
-        file(STRINGS /etc/lsb-release DISTRIB_ID REGEX "DISTRIB_ID=")
-        string(REGEX REPLACE "DISTRIB_ID=\"?(.*)\"?" "\\1" DISTRIB_ID "${DISTRIB_ID}")
+        execute_process(
+            COMMAND /usr/bin/lsb_release -i
+            OUTPUT_VARIABLE DISTRIB_ID
+            ERROR_QUIET
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+          )
+        string(REGEX REPLACE ".+:[\t ]+([A-Za-z]+).*" "\\1" DISTRIB_ID "${DISTRIB_ID}")
         # Get DISTRIB_CODENAME
-        file(STRINGS /etc/lsb-release DISTRIB_CODENAME REGEX "DISTRIB_CODENAME=")
-        string(REGEX REPLACE "DISTRIB_CODENAME=\"?(.*)\"?" "\\1" DISTRIB_CODENAME "${DISTRIB_CODENAME}")
+        execute_process(
+            COMMAND /usr/bin/lsb_release -c
+            OUTPUT_VARIABLE DISTRIB_CODENAME
+            ERROR_QUIET
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+          )
+        string(REGEX REPLACE ".+:[\t ]+(.+)" "\\1" DISTRIB_CODENAME "${DISTRIB_CODENAME}")
         # Get DISTRIB_VERSION
-        file(STRINGS /etc/lsb-release DISTRIB_VERSION REGEX "DISTRIB_RELEASE=")
-        string(REGEX REPLACE "DISTRIB_RELEASE=\"?(.*)\"?" "\\1" DISTRIB_VERSION "${DISTRIB_VERSION}")
+        execute_process(
+            COMMAND /usr/bin/lsb_release -r
+            OUTPUT_VARIABLE DISTRIB_VERSION
+            ERROR_QUIET
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+          )
+        string(REGEX REPLACE ".+:[\t ]+(.+).*" "\\1" DISTRIB_VERSION "${DISTRIB_VERSION}")
         # Set native packages format
-        set(DISTRIB_PKG_FMT "DEB")
-        # Try tune DISTRIB_ARCH
-        if(DISTRIB_ARCH STREQUAL "x86_64")
-            # 64-bit packets usualy named amd64 here...
-            set(DISTRIB_ARCH "amd64")
+        if(DISTRIB_ID STREQUAL "CentOS" OR DISTRIB_ID STREQUAL "RedHat")
+            set(DISTRIB_PKG_FMT "RPM")
+        elseif(DISTRIB_ID STREQUAL "Ubuntu")
+            set(DISTRIB_PKG_FMT "DEB")
+            # Try tune DISTRIB_ARCH
+            if(DISTRIB_ARCH STREQUAL "x86_64")
+                # 64-bit packets usualy named amd64 here...
+                set(DISTRIB_ARCH "amd64")
+            endif()
         endif()
 
     # Trying CentOS distros
@@ -169,7 +189,7 @@ if(NOT DISTRIB_CODENAME)
 
         set(DISTRIB_ID "gentoo")
         set(DISTRIB_PKG_FMT "")
-        # Try tune DISTRIB_ARCH
+        # Try to tune DISTRIB_ARCH
         if(DISTRIB_ARCH STREQUAL "x86_64")
             # 64-bit packets usualy named amd64 here...
             set(DISTRIB_ARCH "amd64")
@@ -179,7 +199,7 @@ if(NOT DISTRIB_CODENAME)
     else()
         # Try generic way
         if(UNAME_EXECUTABLE)
-            # Try get kernel name
+            # Try to get kernel name
             execute_process(
                 COMMAND "${UNAME_EXECUTABLE}" -o
                 OUTPUT_VARIABLE DISTRIB_ID
@@ -193,7 +213,7 @@ if(NOT DISTRIB_CODENAME)
                 ERROR_QUIET
               )
         endif()
-        # Try tune it
+        # Try to tune it
         if(DISTRIB_ID STREQUAL "Solaris")
             if(EXISTS /etc/release)
                 file(STRINGS /etc/release DISTRIB_CODENAME REGEX "SmartOS")
@@ -213,10 +233,10 @@ if(NOT DISTRIB_CODENAME)
 
     _make_distrib_file_part()
 
-    message(STATUS "Target distribution: ${DISTRIB_ID} ${DISTRIB_VERSION} ${DISTRIB_CODENAME} [${DISTRIB_FILE_PART}]")
+    message(STATUS "Target distribution: ${DISTRIB_ID} ${DISTRIB_VERSION} [${DISTRIB_FILE_PART}]")
 endif()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GetDistribInfo.cmake
-# X-Chewy-Version: 2.11
+# X-Chewy-Version: 2.12
 # X-Chewy-Description: Get a distribution codename
