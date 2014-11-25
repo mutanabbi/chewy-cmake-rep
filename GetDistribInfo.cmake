@@ -8,6 +8,7 @@
 #   DISTRIB_CODENAME    -- a distribution code name (like "quantal" or "trusty" for Ubuntu)
 #   DISTRIB_VERSION     -- a version string of the dictribution
 #   DISTRIB_PKG_FMT     -- native package manager's format suitable to use w/ CPACK_GENERATOR
+#   DISTRIB_SRC_PKG_FMT -- native format to create tarballs
 #   DISTRIB_FILE_PART   -- a string suitable to be a filename part to identify a target system
 #
 # NOTE DISTRIB_PKG_FMT will not contain "generic" archive formats!
@@ -68,6 +69,7 @@ macro(_try_check_centos _release_file)
     string(REGEX REPLACE "CentOS (Linux )?release ([0-9\\.]+) .*" "\\2" DISTRIB_VERSION "${_release_string}")
     # Set native packages format
     set(DISTRIB_PKG_FMT "RPM")
+    set(DISTRIB_SRC_PKG_FMT "TBZ2")
     # TODO Get more details
 endmacro()
 
@@ -88,6 +90,7 @@ macro(_try_check_redhat _release_string)
           )
     # Set native packages format
     set(DISTRIB_PKG_FMT "RPM")
+    set(DISTRIB_SRC_PKG_FMT "TBZ2")
     endif()
 endmacro()
 
@@ -116,6 +119,7 @@ if(NOT DISTRIB_CODENAME)
     if(WIN32)
 
         set(DISTRIB_PKG_FMT "WIX")
+        set(DISTRIB_SRC_PKG_FMT "ZIP")
         if(MSVC)
             set(DISTRIB_ID "Win")
             if(CMAKE_CL_64)
@@ -156,6 +160,7 @@ if(NOT DISTRIB_CODENAME)
           )
         string(REGEX REPLACE ".+:[\t ]+(.+).*" "\\1" DISTRIB_VERSION "${DISTRIB_VERSION}")
         # Set native packages format
+        set(DISTRIB_SRC_PKG_FMT "TBZ2")
         if(DISTRIB_ID STREQUAL "CentOS" OR DISTRIB_ID STREQUAL "RedHat")
             set(DISTRIB_PKG_FMT "RPM")
         elseif(DISTRIB_ID STREQUAL "Ubuntu")
@@ -188,7 +193,8 @@ if(NOT DISTRIB_CODENAME)
     elseif(EXISTS /etc/gentoo-release)
 
         set(DISTRIB_ID "gentoo")
-        set(DISTRIB_PKG_FMT "")
+        set(DISTRIB_PKG_FMT "TBZ2")
+        set(DISTRIB_SRC_PKG_FMT "TBZ2")
         # Try to tune DISTRIB_ARCH
         if(DISTRIB_ARCH STREQUAL "x86_64")
             # 64-bit packets usualy named amd64 here...
@@ -238,5 +244,5 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GetDistribInfo.cmake
-# X-Chewy-Version: 2.12
+# X-Chewy-Version: 2.13
 # X-Chewy-Description: Get a distribution codename
