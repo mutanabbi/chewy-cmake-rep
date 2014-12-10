@@ -70,6 +70,7 @@ macro(_try_check_centos _release_file)
     # Set native packages format
     set(DISTRIB_PKG_FMT "RPM")
     set(DISTRIB_SRC_PKG_FMT "TBZ2")
+    set(DISTRIB_HAS_PACKAGE_MANAGER TRUE)
     # TODO Get more details
 endmacro()
 
@@ -91,6 +92,7 @@ macro(_try_check_redhat _release_string)
     # Set native packages format
     set(DISTRIB_PKG_FMT "RPM")
     set(DISTRIB_SRC_PKG_FMT "TBZ2")
+    set(DISTRIB_HAS_PACKAGE_MANAGER TRUE)
     endif()
 endmacro()
 
@@ -163,8 +165,10 @@ if(NOT DISTRIB_CODENAME)
         set(DISTRIB_SRC_PKG_FMT "TBZ2")
         if(DISTRIB_ID STREQUAL "CentOS" OR DISTRIB_ID STREQUAL "RedHat")
             set(DISTRIB_PKG_FMT "RPM")
+            set(DISTRIB_HAS_PACKAGE_MANAGER TRUE)
         elseif(DISTRIB_ID STREQUAL "Ubuntu")
             set(DISTRIB_PKG_FMT "DEB")
+            set(DISTRIB_HAS_PACKAGE_MANAGER TRUE)
             # Try tune DISTRIB_ARCH
             if(DISTRIB_ARCH STREQUAL "x86_64")
                 # 64-bit packets usualy named amd64 here...
@@ -244,5 +248,5 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GetDistribInfo.cmake
-# X-Chewy-Version: 2.13
+# X-Chewy-Version: 2.14
 # X-Chewy-Description: Get a distribution codename

@@ -28,7 +28,7 @@ FindACE.cmake 1.2 Find+ACE+library+%28and+components%29+using+%60pkg-config%60+i
 GenerateDoxygenDocumentation.cmake 1.2 Add+a+target+to+generate+doxygen+documentation Doxyfile.in DoxygenDefaults.cmake
 FindUnixODBC.cmake 1.0 Find+UnixODBC+librarary
 FindOpenLDAP.cmake 1.0 Find+OpenLDAP+libraries
-GetDistribInfo.cmake 2.13 Get+a+distribution+codename
+GetDistribInfo.cmake 2.14 Get+a+distribution+codename
 FindExiv2.cmake 1.3 Find+Exiv2+library+using+%60pkg-config%60
 FindZooKeeperC.cmake 1.0 Find+Apache+ZooKeeper+C+API+libraries zookeeper_get_version.cc
 GuessBuildType.cmake 1.6 Guess+build+type+if+not+specified+explicitly
