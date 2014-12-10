@@ -30,6 +30,7 @@ macro(enable_sanitizers)
         set(_tsan_used FALSE)
         foreach(_san ${_with_sanitizers})
             string(TOUPPER "${_san}" WITH_SANITIZER_UP)
+            string(REPLACE "-" "_" WITH_SANITIZER_UP "${WITH_SANITIZER_UP}")
             if(_san STREQUAL thread)
                 if(_asan_used)
                     message(FATAL_ERROR "Thread and address sanitizers couldn't be used both at the same time")
@@ -55,6 +56,6 @@ endmacro()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: MacroEnableSanitizers.cmake
-# X-Chewy-Version: 1.0
+# X-Chewy-Version: 1.1
 # X-Chewy-Description: Macro to expand a list of sanitizers to compiler options
 # X-Chewy-AddonFile: UseCompilerOption.cmake
