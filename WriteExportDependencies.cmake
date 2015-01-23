@@ -4,7 +4,7 @@
 #
 
 #=============================================================================
-# Copyright 2014 by Alex Turbov <i.zaufi@gmail.com>
+# Copyright 2014-2015 by Alex Turbov <i.zaufi@gmail.com>
 #
 # Distributed under the OSI-approved BSD License (the "License");
 # see accompanying file LICENSE for details.
@@ -22,7 +22,7 @@ set(_WED_BASE_DIR "${CMAKE_CURRENT_LIST_DIR}")
 
 function(write_export_dependencies)
     set(options APPEND)
-    set(one_value_args TARGET FILE_PREFIX DEPENDED_FILE_PREFIX)
+    set(one_value_args TARGET FILE_PREFIX DEPENDED_FILE_PREFIX EXPORT_OVERRIDE)
     set(multi_value_args DEPENDENCIES)
     cmake_parse_arguments(_WED "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
@@ -34,11 +34,13 @@ function(write_export_dependencies)
         set(_WED_DEPENDED_FILE_PREFIX "${_WED_FILE_PREFIX}")
     endif()
 
-    # Check if TARGET given
-    if(_WED_TARGET)
+    # Check if EXPORT_NAME override is used
+    if(_WED_EXPORT_OVERRIDE)
+        set(_wed_export_filename_part ${_WED_EXPORT_OVERRIDE})
+    elseif(_WED_TARGET)                                     # Otherwise, check if TARGET given
         get_target_property(_wed_export_filename_part ${_WED_TARGET} EXPORT_NAME)
     else()
-        message(FATAL_ERROR "TARGET parameter is mandatory when call write_export_dependencies()")
+        message(FATAL_ERROR "TARGET or EXPORT_OVERRIDE parameter is mandatory when call write_export_dependencies()")
     endif()
 
     # Produce dependencies file only if there some dependencies provided
@@ -63,6 +65,6 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: WriteExportDependencies.cmake
-# X-Chewy-Version: 1.3
+# X-Chewy-Version: 1.4
 # X-Chewy-Description: Write an export dependencies file
 # X-Chewy-AddonFile: export-dependencies.cmake.in
