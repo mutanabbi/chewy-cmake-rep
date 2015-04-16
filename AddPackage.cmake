@@ -28,7 +28,6 @@ function(set_common_package_options)
     set(
         one_value_args
             ALL_PACKAGES_TARGET_NAME
-            BUILD_FLAVOUR
             DISTRIB_CODENAME
             HOMEPAGE
             LICENSE_FILE
@@ -65,9 +64,6 @@ function(set_common_package_options)
     # Other options are optional...
     if(NOT set_common_package_options_ALL_PACKAGES_TARGET_NAME)
         set(set_common_package_options_ALL_PACKAGES_TARGET_NAME "native-packages")
-    endif()
-    if(NOT set_common_package_options_BUILD_FLAVOUR)
-        set(set_common_package_options_BUILD_FLAVOUR "")
     endif()
     if(NOT set_common_package_options_README_FILE)
         if(EXISTS "${CMAKE_SOURCE_DIR}/README")
@@ -152,6 +148,7 @@ function(add_package)
             PRE_BUILD
             PRE_DEPENDS
             PRIORITY
+            PROVIDES
             RECOMMENDS
             REPLACES
             REQUIRES
@@ -211,6 +208,9 @@ function(add_package)
     endif()
     if(add_package_PRE_DEPENDS)
         string(REPLACE ";" ", " add_package_PRE_DEPENDS "${add_package_PRE_DEPENDS}")
+    endif()
+    if(add_package_PROVIDES)
+        string(REPLACE ";" ", " add_package_PROVIDES "${add_package_PROVIDES}")
     endif()
     if(add_package_RECOMMENDS)
         string(REPLACE ";" ", " add_package_RECOMMENDS "${add_package_RECOMMENDS}")
@@ -284,7 +284,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddPackage.cmake
-# X-Chewy-Version: 4.1
+# X-Chewy-Version: 4.2
 # X-Chewy-Description: Add a target to make a .deb/.rpm package
 # X-Chewy-AddonFile: CPackCommonPackageOptions.cmake.in
 # X-Chewy-AddonFile: CPackPackageConfig.cmake.in

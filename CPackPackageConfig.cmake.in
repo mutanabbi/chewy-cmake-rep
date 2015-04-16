@@ -11,7 +11,7 @@ set(CPACK_CMAKE_GENERATOR "${CMAKE_GENERATOR}")
 
 set(CPACK_INSTALL_CMAKE_PROJECTS "${CMAKE_BINARY_DIR};${add_package_NAME};${add_package_NAME};/")
 
-set(CPACK_PACKAGE_NAME ${add_package_NAME}${CPACK_BUILD_FLAVOUR})
+set(CPACK_PACKAGE_NAME ${add_package_NAME})
 set(CPACK_PACKAGE_VERSION ${add_package_VERSION})
 set(CPACK_PACKAGE_DESCRIPTION "${add_package_DESCRIPTION}")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${add_package_SUMMARY}")
@@ -22,7 +22,7 @@ if(CPACK_GENERATOR STREQUAL "DEB")
     # Define package filename according Debian rules
     set(
         CPACK_PACKAGE_FILE_NAME
-        "${add_package_NAME}${CPACK_BUILD_FLAVOUR}_${add_package_VERSION}_${add_package_ARCHITECTURE}"
+        "${add_package_NAME}_${add_package_VERSION}_${add_package_ARCHITECTURE}"
       )
     set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "${add_package_ARCHITECTURE}")
     set(CPACK_DEBIAN_PACKAGE_BREAKS "${add_package_BREAKS}")
@@ -44,11 +44,11 @@ elseif(CPACK_GENERATOR STREQUAL "RPM")
     # Define package filename according RHEL rules
     set(
         CPACK_PACKAGE_FILE_NAME
-        "${add_package_NAME}${CPACK_BUILD_FLAVOUR}-${add_package_VERSION}.${add_package_ARCHITECTURE}"
+        "${add_package_NAME}-${add_package_VERSION}.${add_package_ARCHITECTURE}"
       )
     set(CPACK_RPM_PACKAGE_ARCHITECTURE "${add_package_ARCHITECTURE}")
     set(CPACK_RPM_PACKAGE_CONFLICTS "${add_package_CONFLICTS}")
-    set(CPACK_RPM_PACKAGE_REQUIRES "${add_package_REQUIRES}")
+    set(CPACK_RPM_PACKAGE_REQUIRES "${add_package_DEPENDS}")
     set(CPACK_RPM_PACKAGE_SUGGESTS "${add_package_SUGGESTS}")
     set(CPACK_RPM_PACKAGE_PROVIDES "${add_package_PROVIDES}")
     set(CPACK_RPM_PACKAGE_OBSOLETES "${add_package_OBSOLETES}")
