@@ -133,8 +133,13 @@ function(add_package)
             CHANGELOG_FILE
             DESCRIPTION
             NAME
+            POST_INSTALL_SCRIPT_FILE
+            POST_UNINSTALL_SCRIPT_FILE
+            PRE_INSTALL_SCRIPT_FILE
+            PRE_UNINSTALL_SCRIPT_FILE
             SECTION
             SUMMARY
+            USER_FILELIST
             VERSION
       )
     set(
@@ -144,6 +149,7 @@ function(add_package)
             CONTROL_FILES
             DEPENDS
             ENHANCES
+            EXCLUDE_FROM_AUTO_FILELIST
             OBSOLETES
             PRE_BUILD
             PRE_DEPENDS
@@ -190,7 +196,7 @@ function(add_package)
     endif()
     # various dependency lists
     # NOTE Form a comma separated list of dependencies from a cmake's list
-    # as required by Debian control file
+    # as required by Debian/RPM control/spec file
     if(add_package_BREAKS)
         string(REPLACE ";" ", " add_package_BREAKS "${add_package_BREAKS}")
     endif()
@@ -284,7 +290,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddPackage.cmake
-# X-Chewy-Version: 4.2
+# X-Chewy-Version: 4.4
 # X-Chewy-Description: Add a target to make a .deb/.rpm package
 # X-Chewy-AddonFile: CPackCommonPackageOptions.cmake.in
 # X-Chewy-AddonFile: CPackPackageConfig.cmake.in
