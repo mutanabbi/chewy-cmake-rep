@@ -63,7 +63,7 @@ endif()
 # Try to find `dia` as well
 find_program(
     DOXYGEN_DIA_EXECUTABLE
-    NAMES mscgen
+    NAMES dia
     DOC "Diagram/flowchart creation program (https://wiki.gnome.org/Apps/Dia)"
   )
 if(NOT DOXYGEN_DIA_EXECUTABLE)
@@ -155,7 +155,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GenerateDoxygenDocumentation.cmake
-# X-Chewy-Version: 1.2
+# X-Chewy-Version: 1.3
 # X-Chewy-Description: Add a target to generate doxygen documentation
 # X-Chewy-AddonFile: Doxyfile.in
 # X-Chewy-AddonFile: DoxygenDefaults.cmake
