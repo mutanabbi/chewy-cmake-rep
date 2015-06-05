@@ -139,7 +139,6 @@ function(add_package)
             PRE_UNINSTALL_SCRIPT_FILE
             SECTION
             SUMMARY
-            USER_FILELIST
             VERSION
       )
     set(
@@ -159,6 +158,7 @@ function(add_package)
             REPLACES
             REQUIRES
             SUGGESTS
+            USER_FILELIST
       )
     cmake_parse_arguments(add_package "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
@@ -290,7 +290,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddPackage.cmake
-# X-Chewy-Version: 4.4
+# X-Chewy-Version: 4.5
 # X-Chewy-Description: Add a target to make a .deb/.rpm package
 # X-Chewy-AddonFile: CPackCommonPackageOptions.cmake.in
 # X-Chewy-AddonFile: CPackPackageConfig.cmake.in

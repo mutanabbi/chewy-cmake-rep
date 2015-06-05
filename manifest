@@ -20,7 +20,7 @@ DefineSkeletonGenerationTargetsIfPossible.cmake 6.5 Add+targets+to+generate+clas
 TeamCityIntegration.cmake 1.1 Interact+w%2F+TeamCity+via+service+messages
 PythonMacros.cmake 1.5 Helper+to+install+Python+scripts PythonCompile.py
 FindXercesC.cmake 1.2 Find+Xerces-C+librarary+using+%60pkg-config%60
-AddPackage.cmake 4.4 Add+a+target+to+make+a+.deb%2F.rpm+package CPackCommonPackageOptions.cmake.in CPackPackageConfig.cmake.in
+AddPackage.cmake 4.5 Add+a+target+to+make+a+.deb%2F.rpm+package CPackCommonPackageOptions.cmake.in CPackPackageConfig.cmake.in
 AddCompileTests.cmake 1.2 Check+if+source%28s%29+can+be+compiled+well+%28or+not%29 TeamCityIntegration.cmake compile_test.cmake.in
 FindTasn1.cmake 1.2 Find+Tasn1+librarary+using+%60pkg-config%60
 AddOpenTarget.cmake 1.1 Define+a+target+to+open+a+file%2FURI+in+the+user%27s+preferred+application
