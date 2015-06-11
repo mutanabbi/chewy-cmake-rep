@@ -38,7 +38,6 @@
 
 macro(set_unit_test_target_name OUTPUT_VARIABLE DEFAULT_VALUE)
     if(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
-        cmake_policy(SET CMP0002 OLD)
         set(${OUTPUT_VARIABLE} "unit_tests")
     else()
         set(${OUTPUT_VARIABLE} ${DEFAULT_VALUE})
