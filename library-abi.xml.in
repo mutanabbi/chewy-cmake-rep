@@ -1,0 +1,21 @@
+<version>
+    @add_abi_check_target_VERSION@
+</version>
+
+<include_paths>
+    @add_abi_check_target_INCLUDE_PATHS@
+</include_paths>
+
+<headers>
+    @add_abi_check_target_HEADERS@
+</headers>
+
+<libs>
+    @add_abi_check_target_LIBRARY@
+</libs>
+
+<gcc_options>
+    @add_abi_check_target_GCC_OPTIONS@
+</gcc_options>
+
+@add_abi_check_target_SKIP_HEADERS@

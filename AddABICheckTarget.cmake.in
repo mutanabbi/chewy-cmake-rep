@@ -1,0 +1,129 @@
+function(_join VALUES GLUE OUTPUT)
+  string(REPLACE ";" "${GLUE}" _tmp_str "${VALUES}")
+  set(${OUTPUT} "${_tmp_str}" PARENT_SCOPE)
+endfunction()
+
+set(ABI_COMPIANCE_CHECKER_EXECUABLE "@ABI_COMPIANCE_CHECKER_EXECUABLE@")
+set(JQ_EXECUABLE "@JQ_EXECUABLE@")
+
+set(add_abi_check_target_COMPILE_DB "@CMAKE_BINARY_DIR@/compile_commands.json")
+set(add_abi_check_target_COMPILER_VERSION "@CMAKE_CXX_COMPILER_VERSION@")
+set(add_abi_check_target_CURRENT_BINARY_DIR "@CMAKE_CURRENT_BINARY_DIR@")
+set(add_abi_check_target_CURRENT_SOURCE_DIR "@CMAKE_CURRENT_SOURCE_DIR@")
+set(add_abi_check_target_DEBUG "@add_abi_check_target_DEBUG@")
+set(add_abi_check_target_DIRECTORY "@add_abi_check_target_DIRECTORY@")
+set(add_abi_check_target_HEADERS "@add_abi_check_target_HEADERS@")
+set(add_abi_check_target_LIBRARY "@add_abi_check_target_LIBRARY@")
+set(add_abi_check_target_OUTPUT "@add_abi_check_target_OUTPUT@")
+set(add_abi_check_target_SKIP_HEADERS "@add_abi_check_target_SKIP_HEADERS@")
+set(add_abi_check_target_SOURCES "@add_abi_check_target_SOURCES@")
+set(add_abi_check_target_TARGET "@add_abi_check_target_TARGET@")
+set(add_abi_check_target_TARGET_PROPS_FILE "@add_abi_check_target_TARGET_PROPS_FILE@")
+set(add_abi_check_target_VERSION "@add_abi_check_target_VERSION@")
+set(add_abi_check_target_XML_TEMPLATE "@_ADD_ABI_CHECK_TARGET_XML_TEMPLATE@")
+
+include("${add_abi_check_target_TARGET_PROPS_FILE}")
+
+if(NOT add_abi_check_target_DIRECTORY)
+    if(add_abi_check_target_TARGET_FILE_DIR)
+        set(add_abi_check_target_DIRECTORY "${add_abi_check_target_TARGET_FILE_DIR}")
+    else()
+        set(add_abi_check_target_DIRECTORY "${add_abi_check_target_CURRENT_BINARY_DIR}")
+    endif()
+endif()
+if(add_abi_check_target_DEBUG)
+    message(STATUS "  [add_abi_check_target] Selected directory: ${add_abi_check_target_DIRECTORY}")
+endif()
+
+if(NOT add_abi_check_target_LIBRARY)
+    if(add_abi_check_target_TARGET_FILE_NAME)
+        set(add_abi_check_target_LIBRARY "${add_abi_check_target_CURRENT_BINARY_DIR}/${add_abi_check_target_TARGET_FILE_NAME}")
+    else()
+        set(add_abi_check_target_LIBRARY "${add_abi_check_target_CURRENT_BINARY_DIR}")
+    endif()
+endif()
+if(add_abi_check_target_DEBUG)
+    message(STATUS "  [add_abi_check_target] Going to analyse library: ${add_abi_check_target_LIBRARY}")
+endif()
+
+# Make sure compile DB exists
+if(NOT EXISTS "${add_abi_check_target_COMPILE_DB}")
+    message(
+        FATAL_ERROR "Compile DB file required for `add_abi_check_target()`. Use -DCMAKE_EXPORT_COMPILE_COMMANDS=ON when run `cmake`"
+        )
+endif()
+
+if(add_abi_check_target_DEBUG)
+    message(STATUS "  [add_abi_check_target] Considering sources for ${add_abi_check_target_TARGET} target")
+endif()
+
+# Collect compiler flags
+foreach(_source ${add_abi_check_target_SOURCES})
+    get_filename_component(_abs_path "${add_abi_check_target_CURRENT_SOURCE_DIR}/${_source}" ABSOLUTE)
+    if(add_abi_check_target_DEBUG)
+        message(STATUS "  [add_abi_check_target] ${_abs_path}")
+    endif()
+
+    if(add_abi_check_target_DEBUG)
+        message(STATUS "  [add_abi_check_target] JQ: .[] | select(.directory==\"${add_abi_check_target_DIRECTORY}\") | select(.file==\"${_abs_path}\") | .command")
+    endif()
+
+    execute_process(
+        COMMAND "${JQ_EXECUABLE}" -r
+            ".[] | select(.directory==\"${add_abi_check_target_DIRECTORY}\") | select(.file==\"${_abs_path}\") | .command"
+            "${add_abi_check_target_COMPILE_DB}"
+        OUTPUT_VARIABLE _compile_cmd
+        RESULT_VARIABLE _jq_ec
+        ERROR_QUIET
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+      )
+
+    if(NOT _jq_ec EQUAL 0)
+        if(add_abi_check_target_DEBUG)
+            message(STATUS "  [add_abi_check_target] `jq` exited with error code ${_jq_ec}")
+        endif()
+        continue()
+    endif()
+
+    if(add_abi_check_target_DEBUG)
+        message(STATUS "  [add_abi_check_target] COMPILE COMMAND: ${_compile_cmd}")
+    endif()
+
+    separate_arguments(_compile_cmd UNIX_COMMAND ${_compile_cmd})
+
+    # Classify options
+    set(_skip_next OFF)
+    foreach(_opt ${_compile_cmd})
+        if(add_abi_check_target_DEBUG)
+            message(STATUS "  [add_abi_check_target] ${_opt}")
+        endif()
+
+        if(_skip_next)
+            set(_skip_next OFF)
+        elseif(_opt MATCHES "-I(.*)")                   # Select #include path into a list of paths
+            list(APPEND _include_paths "${CMAKE_MATCH_1}")
+        elseif(_opt STREQUAL "-o" OR _opt STREQUAL "-c")
+            set(_skip_next ON)
+        elseif(_opt MATCHES "(-.*)")                    # Collect other compiler flags
+            list(APPEND _cxx_flags "${CMAKE_MATCH_1}")
+        endif()
+    endforeach()
+
+endforeach()
+
+list(REMOVE_DUPLICATES _cxx_flags)
+_join("${_cxx_flags}" "\n    " add_abi_check_target_GCC_OPTIONS)
+
+list(REMOVE_DUPLICATES _include_paths)
+_join("${_include_paths}" "\n    " add_abi_check_target_INCLUDE_PATHS)
+
+list(REMOVE_DUPLICATES add_abi_check_target_HEADERS)
+_join("${add_abi_check_target_HEADERS}" "\n    " add_abi_check_target_HEADERS)
+
+if(add_abi_check_target_SKIP_HEADERS)
+    list(REMOVE_DUPLICATES add_abi_check_target_SKIP_HEADERS)
+    _join("${add_abi_check_target_SKIP_HEADERS}" "\n    " add_abi_check_target_SKIP_HEADERS)
+    set(add_abi_check_target_SKIP_HEADERS "<skip_headers>\n    ${add_abi_check_target_SKIP_HEADERS}\n</skip_headers>")
+endif()
+
+configure_file("${add_abi_check_target_XML_TEMPLATE}" "${add_abi_check_target_OUTPUT}")

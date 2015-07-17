@@ -1,0 +1,42 @@
+include(@add_abi_check_target_COMMON_CMAKE_CODE@)
+
+get_filename_component(_lib "${add_abi_check_target_LIBRARY}" NAME_WE)
+
+execute_process(
+    COMMAND "${ABI_COMPIANCE_CHECKER_EXECUABLE}" -lib "${_lib}" -dump "${add_abi_check_target_OUTPUT}"
+    RESULT_VARIABLE _abi_ec
+    WORKING_DIRECTORY "${add_abi_check_target_DIRECTORY}"
+  )
+
+if(NOT _abi_ec EQUAL 0)
+    message(WARNING "ABI compliance checker has exited with non zero return code!")
+    set(_log "${add_abi_check_target_DIRECTORY}/logs/${_lib}/${add_abi_check_target_VERSION}/log.txt")
+    if(EXISTS "${_log}")
+        execute_process(COMMAND /bin/cat "${_log}")
+    endif()
+endif()
+
+# Update dump in the source tree:
+# 0) make sure `.abi` directory exists
+set(_tgt_dir "${add_abi_check_target_CURRENT_SOURCE_DIR}/.abi/${_lib}/gcc-${add_abi_check_target_COMPILER_VERSION}")
+if(NOT EXISTS "${_tgt_dir}")
+    file(MAKE_DIRECTORY "${_tgt_dir}")
+endif()
+
+set(_src_dir "${add_abi_check_target_CURRENT_BINARY_DIR}/abi_dumps/${_lib}")
+set(_src_tar "${_src_dir}/${_lib}_${add_abi_check_target_VERSION}.abi.tar.gz")
+if(EXISTS "${_src_tar}")
+    file(COPY "${_src_tar}" DESTINATION "${_tgt_dir}")
+else()
+    message(WARNING "Dump file not found: ${_src_tar}")
+    return()
+endif()
+
+# 1) Make a symlink to the latest dump
+if(EXISTS "${_src_dir}/${_lib}_latest.abi.tar.gz")
+    file(REMOVE "${_src_dir}/${_lib}_latest.abi.tar.gz")
+endif()
+execute_process(
+    COMMAND "${CMAKE_COMMAND}" -E create_symlink "${_lib}_${add_abi_check_target_VERSION}.abi.tar.gz" "${_lib}_latest.abi.tar.gz"
+    WORKING_DIRECTORY "${_tgt_dir}"
+  )
