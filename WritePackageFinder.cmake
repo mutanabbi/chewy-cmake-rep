@@ -21,7 +21,7 @@ include(CMakePackageConfigHelpers)
 
 function(write_package_finder)
     set(options)
-    set(one_value_args COMPONENT FILE_PREFIX INSTALL_DESTINATION)
+    set(one_value_args COMPATIBILITY COMPONENT FILE_PREFIX INSTALL_DESTINATION)
     set(multi_value_args PATH_VARS)
     cmake_parse_arguments(_write_package_finder "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
@@ -45,18 +45,22 @@ function(write_package_finder)
         endif()
     endif()
 
+    if(NOT _write_package_finder_COMPATIBILITY)
+        set(_write_package_finder_COMPATIBILITY SameMajorVersion)
+    endif()
+
     configure_package_config_file(
         ${_write_package_finder_FILE_PREFIX}-config.cmake.in
         ${CMAKE_CURRENT_BINARY_DIR}/${_write_package_finder_FILE_PREFIX}-config.cmake
         INSTALL_DESTINATION ${_write_package_finder_INSTALL_DESTINATION}
         PATH_VARS
             CMAKE_INSTALL_PREFIX
-            ${_write_package_finder_PATHS}
+            ${_write_package_finder_PATH_VARS}
       )
 
     write_basic_package_version_file(
         ${CMAKE_CURRENT_BINARY_DIR}/${_write_package_finder_FILE_PREFIX}-config-version.cmake
-        COMPATIBILITY SameMajorVersion
+        COMPATIBILITY ${_write_package_finder_COMPATIBILITY}
       )
 
     install(
@@ -70,5 +74,5 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: WritePackageFinder.cmake
-# X-Chewy-Version: 1.0
+# X-Chewy-Version: 1.1
 # X-Chewy-Description: Write a CMake finder module for package
