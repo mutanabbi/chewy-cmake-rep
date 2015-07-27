@@ -129,6 +129,11 @@ function(generate_doxygen_documentation target)
     if(NOT DEFINED DOXYGEN_GENERATE_LATEX)
         set(DOXYGEN_GENERATE_LATEX NO)
     endif()
+    if(NOT DEFINED DOXYGEN_WARN_FORMAT)
+        if("${CMAKE_BUILD_TOOL}" MATCHES "(msdev|devenv)")
+            set(DOXYGEN_WARN_FORMAT "\"$file($line) : $text \"")
+        endif()
+    endif()
     # Handle appendable options
     set(
         DOXYGEN_EXCLUDE_PATTERNS
@@ -155,7 +160,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GenerateDoxygenDocumentation.cmake
-# X-Chewy-Version: 1.5
+# X-Chewy-Version: 1.6
 # X-Chewy-Description: Add a target to generate doxygen documentation
 # X-Chewy-AddonFile: Doxyfile.in
 # X-Chewy-AddonFile: DoxygenDefaults.cmake
