@@ -18,7 +18,7 @@ endif()
 
 # Update dump in the source tree:
 # 0) make sure `.abi` directory exists
-set(_tgt_dir "${add_abi_check_target_CURRENT_SOURCE_DIR}/.abi/${_lib}/gcc-${add_abi_check_target_COMPILER_VERSION}")
+set(_tgt_dir "${add_abi_check_target_CURRENT_SOURCE_DIR}/.abi/${_lib}/gcc-${add_abi_check_target_COMPILER_VERSION}${add_abi_check_target_CXX_STANDARD}")
 if(NOT EXISTS "${_tgt_dir}")
     file(MAKE_DIRECTORY "${_tgt_dir}")
 endif()

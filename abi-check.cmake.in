@@ -2,7 +2,7 @@ include(@add_abi_check_target_COMMON_CMAKE_CODE@)
 
 get_filename_component(_lib "${add_abi_check_target_LIBRARY}" NAME_WE)
 
-set(_tgt_dir "${add_abi_check_target_CURRENT_SOURCE_DIR}/.abi/${_lib}/gcc-${add_abi_check_target_COMPILER_VERSION}")
+set(_tgt_dir "${add_abi_check_target_CURRENT_SOURCE_DIR}/.abi/${_lib}/gcc-${add_abi_check_target_COMPILER_VERSION}${add_abi_check_target_CXX_STANDARD}")
 set(_latest_tar "${_tgt_dir}/${_lib}_latest.abi.tar.gz")
 
 execute_process(
