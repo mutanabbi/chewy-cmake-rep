@@ -14,8 +14,9 @@ MakeJARExecutable.cmake 1.0 Function+to+set+an+entry+point+in+the+JAR+file%2C+so
 FindVMime.cmake 1.2 Find+VMime+librarary+using+%60pkg-config%60
 FindGlog.cmake 1.3 Find+Google+Log+library+using+%60pkg-config%60
 FindPoco.cmake 1.0 Find+Poco+libraries
+CheckForOldGNULibC.cmake 1.0 Check+if+GNU+libc+%3C+2.17%2C+so+librt+needs+for+RT+extensions
 FindLibClang.cmake 2.0 Find+clang+C+API+library libclang_get_version.cpp
-AddABICheckTarget.cmake 1.0 Use+%60abi-compliance-checker%60+from+CMake+build AddABICheckTarget.cmake.in TeamCityIntegration.cmake abi-check.cmake.in abi-dump-update.cmake.in library-abi.xml.in
+AddABICheckTarget.cmake 1.1 Use+%60abi-compliance-checker%60+from+CMake+build AddABICheckTarget.cmake.in TeamCityIntegration.cmake abi-check.cmake.in abi-dump-update.cmake.in library-abi.xml.in
 PythonInstall.cmake 2.1 Helper+to+install+Python+3.x+scripts PythonSourceInstallTemplate.cmake.in
 FindLibURIParser.cmake 1.3 Find+uriparser+library+using+%60pkg-config%60
 DefineSkeletonGenerationTargetsIfPossible.cmake 6.12 Add+targets+to+generate+class+header%2Fimplementation+and+unit-tests+skeleton+files TestCMakeLists.txt.in class.tpl.in class_tester.tpl.in new_class_tester_post.cmake.in render_template.cmake.in
