@@ -6,6 +6,7 @@ endfunction()
 set(ABI_COMPIANCE_CHECKER_EXECUABLE "@ABI_COMPIANCE_CHECKER_EXECUABLE@")
 set(JQ_EXECUABLE "@JQ_EXECUABLE@")
 
+set(add_abi_check_target_BUILD_TYPE "@CMAKE_BUILD_TYPE@")
 set(add_abi_check_target_COMPILE_DB "@CMAKE_BINARY_DIR@/compile_commands.json")
 set(add_abi_check_target_COMPILER_VERSION "@CMAKE_CXX_COMPILER_VERSION@")
 set(add_abi_check_target_CXX_STANDARD "@CMAKE_CXX_STANDARD@")
@@ -136,5 +137,7 @@ if(add_abi_check_target_SKIP_HEADERS)
     _join("${add_abi_check_target_SKIP_HEADERS}" "\n    " add_abi_check_target_SKIP_HEADERS)
     set(add_abi_check_target_SKIP_HEADERS "<skip_headers>\n    ${add_abi_check_target_SKIP_HEADERS}\n</skip_headers>")
 endif()
+
+set(add_abi_check_target_ABI_SRC_DIR "${add_abi_check_target_CURRENT_SOURCE_DIR}/.abi/${add_abi_check_target_BUILD_TYPE}-gcc-${add_abi_check_target_COMPILER_VERSION}${add_abi_check_target_CXX_STANDARD}")
 
 configure_file("${add_abi_check_target_XML_TEMPLATE}" "${add_abi_check_target_OUTPUT}")

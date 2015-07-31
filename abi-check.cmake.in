@@ -2,8 +2,7 @@ include(@add_abi_check_target_COMMON_CMAKE_CODE@)
 
 get_filename_component(_lib "${add_abi_check_target_LIBRARY}" NAME_WE)
 
-set(_tgt_dir "${add_abi_check_target_CURRENT_SOURCE_DIR}/.abi/${_lib}/gcc-${add_abi_check_target_COMPILER_VERSION}${add_abi_check_target_CXX_STANDARD}")
-set(_latest_tar "${_tgt_dir}/${_lib}_latest.abi.tar.gz")
+set(_latest_tar "${add_abi_check_target_ABI_SRC_DIR}/${_lib}_latest.abi.tar.gz")
 
 execute_process(
     COMMAND "${ABI_COMPIANCE_CHECKER_EXECUABLE}" -lib "${_lib}" -old "${_latest_tar}" -d2 "${add_abi_check_target_OUTPUT}"
@@ -19,7 +18,10 @@ if(NOT _abi_ec EQUAL 0)
     endif()
 endif()
 
-file(GLOB_RECURSE _rep "${add_abi_check_target_DIRECTORY}/compat_reports/${_lib}/*_to_${add_abi_check_target_VERSION}/compat_report.html")
+file(
+    GLOB_RECURSE _rep
+    "${add_abi_check_target_DIRECTORY}/compat_reports/${_lib}/*_to_${add_abi_check_target_VERSION}/compat_report.html"
+  )
 
 if(_rep)
     include("@_ADD_ABI_CHECK_TARGET_LIST_DIR@/TeamCityIntegration.cmake")

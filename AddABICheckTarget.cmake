@@ -59,7 +59,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 function(add_abi_check_target)
     set(options DEBUG)
     set(one_value_args TARGET DIRECTORY LIBRARY OUTPUT VERSION)
-    set(multi_value_args HEADERS SKIP_HEADERS)
+    set(multi_value_args HEADERS SKIP_HEADERS SOURCES)
     cmake_parse_arguments(add_abi_check_target "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
     # Enable debug mode if it was requested via CMake CLI or environment
@@ -113,7 +113,11 @@ function(add_abi_check_target)
     endif()
 
     # Get sources list of the given target
-    get_target_property(add_abi_check_target_SOURCES ${add_abi_check_target_TARGET} SOURCES)
+    # NOTE Sometimes (if object library has used for example), this property is empty
+    # or incomplete...
+    if(NOT add_abi_check_target_SOURCES)
+        get_target_property(add_abi_check_target_SOURCES ${add_abi_check_target_TARGET} SOURCES)
+    endif()
 
     set(add_abi_check_target_COMMON_CMAKE_CODE "${CMAKE_CURRENT_BINARY_DIR}/${add_abi_check_target_TARGET}-abi-common.cmake")
     configure_file(
@@ -159,7 +163,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddABICheckTarget.cmake
-# X-Chewy-Version: 1.1
+# X-Chewy-Version: 1.3
 # X-Chewy-Description: Use `abi-compliance-checker` from CMake build
 # X-Chewy-AddonFile: AddABICheckTarget.cmake.in
 # X-Chewy-AddonFile: TeamCityIntegration.cmake

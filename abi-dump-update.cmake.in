@@ -18,15 +18,14 @@ endif()
 
 # Update dump in the source tree:
 # 0) make sure `.abi` directory exists
-set(_tgt_dir "${add_abi_check_target_CURRENT_SOURCE_DIR}/.abi/${_lib}/gcc-${add_abi_check_target_COMPILER_VERSION}${add_abi_check_target_CXX_STANDARD}")
-if(NOT EXISTS "${_tgt_dir}")
-    file(MAKE_DIRECTORY "${_tgt_dir}")
+if(NOT EXISTS "${add_abi_check_target_ABI_SRC_DIR}")
+    file(MAKE_DIRECTORY "${add_abi_check_target_ABI_SRC_DIR}")
 endif()
 
 set(_src_dir "${add_abi_check_target_CURRENT_BINARY_DIR}/abi_dumps/${_lib}")
 set(_src_tar "${_src_dir}/${_lib}_${add_abi_check_target_VERSION}.abi.tar.gz")
 if(EXISTS "${_src_tar}")
-    file(COPY "${_src_tar}" DESTINATION "${_tgt_dir}")
+    file(COPY "${_src_tar}" DESTINATION "${add_abi_check_target_ABI_SRC_DIR}")
 else()
     message(WARNING "Dump file not found: ${_src_tar}")
     return()
@@ -38,5 +37,5 @@ if(EXISTS "${_src_dir}/${_lib}_latest.abi.tar.gz")
 endif()
 execute_process(
     COMMAND "${CMAKE_COMMAND}" -E create_symlink "${_lib}_${add_abi_check_target_VERSION}.abi.tar.gz" "${_lib}_latest.abi.tar.gz"
-    WORKING_DIRECTORY "${_tgt_dir}"
+    WORKING_DIRECTORY "${add_abi_check_target_ABI_SRC_DIR}"
   )
