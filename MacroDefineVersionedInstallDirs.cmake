@@ -35,7 +35,10 @@ macro(define_versioned_install_paths)
             set(_define_versioned_install_paths_PROJECT_NAME "${PROJECT_NAME}")
         endif()
         if(NOT _define_versioned_install_paths_VERSION)
-            set(_define_versioned_install_paths_VERSION "${PROJECT_VERSION}")
+            set(
+                _define_versioned_install_paths_VERSION
+                "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
+              )
         endif()
         set(
             _define_versioned_install_paths_VERSIONED_PART
@@ -76,5 +79,6 @@ endmacro()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: MacroDefineVersionedInstallDirs.cmake
-# X-Chewy-Version: 1.0
+# X-Chewy-Version: 1.2
 # X-Chewy-Description: Macro to redefine some install paths to have versioned component
+# X-Chewy-AddonFile: GNUInstallDirs.cmake
