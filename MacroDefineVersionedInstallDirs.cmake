@@ -1,6 +1,8 @@
 # - Macro to redefine some install paths to have versioned component,
 # so project may coexists w/ other versions of self in a same prefix.
 #
+# TODO Rename
+#
 
 #=============================================================================
 # Copyright 2015 by Alex Turbov <i.zaufi@gmail.com>
