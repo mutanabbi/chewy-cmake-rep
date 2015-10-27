@@ -254,7 +254,7 @@ endfunction(add_boost_tests)
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddBoostTests.cmake
-# X-Chewy-Version: 5.1
+# X-Chewy-Version: 5.2
 # X-Chewy-Description: Integrate Boost unit tests into CMake infrastructure
 # X-Chewy-AddonFile: TeamCityIntegration.cmake
 # X-Chewy-AddonFile: unit_tests_main_skeleton.cc.in
