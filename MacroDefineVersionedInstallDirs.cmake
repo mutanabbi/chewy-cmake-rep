@@ -23,7 +23,7 @@ include(CMakeParseArguments)
 if(CMAKE_VERSION VERSION_LESS 3.4)
     include("${CMAKE_CURRENT_LIST_DIR}/GNUInstallDirs.cmake")
 else()
-    include(GNUInstallDirs.cmake)
+    include(GNUInstallDirs)
 endif()
 
 macro(define_versioned_install_paths)
@@ -81,6 +81,6 @@ endmacro()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: MacroDefineVersionedInstallDirs.cmake
-# X-Chewy-Version: 1.2
+# X-Chewy-Version: 1.3
 # X-Chewy-Description: Macro to redefine some install paths to have versioned component
 # X-Chewy-AddonFile: GNUInstallDirs.cmake
