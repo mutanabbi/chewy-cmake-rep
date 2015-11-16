@@ -163,7 +163,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddABICheckTarget.cmake
-# X-Chewy-Version: 1.3
+# X-Chewy-Version: 1.4
 # X-Chewy-Description: Use `abi-compliance-checker` from CMake build
 # X-Chewy-AddonFile: AddABICheckTarget.cmake.in
 # X-Chewy-AddonFile: TeamCityIntegration.cmake

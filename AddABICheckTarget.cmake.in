@@ -1,8 +1,23 @@
+cmake_policy(SET CMP0011 NEW)
+cmake_policy(SET CMP0057 NEW)                           # Use new `IN_LIST` subcommand of `if`
+
 function(_join VALUES GLUE OUTPUT)
   string(REPLACE ";" "${GLUE}" _tmp_str "${VALUES}")
   set(${OUTPUT} "${_tmp_str}" PARENT_SCOPE)
 endfunction()
 
+#BEGIN Configurable things
+set(
+    _compiler_options_to_ignore
+    "-Werror"
+    "-Wall"
+    "-Wextra"
+    "-g"
+    "-ggdb"
+    "-ggdb3"
+    "-fPIC"
+  )
+#END Configurable things
 set(ABI_COMPIANCE_CHECKER_EXECUABLE "@ABI_COMPIANCE_CHECKER_EXECUABLE@")
 set(JQ_EXECUABLE "@JQ_EXECUABLE@")
 
@@ -116,6 +131,8 @@ foreach(_source ${add_abi_check_target_SOURCES})
             list(APPEND _include_paths "${CMAKE_MATCH_1}")
         elseif(_opt STREQUAL "-o" OR _opt STREQUAL "-c")
             set(_skip_next ON)
+        elseif(_opt IN_LIST _compiler_options_to_ignore)
+            # Ignore
         elseif(_opt MATCHES "(-.*)")                    # Collect other compiler flags
             list(APPEND _cxx_flags "${CMAKE_MATCH_1}")
         endif()
