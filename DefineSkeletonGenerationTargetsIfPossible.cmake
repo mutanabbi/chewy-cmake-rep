@@ -36,7 +36,7 @@ include(CMakeParseArguments)
 
 set(_DSGT_BASE_DIR "${CMAKE_CURRENT_LIST_DIR}")
 
-# Check if `autogen` and `awk` both are installed
+# Check if `autogen` installed
 find_program(AUTOGEN_EXECUTABLE autogen)
 
 
@@ -207,7 +207,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: DefineSkeletonGenerationTargetsIfPossible.cmake
-# X-Chewy-Version: 6.12
+# X-Chewy-Version: 6.13
 # X-Chewy-Description: Add targets to generate class header/implementation and unit-tests skeleton files
 # X-Chewy-AddonFile: TestCMakeLists.txt.in
 # X-Chewy-AddonFile: class.tpl.in
