@@ -39,38 +39,39 @@ set(_GDD_BASE_DIR "${CMAKE_CURRENT_LIST_DIR}")
 # check if doxygen is even installed
 find_package(Doxygen)
 
-if(NOT DOXYGEN_FOUND)
+# Finding other tools have any sense only if `doxygen` has found
+if(DOXYGEN_FOUND)
+    # Try to find `mscgen` as well
+    find_program(
+        DOXYGEN_MSCGEN_EXECUTABLE
+        NAMES mscgen
+        DOC "Message Sequence Chart renderer (http://www.mcternan.me.uk/mscgen/)"
+      )
+    if(NOT DOXYGEN_MSCGEN_EXECUTABLE)
+        message(
+            STATUS
+                "WARNING: Message Sequence Chart renderer not found. "
+                "Please get a copy from http://www.mcternan.me.uk/mscgen/"
+          )
+    endif()
+    # Try to find `dia` as well
+    find_program(
+        DOXYGEN_DIA_EXECUTABLE
+        NAMES dia
+        DOC "Diagram/flowchart creation program (https://wiki.gnome.org/Apps/Dia)"
+      )
+    if(NOT DOXYGEN_DIA_EXECUTABLE)
+        message(
+            STATUS
+                "WARNING: Dia not found. "
+                "Please get a copy from https://wiki.gnome.org/Apps/Dia."
+          )
+    endif()
+else()
     message(
         STATUS
             "WARNING: Doxygen not found. "
             "Please get a copy from http://www.doxygen.org to produce API documentation"
-      )
-endif()
-
-# Try to find `mscgen` as well
-find_program(
-    DOXYGEN_MSCGEN_EXECUTABLE
-    NAMES mscgen
-    DOC "Message Sequence Chart renderer (http://www.mcternan.me.uk/mscgen/)"
-  )
-if(NOT DOXYGEN_MSCGEN_EXECUTABLE)
-    message(
-        STATUS
-            "WARNING: Message Sequence Chart renderer not found. "
-            "Please get a copy from http://www.mcternan.me.uk/mscgen/"
-      )
-endif()
-# Try to find `dia` as well
-find_program(
-    DOXYGEN_DIA_EXECUTABLE
-    NAMES dia
-    DOC "Diagram/flowchart creation program (https://wiki.gnome.org/Apps/Dia)"
-  )
-if(NOT DOXYGEN_DIA_EXECUTABLE)
-    message(
-        STATUS
-            "WARNING: Dia not found. "
-            "Please get a copy from https://wiki.gnome.org/Apps/Dia."
       )
 endif()
 
@@ -160,7 +161,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GenerateDoxygenDocumentation.cmake
-# X-Chewy-Version: 1.6
+# X-Chewy-Version: 1.7
 # X-Chewy-Description: Add a target to generate doxygen documentation
 # X-Chewy-AddonFile: Doxyfile.in
 # X-Chewy-AddonFile: DoxygenDefaults.cmake
