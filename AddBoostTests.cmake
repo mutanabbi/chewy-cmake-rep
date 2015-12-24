@@ -69,13 +69,29 @@ function(add_boost_tests)
     cmake_parse_arguments(add_boost_tests "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
     # Enable debug mode if it was requested via CMake CLI or environment
-    if(NOT add_boost_tests_DEBUG AND ADD_BOOST_TESTS_DEBUG )
+    if(NOT add_boost_tests_DEBUG AND ADD_BOOST_TESTS_DEBUG)
         set(add_boost_tests_DEBUG ON)
     endif()
 
     # Prevent running w/o source files
     if(NOT add_boost_tests_SOURCES)
         message(FATAL_ERROR "No source files given to `add_boost_tests'")
+    else()
+        set(add_boost_tests_FILTERED_SOURCES)
+        set(add_boost_tests_GE)
+        foreach(source ${add_boost_tests_SOURCES})
+            if(source MATCHES "^\\$<.*>$")
+                list(APPEND add_boost_tests_GE "${source}")
+                if(add_boost_tests_DEBUG)
+                    message(STATUS "  [add_boost_tests] checking source name: ${source} -- looks like generator expression...")
+                endif()
+            else()
+                list(APPEND add_boost_tests_FILTERED_SOURCES "${source}")
+                if(add_boost_tests_DEBUG)
+                    message(STATUS "  [add_boost_tests] checking source name: ${source} -- Ok")
+                endif()
+            endif()
+        endforeach()
     endif()
 
     # Check for target executable
@@ -143,7 +159,8 @@ function(add_boost_tests)
     # Add unit tests executable target to current directory
     add_executable(
         ${add_boost_tests_TARGET}
-        ${add_boost_tests_SOURCES}
+        ${add_boost_tests_FILTERED_SOURCES}
+        ${add_boost_tests_GE}
         ${TEAMCITY_BOOST_SOURCES}
         "${CMAKE_CURRENT_BINARY_DIR}/unit_tests_main.cc"
       )
@@ -157,7 +174,7 @@ function(add_boost_tests)
     endif()
 
     # Scan source files for well known boost test framework macros and add test by found name
-    foreach(source ${add_boost_tests_SOURCES})
+    foreach(source ${add_boost_tests_FILTERED_SOURCES})
         # ATTENTION Do not scan unexistent (probably generated) and Qt/MOC sources
         get_source_file_property(full_source "${source}" LOCATION)
         if(source MATCHES "/moc_.*$")
@@ -239,7 +256,7 @@ function(add_boost_tests)
                 if(add_boost_tests_DEBUG)
                     message(
                         STATUS
-                        "  [add_boost_tests] add test[$<TARGET_FILE:${add_boost_tests_TARGET}>]: ${test_name}"
+                        "  [add_boost_tests] add test[${add_boost_tests_TARGET}]: ${test_name}"
                       )
                 endif()
                 add_test(
@@ -254,7 +271,7 @@ endfunction(add_boost_tests)
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddBoostTests.cmake
-# X-Chewy-Version: 5.2
+# X-Chewy-Version: 5.3
 # X-Chewy-Description: Integrate Boost unit tests into CMake infrastructure
 # X-Chewy-AddonFile: TeamCityIntegration.cmake
 # X-Chewy-AddonFile: unit_tests_main_skeleton.cc.in
