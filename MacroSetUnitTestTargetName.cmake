@@ -37,7 +37,8 @@
 #  License text for the above reference.)
 
 macro(set_unit_test_target_name OUTPUT_VARIABLE DEFAULT_VALUE)
-    if(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
+    cmake_policy(GET CMP0002 _may_use_same_name)
+    if(_may_use_same_name STREQUAL "OLD")
         set(${OUTPUT_VARIABLE} "unit_tests")
     else()
         set(${OUTPUT_VARIABLE} ${DEFAULT_VALUE})
@@ -46,5 +47,5 @@ endmacro()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: MacroSetUnitTestTargetName.cmake
-# X-Chewy-Version: 1.0
+# X-Chewy-Version: 1.1
 # X-Chewy-Description: Function to set a target name for unit test binary
