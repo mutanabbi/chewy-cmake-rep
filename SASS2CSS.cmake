@@ -110,12 +110,9 @@ function(preprocess_sass)
         file(MAKE_DIRECTORY "${_css_dir}")
     endif()
 
-    if(NOT preprocess_sass_DEFINE_UPDATE_TARGET AND preprocess_sass_DESTINATION)
-        message(FATAL_ERROR "DESTINATION has provided to `preprocess_sass()`, but DEFINE_UPDATE_TARGET is not")
-    endif()
-
+    # Ok, guess destination directory for update target
     if(preprocess_sass_DEFINE_UPDATE_TARGET AND NOT preprocess_sass_DESTINATION)
-        message(FATAL_ERROR "DEFINE_UPDATE_TARGET has provided to `preprocess_sass()`, but DESTINATION is not")
+        get_filename_component(preprocess_sass_DESTINATION "${preprocess_sass_INPUT_FILE}" DIRECTORY)
     endif()
 
     # Append generation rules only if any SASS preprocessor has found
@@ -129,6 +126,8 @@ function(preprocess_sass)
         get_filename_component(_input_file_name_we "${preprocess_sass_OUTPUT_FILE}" NAME_WE)
         get_filename_component(_input_file_name "${preprocess_sass_OUTPUT_FILE}" NAME)
 
+        # Make sure .css file will be processed by `make` command,
+        # so later it could be `install()`ed
         add_custom_target(
             rebuild-${_input_file_name_we}-css ALL
             DEPENDS "${preprocess_sass_OUTPUT_FILE}"
@@ -150,5 +149,5 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: SASS2CSS.cmake
-# X-Chewy-Version: 1.0
+# X-Chewy-Version: 1.1
 # X-Chewy-Description: Preprocess SASS to CSS
