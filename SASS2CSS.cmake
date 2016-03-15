@@ -17,10 +17,15 @@
 # TODO Not needed for CMake >= 3.5
 include(CMakeParseArguments)
 
-# Look for `sass` first
-find_program(SASS_EXECUTABLE sass)
+message(STATUS "Looking for SASS preprocessor")
+
+# Look for `sass` first if `compass` not preferred
+if(NOT SASS2CSS_PREFER_COMPASS_OVER_SASS)
+    find_program(SASS_EXECUTABLE sass)
+endif()
 if(SASS_EXECUTABLE)
-    message(STATUS "Found sass: ${SASS_EXECUTABLE}")
+    message(STATUS "Looking for SASS preprocessor - found")
+    message(STATUS "Found SASS preprocessor: ${SASS_EXECUTABLE}")
 
     function(_preprocess_sass_helper INPUT_FILE OUTPUT_FILE COMPRESSED)
         if(COMPRESSED)
@@ -43,7 +48,8 @@ else()
     # Ok, try to find `compass` then...
     find_program(COMPASS_EXECUTABLE compass)
     if(COMPASS_EXECUTABLE)
-        message(STATUS "Found compass: ${COMPASS_EXECUTABLE}")
+        message(STATUS "Looking for SASS preprocessor - found")
+        message(STATUS "Found SASS preprocessor: ${COMPASS_EXECUTABLE}")
         function(_preprocess_sass_helper INPUT_FILE OUTPUT_FILE COMPRESSED)
             if(COMPRESSED)
                 set(_style_opt "--output-style=compressed")
@@ -58,17 +64,20 @@ else()
                     compile
                     ${_style_opt}
                     --no-debug-info
+                    --no-sourcemap
                     --environment=production
                     --sass-dir="${_sass_dir}"
+                    # TODO Introduce some option to specify images directory?
+                    --images-dir="${_sass_dir}"
                     --css-dir="${_css_dir}"
                     "${INPUT_FILE}"
                 COMMENT "Preprocessing ${INPUT_FILE}"
                 WORKING_DIRECTORY "${_css_dir}"
               )
-            # TODO Rename ourput file if `OUTPUT_FILE` filename really not the same as input
+            # TODO Rename output file if `OUTPUT_FILE` filename really not the same as input
         endfunction()
     else()
-        message(STATUS "SASS preprocessor: NOTFOUND")
+        message(STATUS "Looking for SASS preprocessor - not found")
     endif()
 endif()
 
@@ -149,5 +158,5 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: SASS2CSS.cmake
-# X-Chewy-Version: 1.2
+# X-Chewy-Version: 1.3
 # X-Chewy-Description: Preprocess SASS to CSS
