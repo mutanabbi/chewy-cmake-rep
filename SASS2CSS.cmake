@@ -135,7 +135,7 @@ function(preprocess_sass)
 
         if(preprocess_sass_DEFINE_UPDATE_TARGET)
             add_custom_target(
-                update_${_input_file_name_we}-css
+                update-${_input_file_name_we}-css
                 COMMAND "${CMAKE_COMMAND}" -E copy "${preprocess_sass_OUTPUT_FILE}" "${preprocess_sass_DESTINATION}"
                 DEPENDS
                     "${preprocess_sass_INPUT_FILE}"
@@ -149,5 +149,5 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: SASS2CSS.cmake
-# X-Chewy-Version: 1.1
+# X-Chewy-Version: 1.2
 # X-Chewy-Description: Preprocess SASS to CSS
