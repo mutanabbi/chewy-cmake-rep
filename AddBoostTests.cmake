@@ -16,6 +16,8 @@
 #
 # If running under TeamCity, additional sources would be added allowing integration
 # of Boost UTF and TeamCity reporting facilities.
+# Use [`teamcity-cpp-boost`](https://github.com/zaufi/teamcity-cpp) if found, otherwise
+# internal sources will be used.
 #
 # If `DYN_LINK` is not specified, `Boost_USE_STATIC_LIBS` would be checked additionaly
 # and if latter is OFF, `DYN_LINK` will be used.
@@ -27,18 +29,18 @@
 # Source files will be scanned for automatic test cases.
 # Every found test will be added to ctest list. Be aware that "scanner" is very
 # limited (yep, it is not a full functional C++ parser). Particularly:
-#  - BOOST_AUTO_TEST_CASE, BOOST_FIXTURE_TEST_SUITE, BOOST_FIXTURE_TEST_CASE,
-#    BOOST_AUTO_TEST_SUITE and BOOST_AUTO_TEST_SUITE_END the only recognizable tokens
+#  - `BOOST_AUTO_TEST_CASE`, `BOOST_FIXTURE_TEST_SUITE`, `BOOST_FIXTURE_TEST_CASE`,
+#    `BOOST_AUTO_TEST_SUITE` and `BOOST_AUTO_TEST_SUITE_END` the only recognizable tokens
 #  - every token must be at line start
 #  - parameter list followed immediately after token name -- i.e. no space
 #    between toked identifier and opening parenthesis
 #  - parameters for listed macros are expected at the same line
-# This function can be considered as 'improved' add_executable(unit_tests <sources>)
+# This function can be considered as 'improved' `add_executable(unit_tests <sources>)`
 # to build boost based unit tests and integrate them into cmake's `make test`.
 #
 
 #=============================================================================
-# Copyright 2011-2014 by Alex Turbov <i.zaufi@gmail.com>
+# Copyright 2011-2016 by Alex Turbov <i.zaufi@gmail.com>
 #
 # Distributed under the OSI-approved BSD License (the "License");
 # see accompanying file LICENSE for details.
@@ -56,7 +58,17 @@ set(_ADD_BOOST_TEST_BASE_DIR "${CMAKE_CURRENT_LIST_DIR}")
 
 include("${_ADD_BOOST_TEST_BASE_DIR}/TeamCityIntegration.cmake")
 
-is_running_under_teamcity(_ADD_BOOST_TEST_WITH_TEAM_CITY)
+is_running_under_teamcity(_ADD_BOOST_TEST_UNDER_TEAM_CITY)
+
+if(_ADD_BOOST_TEST_UNDER_TEAM_CITY)
+    find_package(teamcity-cpp-boost 1.7 QUIET)
+    # If found an object library target with same name will be defined
+    if(TARGET teamcity-cpp-boost)
+        set(_ADD_BOOST_TEST_WITH_TEAM_CITY ON)
+    else()
+        message(STATUS "Looking for TeamCity unit tests integration library (teamcity-cpp-boost) - not found")
+    endif()
+endif()
 
 if(NOT ADD_BOOST_TESTS_DEBUG AND "$ENV{add_boost_tests_DEBUG}")
     set(ADD_BOOST_TESTS_DEBUG ON)
@@ -142,6 +154,14 @@ function(add_boost_tests)
 
     # If TeamCity detected, add few more sources
     if(_ADD_BOOST_TEST_WITH_TEAM_CITY)
+        if(add_boost_tests_DEBUG)
+            message(STATUS "  [add_boost_tests] teamcity-cpp-boost has found")
+        endif()
+        set(tc_sources "\$<TARGET_OBJECTS:teamcity-cpp-boost>")
+    elseif(_ADD_BOOST_TEST_UNDER_TEAM_CITY)
+        if(add_boost_tests_DEBUG)
+            message(STATUS "  [add_boost_tests] teamcity-cpp-boost not found. Will use bundled sources.")
+        endif()
         if(NOT TEAMCITY_BOOST_SOURCES)
             set(
                 TEAMCITY_BOOST_SOURCES
@@ -150,10 +170,7 @@ function(add_boost_tests)
                 "${_ADD_BOOST_TEST_BASE_DIR}/teamcity-boost/teamcity_messages.h"
               )
         endif()
-        if(add_boost_tests_DEBUG)
-            message(STATUS "  [add_boost_tests] teamcity has been detected")
-            message(STATUS "  [add_boost_tests] aux sources list: ${TEAMCITY_BOOST_SOURCES}")
-        endif()
+        set(tc_sources "${TEAMCITY_BOOST_SOURCES}")
     endif()
 
     # Add unit tests executable target to current directory
@@ -161,7 +178,7 @@ function(add_boost_tests)
         ${add_boost_tests_TARGET}
         ${add_boost_tests_FILTERED_SOURCES}
         ${add_boost_tests_GE}
-        ${TEAMCITY_BOOST_SOURCES}
+        ${tc_sources}
         "${CMAKE_CURRENT_BINARY_DIR}/unit_tests_main.cc"
       )
 
@@ -271,7 +288,7 @@ endfunction(add_boost_tests)
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddBoostTests.cmake
-# X-Chewy-Version: 5.3
+# X-Chewy-Version: 5.4
 # X-Chewy-Description: Integrate Boost unit tests into CMake infrastructure
 # X-Chewy-AddonFile: TeamCityIntegration.cmake
 # X-Chewy-AddonFile: unit_tests_main_skeleton.cc.in
