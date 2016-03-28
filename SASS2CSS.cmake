@@ -39,6 +39,7 @@ if(SASS_EXECUTABLE)
                 --sourcemap=none
                 "${INPUT_FILE}"
                 "${OUTPUT_FILE}"
+            DEPENDS "${INPUT_FILE}"
             COMMENT "Preprocessing ${INPUT_FILE}"
             WORKING_DIRECTORY "${_css_dir}"
           )
@@ -71,6 +72,7 @@ else()
                     --images-dir="${_sass_dir}"
                     --css-dir="${_css_dir}"
                     "${INPUT_FILE}"
+                DEPENDS "${INPUT_FILE}"
                 COMMENT "Preprocessing ${INPUT_FILE}"
                 WORKING_DIRECTORY "${_css_dir}"
               )
@@ -158,5 +160,5 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: SASS2CSS.cmake
-# X-Chewy-Version: 1.3
+# X-Chewy-Version: 1.4
 # X-Chewy-Description: Preprocess SASS to CSS
