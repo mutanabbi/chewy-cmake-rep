@@ -2,7 +2,7 @@
 #
 
 #=============================================================================
-# Copyright 2015 by Alex Turbov <i.zaufi@gmail.com>
+# Copyright 2015-2016 by Alex Turbov <i.zaufi@gmail.com>
 #
 # Distributed under the OSI-approved BSD License (the "License");
 # see accompanying file LICENSE for details.
@@ -17,9 +17,6 @@
 include(CMakeParseArguments)
 include(FindPackageHandleStandardArgs)
 
-# Check if `autogen` and `awk` both are installed
-find_program(PYTHON_EXECUTABLE autogen)
-
 function(check_python_module)
     set(_options REQUIRED QUIET)
     set(_one_value_args PYTHON_VERSION)
@@ -27,12 +24,21 @@ function(check_python_module)
     cmake_parse_arguments(_check_python_module "${_options}" "${_one_value_args}" "${_multi_value_args}" ${ARGN})
 
     if(NOT PYTHON_EXECUTABLE)
-        find_package(PythonInterp ${_check_python_module_PYTHON_VERSION} REQUIRED)
+        if(NOT PYTHONLIBS_FOUND)
+            find_package(PythonInterp ${_check_python_module_PYTHON_VERSION} REQUIRED)
+        else()
+            message(AUTHOR_WARNING "Call `find_package(PythonInterp)` before `find_package(PythonLibs)` !!")
+        endif()
     endif()
 
     # Failure if no python has found
     if(NOT PYTHON_EXECUTABLE)
-        message(FATAL_ERROR "Python executable required for check_python_module(), but hasn't found")
+        if(_check_python_module_REQUIRED)
+            message(FATAL_ERROR "Python executable required for check_python_module(), but hasn't found")
+        else()
+            message(WARNING "Python executable required for check_python_module(), but hasn't found")
+            return()
+        endif()
     endif()
 
     foreach(module ${_check_python_module_MODULE})
@@ -68,5 +74,5 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: CheckPythonModule.cmake
-# X-Chewy-Version: 1.0
+# X-Chewy-Version: 1.1
 # X-Chewy-Description: Check for python module availability

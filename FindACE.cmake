@@ -28,20 +28,6 @@
 # (To distribute this file outside of this repository, substitute the full
 #  License text for the above reference.)
 
-# Setup some options
-set(
-    ACE_INCLUDEDIR
-    "/usr/local/include"
-    CACHE PATH
-    "ACE framework development headers directory"
-  )
-set(
-    ACE_LIBDIR
-    "/usr/local/lib"
-    CACHE PATH
-    "ACE framework libraries directory"
-  )
-
 # Try to find `pkg-config` before
 if(NOT WIN32)
     if(ACE_FIND_QUIETLY)
@@ -125,13 +111,16 @@ macro(_ace_find_component_via_cmake _ace_comp)
             # NOTE Allow to override default location(s) via
             # CMake CLI -DACE_INCLUDEDIR=PATH
             ${ACE_INCLUDEDIR}
+            ${ACE_ROOT}/include
+            ${ACE_ROOT}
             # FHS standard location
             /usr/include
             # Try to use "standard" environment variables
             $ENV{ACE_ROOT}/include
             $ENV{ACE_ROOT}
             # Windows specific "standard" (?) location
-            $ENV{ProgramFiles}/ACE/*/include
+            $ENV{ProgramW6432}/ACE/include
+            $ENV{ProgramFiles}/ACE/include
       )
     mark_as_advanced(ACE_${_ace_comp_up}_INCLUDE_DIR)
 
@@ -144,13 +133,14 @@ macro(_ace_find_component_via_cmake _ace_comp)
             # NOTE Allow to override default location(s) via
             # CMake CLI -DACE_LIB_DIR=PATH
             ${ACE_LIBDIR}
+            ${ACE_ROOT}/lib
             # FHS standard location
             /usr/lib
             # Try to use "standard" environment variables
             $ENV{ACE_ROOT}/lib
             $ENV{ACE_ROOT}
             # Windows specific "standard" (?) location
-            $ENV{ProgramFiles}/ACE/*/lib/
+            $ENV{ProgramFiles}/ACE/lib/
       )
     mark_as_advanced(ACE_${_ace_comp_up}_LIBRARIES)
     if(ACE_${_ace_comp_up}_LIBRARIES)
@@ -166,6 +156,7 @@ macro(_ace_find_component _ace_comp)
         _ace_find_component_via_pkg_config(${_ace_comp})
         string(TOUPPER "${_ace_comp}" _ace_comp_up)
         if(NOT ACE_${_ace_comp_up}_FOUND)
+            # Trying "manual" way...
             _ace_find_component_via_cmake(${_ace_comp})
         endif()
     endif()
@@ -194,7 +185,10 @@ if(NOT ACE_LIBRARIES)
         # Did we find smth?
         if(ACE_${_ace_comp_up}_FOUND)
             # Yep!
-            list(APPEND ACE_LIBRARIES ${ACE_${_ace_comp_up}_LIBRARIES})
+            foreach(_lp ${ACE_${_ace_comp_up}_LIBRARY_DIRS})
+                list(APPEND ACE_LIBRARIES -L${_lp})
+            endforeach()
+            list(APPEND ACE_LIBRARIES ${ACE_${_ace_comp_up}_LIBRARIES} ${ACE_${_ace_comp_up}_LIBRARIES})
             list(APPEND ACE_INCLUDE_DIRS ${ACE_${_ace_comp_up}_INCLUDE_DIR})
         else()
             # No! Check if that component is mandatory
@@ -207,7 +201,7 @@ if(NOT ACE_LIBRARIES)
 
     # Try to get ACE version if headers/libs are (seem) Ok
     if(ACE_FOUND)
-        # Try to compile sample test which would (try to) output the OTL version
+        # Try to compile sample test which would (try to) output the ACE version
         try_run(
             _ace_get_version_run_result
             _ace_get_version_compile_result
@@ -230,6 +224,6 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: FindACE.cmake
-# X-Chewy-Version: 1.2
+# X-Chewy-Version: 1.3
 # X-Chewy-Description: Find ACE library (and components) using `pkg-config` if available
 # X-Chewy-AddonFile: ace_get_version.cpp
