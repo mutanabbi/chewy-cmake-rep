@@ -1,15 +1,12 @@
 # - Find ACE library (and components) using `pkg-config` if available
-# Search for ACE library (and components) and set the following variables:
-#  ACE_FOUND            - is package found
-#  ACE_VERSION          - found package version
-#  ACE_INCLUDE_DIRS     - dir w/ header files
-#  ACE_DEFINITIONS      - other than `-I' compiler flags
-#  ACE_LIBRARIES        - libs for dynamic linkage
+# Search for ACE library (and components) and add imported targets for components requested.
 #
 # To give hints to this finder one may use the following settings:
-#   ACE_ROOT            - root directory of ACE headers and libraries
-#   ACE_INCLUDEDIR      - headers directory
-#   ACE_LIBDIR          - libraries directory
+#   ACE_ROOT             - root directory of ACE headers and libraries
+#   ACE_INCLUDEDIR       - headers directory
+#   ACE_LIBDIR           - libraries directory (for single configuration generators)
+#   ACE_LIBDIR_DEBUG     - debug libraries directory (for multi configuration generators)
+#   ACE_LIBDIR_RELEASE   - libraries directory (for multi configuration generators)
 #
 # Distributed under the OSI-approved BSD License (the "License");
 # see accompanying file LICENSE for details.
@@ -27,14 +24,6 @@
 #=============================================================================
 # (To distribute this file outside of this repository, substitute the full
 #  License text for the above reference.)
-
-# Try to find `pkg-config` before
-if(NOT WIN32)
-    if(ACE_FIND_QUIETLY)
-        set(_pkg_find_quietly QUIET)
-    endif()
-    find_package(PkgConfig ${_pkg_find_quietly})
-endif()
 
 function(_ace_debug_msg msg)
     if(ACE_DEBUG)
@@ -99,8 +88,14 @@ macro(_ace_find_component_via_cmake_get_libs _ace_comp)
 endmacro()
 
 # Try to find ACE component using CMake helpers
-macro(_ace_find_component_via_cmake _ace_comp)
+macro(_ace_find_component_via_cmake _ace_comp _ace_cfg)
     string(TOUPPER "${_ace_comp}" _ace_comp_up)
+    string(TOUPPER "${_ace_cfg}" _ace_cfg_up)
+    if(_ace_cfg_up)
+        set(_ace_cfg_up_sfx "_${_ace_cfg_up}")
+    endif()
+
+    _ace_debug_msg("    finding ${_ace_cfg} configuration of ${_ace_comp}")
 
     # Try to find header first
     _ace_find_component_via_cmake_get_headers(${_ace_comp})
@@ -132,7 +127,7 @@ macro(_ace_find_component_via_cmake _ace_comp)
     _ace_find_component_via_cmake_get_libs(${_ace_comp})
     # NOTE Allow to override default location(s) via
     # CMake CLI -DACE_LIB_DIR=PATH
-    list(APPEND _${_ace_comp_up}_lib_hints "${ACE_LIBDIR}")
+    list(APPEND _${_ace_comp_up}_lib_hints "${ACE_LIBDIR${_ace_cfg_up_sfx}}")
     list(APPEND _${_ace_comp_up}_lib_hints "${ACE_ROOT}/lib")
     # FHS standard location
     list(APPEND _${_ace_comp_up}_lib_hints "/usr/lib")
@@ -155,22 +150,105 @@ macro(_ace_find_component_via_cmake _ace_comp)
     endif()
 endmacro()
 
+macro(_ace_add_import_targets _ace_comp _ace_cfg)
+    string(TOUPPER "${_ace_comp}" _ace_comp_up)
+    string(TOUPPER "${_ace_cfg}" _ace_cfg_up)
+    if(_ace_cfg_up)
+        set(_ace_cfg_up_sfx "_${_ace_cfg_up}")
+    endif()
+
+    # Do nothing if nothing has found
+    if(NOT ACE_${_ace_comp_up}_FOUND)
+        _ace_debug_msg("     do not add an imported target! ACE_${_ace_comp_up}_FOUND=${ACE_${_ace_comp_up}_FOUND}")
+        return()
+    endif()
+
+    if(ACE_AS_STATIC_LIBS)
+        _ace_debug_msg("     adding ACE::${_ace_comp} as a static imported library [${_ace_cfg}]")
+        if(NOT TARGET ACE::${_ace_comp})
+            add_library(ACE::${_ace_comp} STATIC IMPORTED)
+        else()
+            _ace_debug_msg("     updating ACE::${_ace_comp} [${_ace_cfg}]")
+        endif()
+        set_property(
+            TARGET ACE::${_ace_comp}
+            APPEND PROPERTY IMPORTED_CONFIGURATIONS "${_ace_cfg}"
+          )
+        set_target_properties(
+            ACE::${_ace_comp}
+            PROPERTIES
+                IMPORTED_LINK_INTERFACE_LANGUAGES "CXX"
+                IMPORTED_LOCATION${_ace_cfg_up_sfx} ${ACE_${_ace_comp_up}_LIBRARIES}
+                INTERFACE_COMPILE_DEFINITIONS -DACE_AS_STATIC_LIBS=1
+          )
+        _ace_debug_msg("     set IMPORTED_LOCATION${_ace_cfg_up_sfx}: ${ACE_${_ace_comp_up}_LIBRARIES}")
+    else()
+        if(NOT TARGET ACE::${_ace_comp})
+            add_library(ACE::${_ace_comp} INTERFACE IMPORTED)
+            _ace_debug_msg("     adding ACE::${_ace_comp} as shared imported library [${_ace_cfg}]")
+        else()
+            _ace_debug_msg("     updating ACE::${_ace_comp} [${_ace_cfg}]")
+        endif()
+        _ace_debug_msg("     set INTERFACE_LINK_LIBRARIES${_ace_cfg_up_sfx}: ${ACE_${_ace_comp_up}_LIBRARIES}")
+        set_target_properties(
+            ACE::${_ace_comp}
+            PROPERTIES
+                INTERFACE_LINK_LIBRARIES "${ACE_${_ace_comp_up}_LIBRARIES}"
+          )
+    endif()
+
+    set_property(
+        TARGET ACE::${_ace_comp}
+        APPEND PROPERTY INTERFACE_LINK_LIBRARIES Threads::Threads
+        )
+
+    if(ACE_${_ace_comp_up}_INCLUDE_DIR)
+        set_target_properties(
+            ACE::${_ace_comp}
+            PROPERTIES
+                INTERFACE_INCLUDE_DIRECTORIES "${ACE_${_ace_comp_up}_INCLUDE_DIR}"
+          )
+    endif()
+endmacro()
+
 # Try to find a given component
 macro(_ace_find_component _ace_comp)
     if(WIN32)
         _ace_debug_msg("    Win32 detected, do not even try `pkg-config`...")
-        _ace_find_component_via_cmake(${_ace_comp})
+        foreach(_cfg ${_ace_find_configurations})
+            _ace_find_component_via_cmake(${_ace_comp} ${_cfg})
+            _ace_add_import_targets(${_ace_comp} ${_cfg})
+        endforeach()
     else()
         _ace_debug_msg("    *NIX detected, try `pkg-config`...")
         _ace_find_component_via_pkg_config(${_ace_comp})
+        _ace_add_import_targets(${_ace_comp} ${_ace_find_configurations})
         string(TOUPPER "${_ace_comp}" _ace_comp_up)
         if(NOT ACE_${_ace_comp_up}_FOUND)
             _ace_debug_msg("    fallback to manual search via cmake...")
             # Trying "manual" way...
-            _ace_find_component_via_cmake(${_ace_comp})
+            _ace_find_component_via_cmake(${_ace_comp} "")
+            _ace_add_import_targets(${_ace_comp} ${_ace_find_configurations})
         endif()
     endif()
 endmacro()
+
+# Try to find `pkg-config` before
+if(NOT WIN32)
+    if(ACE_FIND_QUIETLY)
+        set(_pkg_find_quietly QUIET)
+    endif()
+    find_package(PkgConfig ${_pkg_find_quietly})
+endif()
+
+# Check what king of generator is in use
+if(CMAKE_CONFIGURATION_TYPES)
+    _ace_debug_msg("Multi configuration generator: ${CMAKE_CONFIGURATION_TYPES}")
+    set(_ace_find_configurations ${CMAKE_CONFIGURATION_TYPES})
+else()
+    _ace_debug_msg("Single configuration generator: ${CMAKE_BUILD_TYPE}")
+    set(_ace_find_configurations ${CMAKE_BUILD_TYPE})
+endif()
 
 # Check if already in cache
 # NOTE Feel free to check/change/add any other vars
@@ -187,7 +265,8 @@ if(NOT ACE_LIBRARIES)
 
     # Look for components
     set(ACE_FOUND TRUE)
-    _ace_debug_msg("ACE_FOUND=${ACE_FOUND}")
+    set(ACE_LIBRARIES)
+    _ace_debug_msg("Preset ACE_FOUND=${ACE_FOUND}")
     foreach(_ace_comp ${ACE_FIND_COMPONENTS})
         _ace_debug_msg("  checking component: ${_ace_comp}")
         string(TOUPPER "${_ace_comp}" _ace_comp_up)
@@ -195,14 +274,9 @@ if(NOT ACE_LIBRARIES)
         _ace_find_component(${_ace_comp})
         # Check if component is mandatory
         # Did we find smth?
-        if(ACE_${_ace_comp_up}_FOUND)
+        if(TARGET ACE::${_ace_comp})
             _ace_debug_msg("  found component: ${_ace_comp}")
-            # Yep!
-            foreach(l ${ACE_${_ace_comp_up}_LIBRARY_DIRS})
-                list(APPEND ACE_LIBRARIES -L${l})
-            endforeach()
-            list(APPEND ACE_LIBRARIES ${ACE_${_ace_comp_up}_LIBRARIES} ${ACE_${_ace_comp_up}_LIBRARIES})
-            list(APPEND ACE_INCLUDE_DIRS ${ACE_${_ace_comp_up}_INCLUDE_DIR})
+            list(APPEND ACE_LIBRARIES "ACE::${_ace_comp}")
         else()
             _ace_debug_msg("  component not found: ${_ace_comp}")
             # No! Check if that component is mandatory
@@ -230,9 +304,7 @@ if(NOT ACE_LIBRARIES)
         _ace_debug_msg("ACE version detected: ${ACE_VERSION}")
     endif()
 
-    _ace_debug_msg("F: ACE_INCLUDE_DIRS=${ACE_INCLUDE_DIRS}")
-    _ace_debug_msg("F: ACE_LIBRARIES=${ACE_LIBRARIES}")
-    _ace_debug_msg("F: ACE_DEFINITIONS=${ACE_DEFINITIONS}")
+    _ace_debug_msg("Final ACE_FOUND=${ACE_FOUND}")
 
     include(FindPackageHandleStandardArgs)
     find_package_handle_standard_args(
@@ -245,6 +317,6 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: FindACE.cmake
-# X-Chewy-Version: 1.4
+# X-Chewy-Version: 2.0
 # X-Chewy-Description: Find ACE library (and components) using `pkg-config` if available
 # X-Chewy-AddonFile: ace_get_version.cpp
