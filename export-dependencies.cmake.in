@@ -1,12 +1,50 @@
-
 # ATTENTION Store _IMPORT_PREFIX variable, cuz included files may/will reset it
 list(INSERT _WDE_IMPORT_PREFIX_STACK 0 "${_IMPORT_PREFIX}")
 
-# Include (and import) dependencies
-foreach(_module @_WED_DEPENDENCIES@)
-    include("${CMAKE_CURRENT_LIST_DIR}/@_WED_DEPENDED_FILE_PREFIX@-${_module}.cmake" OPTIONAL)
+# Include (and import) dependencies build as part of this project
+foreach(_module @_WED_INTERNAL_DEPS@)
+    include("${CMAKE_CURRENT_LIST_DIR}/@_WED_FILE_PREFIX@-${_module}.cmake" OPTIONAL)
     # TODO Check if depended module really availabe and form an error message
 endforeach()
+
+# Include (find) external dependensies (presented as imported targets)
+@_WED_SETUP_VARIABLES@
+
+# Do find only when we really have dependency external modules
+if(NOT "@_WED_EXTERNAL_DEPS@" STREQUAL "")
+    include(CMakeFindDependencyMacro)
+    foreach(_module @_WED_EXTERNAL_DEPS@)
+        string(TOUPPER "${_module}" _module_up)
+        if(DEFINED _WED_EXTERNAL_${_module_up}_VERSION)
+            set(_req_version ${_WED_EXTERNAL_${_module_up}_VERSION})
+        else()
+            unset(_req_version)
+        endif()
+        if(DEFINED _WED_EXTERNAL_${_module_up}_COMPONENTS)
+            # Avoid duplicate finds!
+            # From a list of components that is not found yet...
+            foreach(_c IN LISTS _WED_EXTERNAL_${_module_up}_COMPONENTS)
+                if(NOT TARGET ${_module}::${_c})
+                    list(APPEND _still_not_found_components ${_c})
+                endif()
+            endforeach()
+            if(_still_not_found_components)
+                if(DEFINED _req_version)
+                    find_package(${_module} ${_req_version} EXACT REQUIRED COMPONENTS ${_still_not_found_components})
+                else()
+                    find_package(${_module} REQUIRED COMPONENTS ${_still_not_found_components})
+                endif()
+                unset(_still_not_found_components)
+            endif()
+        else()
+            if(DEFINED _req_version)
+                find_dependency(${_module} ${_req_version} EXACT)
+            else()
+                find_dependency(${_module})
+            endif()
+        endif()
+    endforeach()
+endif()
 
 # Restore _IMPORT_PREFIX from a "stack"
 list(GET  _WDE_IMPORT_PREFIX_STACK 0 _IMPORT_PREFIX)
