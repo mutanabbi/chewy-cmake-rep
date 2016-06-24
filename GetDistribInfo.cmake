@@ -3,20 +3,21 @@
 # or use voluntary strings (for Windows).
 #
 # Set the following variables:
-#   DISTRIB_ID          -- a distribution identifier (like Gentoo or Ubuntu)
+#   DISTRIB_ID          -- a distribution identifier (like Gentoo or Ubuntu & etc)
 #   DISTRIB_ARCH        -- a distribution target machine
 #   DISTRIB_CODENAME    -- a distribution code name (like "quantal" or "trusty" for Ubuntu)
 #   DISTRIB_VERSION     -- a version string of the dictribution
 #   DISTRIB_PKG_FMT     -- native package manager's format(s) suitable to use w/ CPACK_GENERATOR
 #   DISTRIB_SRC_PKG_FMT -- native format to create tarballs
 #   DISTRIB_FILE_PART   -- a string suitable to be a filename part to identify a target system
+#   DISTRIB_PKG_VERSION -- if dictribution has package manager, this variable set to a string
+#                          used by native packages as distribution identifier (like `1.el7.centos`)
 #
 # NOTE DISTRIB_PKG_FMT will not contain "generic" archive formats!
-# TODO DISTRIB_CODENAME, DISTRIB_VERSION is not available for Windows
 #
 
 #=============================================================================
-# Copyright 2012-2014 by Alex Turbov <i.zaufi@gmail.com>
+# Copyright 2012-2016 by Alex Turbov <i.zaufi@gmail.com>
 #
 # Distributed under the OSI-approved BSD License (the "License");
 # see accompanying file LICENSE for details.
@@ -245,6 +246,30 @@ if(NOT DISTRIB_ID)
 
     _make_distrib_file_part()
 
+    # TODO Add other package managers here
+    if(DISTRIB_PKG_FMT STREQUAL "RPM")
+        if(NOT DEFINED DISTRIB_PKG_VERSION)
+            set(DISTRIB_PKG_VERSION 1)
+        endif()
+        if(DISTRIB_ID STREQUAL "CentOS")
+            if(DISTRIB_VERSION VERSION_LESS 6)
+                string(APPEND DISTRIB_PKG_VERSION ".el5.centos")
+            elseif(DISTRIB_VERSION VERSION_LESS 7)
+                string(APPEND DISTRIB_PKG_VERSION ".el6.centos")
+            elseif(DISTRIB_VERSION VERSION_LESS 8)
+                string(APPEND DISTRIB_PKG_VERSION ".el7.centos")
+            endif()
+        elseif(DISTRIB_ID STREQUAL "RHEL")
+            if(DISTRIB_VERSION VERSION_LESS 6)
+                string(APPEND DISTRIB_PKG_VERSION ".el5")
+            elseif(DISTRIB_VERSION VERSION_LESS 7)
+                string(APPEND DISTRIB_PKG_VERSION ".el6")
+            elseif(DISTRIB_VERSION VERSION_LESS 8)
+                string(APPEND DISTRIB_PKG_VERSION ".el7")
+            endif()
+        endif()
+    endif()
+
     if(DISTRIB_ID)
         set(_distrib_info_line "${DISTRIB_ID}")
 
@@ -266,5 +291,5 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GetDistribInfo.cmake
-# X-Chewy-Version: 2.20
+# X-Chewy-Version: 2.21
 # X-Chewy-Description: Get a distribution codename
