@@ -42,9 +42,16 @@ macro(_make_distrib_file_part)
     else()
         if(DISTRIB_VERSION)
             string(REPLACE "." ";" DISTRIB_VERSION_LIST "${DISTRIB_VERSION}")
-            list(GET DISTRIB_VERSION_LIST 0 DISTRIB_VERSION_MAJOR)
-            list(GET DISTRIB_VERSION_LIST 1 DISTRIB_VERSION_MINOR)
-            list(GET DISTRIB_VERSION_LIST 2 DISTRIB_VERSION_PATCH)
+            list(LENGTH DISTRIB_VERSION_LIST DISTRIB_VERSION_LIST_LEN)
+            if(NOT DISTRIB_VERSION_LIST_LEN LESS 1)
+                list(GET DISTRIB_VERSION_LIST 0 DISTRIB_VERSION_MAJOR)
+            endif()
+            if(NOT DISTRIB_VERSION_LIST_LEN LESS 2)
+                list(GET DISTRIB_VERSION_LIST 1 DISTRIB_VERSION_MINOR)
+            endif()
+            if(NOT DISTRIB_VERSION_LIST_LEN LESS 3)
+                list(GET DISTRIB_VERSION_LIST 2 DISTRIB_VERSION_PATCH)
+            endif()
             string(APPEND DISTRIB_FILE_PART "${DISTRIB_VERSION_MAJOR}.${DISTRIB_VERSION_MINOR}")
         endif()
         if(DISTRIB_ARCH)
@@ -291,5 +298,5 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GetDistribInfo.cmake
-# X-Chewy-Version: 2.21
+# X-Chewy-Version: 2.22
 # X-Chewy-Description: Get a distribution codename
