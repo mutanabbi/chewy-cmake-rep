@@ -75,6 +75,16 @@ else()
       )
 endif()
 
+function(_list_to_quoted_strings LIST_VARIABLE)
+    if(DEFINED ${LIST_VARIABLE})
+        foreach(_in IN LISTS ${LIST_VARIABLE})
+            string(APPEND _inputs " \"${_in}\"")
+        endforeach()
+        set(${LIST_VARIABLE} "${_inputs}" PARENT_SCOPE)
+        unset(_inputs)
+    endif()
+endfunction()
+
 function(generate_doxygen_documentation target)
     set(_options)
     set(_one_value_args COMMENT CONFIG OUTPUT_CONFIG)
@@ -122,7 +132,7 @@ function(generate_doxygen_documentation target)
         set(DOXYGEN_RECURSIVE YES)
     endif()
     if(NOT DEFINED DOXYGEN_INPUT)
-        set(DOXYGEN_INPUT "\"${PROJECT_SOURCE_DIR}\" \"${PROJECT_BINARY_DIR}\"")
+        set(DOXYGEN_INPUT "${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}")
     endif()
     if(NOT DEFINED DOXYGEN_OUTPUT_DIRECTORY)
         set(DOXYGEN_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/doc")
@@ -140,6 +150,12 @@ function(generate_doxygen_documentation target)
         DOXYGEN_EXCLUDE_PATTERNS
         "${DOXYGEN_EXCLUDE_PATTERNS} */.git/* */.svn/* */.hg/* *_tester.cc */CMakeFiles/* */cmake/* */_CPack_Packages/* DartConfiguration.tcl"
       )
+
+    # Transform lists into space separated strings
+    # TODO Review doxygen options and add more list variables
+    foreach(_item DOXYGEN_INPUT DOXYGEN_EXCLUDE)
+        _list_to_quoted_strings(${_item})
+    endforeach()
 
     # Get other defaults from generated file
     include("${_GDD_BASE_DIR}/DoxygenDefaults.cmake")
@@ -161,7 +177,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GenerateDoxygenDocumentation.cmake
-# X-Chewy-Version: 1.7
+# X-Chewy-Version: 2.0
 # X-Chewy-Description: Add a target to generate doxygen documentation
 # X-Chewy-AddonFile: Doxyfile.in
 # X-Chewy-AddonFile: DoxygenDefaults.cmake
