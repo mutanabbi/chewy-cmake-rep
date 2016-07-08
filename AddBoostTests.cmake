@@ -61,7 +61,7 @@ include("${_ADD_BOOST_TEST_BASE_DIR}/TeamCityIntegration.cmake")
 is_running_under_teamcity(_ADD_BOOST_TEST_UNDER_TEAM_CITY)
 
 if(_ADD_BOOST_TEST_UNDER_TEAM_CITY)
-    find_package(teamcity-cpp-boost 1.7 QUIET)
+    find_package(teamcity-cpp-boost 1.7.2 QUIET)
     # If found an object library target with same name will be defined
     if(TARGET teamcity-cpp-boost)
         set(_ADD_BOOST_TEST_WITH_TEAM_CITY ON)
@@ -183,12 +183,29 @@ function(add_boost_tests)
       )
 
     # Add link target if Boost UTF has been found
-    if(Boost_UNIT_TEST_FRAMEWORK_LIBRARY)
+    if(TARGET Boost::unit_test_framework)
         target_link_libraries(
             ${add_boost_tests_TARGET}
-            ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
+            Boost::unit_test_framework
           )
+        # For CMake < 3.5
+        if(Boost_UNIT_TEST_FRAMEWORK_LIBRARY)
+            target_link_libraries(
+                ${add_boost_tests_TARGET}
+                ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
+              )
+        endif()
     endif()
+
+    # TODO There is no easy way to access a `LOCATION` property of the target,
+    # so use a workaround... build it from parts!
+    # Setting this property would help to identify full names of test executables.
+    # It can be reported to a CI server, so it wouldn't be necessarry to specify
+    # tests to run manually :-)
+    set_property(
+        GLOBAL APPEND
+        PROPERTY PROJECT_TEST_EXECUTABLES "${CMAKE_CURRENT_BINARY_DIR}/${add_boost_tests_TARGET}${CMAKE_EXECUTABLE_SUFFIX}"
+      )
 
     # Scan source files for well known boost test framework macros and add test by found name
     foreach(source ${add_boost_tests_FILTERED_SOURCES})
@@ -288,7 +305,7 @@ endfunction(add_boost_tests)
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddBoostTests.cmake
-# X-Chewy-Version: 5.4
+# X-Chewy-Version: 5.5
 # X-Chewy-Description: Integrate Boost unit tests into CMake infrastructure
 # X-Chewy-AddonFile: TeamCityIntegration.cmake
 # X-Chewy-AddonFile: unit_tests_main_skeleton.cc.in
