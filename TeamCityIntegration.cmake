@@ -36,7 +36,7 @@ macro(tc_escape_string VAR)
     string(REPLACE "]"   "|]" ${VAR} "${${VAR}}")
 endmacro()
 
-function(_tc_bare_message NAME )
+function(_tc_bare_message NAME)
     if(NOT "$ENV{TEAMCITY_PROCESS_FLOW_ID}" STREQUAL "")
         # Setup message start
         set(_message "##teamcity[${NAME}")
@@ -51,7 +51,7 @@ function(_tc_bare_message NAME )
     endif()
 endfunction()
 
-function(_tc_message NAME )
+function(_tc_message NAME)
     if(NOT "$ENV{TEAMCITY_PROCESS_FLOW_ID}" STREQUAL "")
         # Setup message start
         string(TIMESTAMP _timestamp "%Y-%m-%dT%H:%M:%S.000" UTC)
@@ -306,14 +306,14 @@ endfunction()
 function(tc_set_param NAME VALUE)
     tc_escape_string(NAME)
     tc_escape_string(VALUE)
-    _tc_bare_message("setParameter" "'name=${NAME}'" "value='${VALUE}'")
+    _tc_bare_message("setParameter" "name='${NAME}'" "value='${VALUE}'")
 endfunction()
 
 ##teamcity[buildStatisticValue key='<valueTypeKey>' value='<value>']
 function(tc_build_stats KEY VALUE)
     tc_escape_string(KEY)
     tc_escape_string(VALUE)
-    _tc_bare_message("buildStatisticValue" "'key=${KEY}'" "value='${VALUE}'")
+    _tc_bare_message("buildStatisticValue" "key='${KEY}'" "value='${VALUE}'")
 endfunction()
 
 ##teamcity[enableServiceMessages]
@@ -328,5 +328,5 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: TeamCityIntegration.cmake
-# X-Chewy-Version: 1.1
+# X-Chewy-Version: 1.2
 # X-Chewy-Description: Interact w/ TeamCity via service messages
