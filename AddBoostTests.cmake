@@ -197,15 +197,30 @@ function(add_boost_tests)
         endif()
     endif()
 
-    # TODO There is no easy way to access a `LOCATION` property of the target,
-    # so use a workaround... build it from parts!
-    # Setting this property would help to identify full names of test executables.
-    # It can be reported to a CI server, so it wouldn't be necessarry to specify
+    # Set `PROJECT_TEST_EXECUTABLES` global property to help identify full names of test executables.
+    # It can be reported to a CI server (by a project's `CMakeLists.txt`), so it wouldn't be necessarry to specify
     # tests to run manually :-)
-    set_property(
-        GLOBAL APPEND
-        PROPERTY PROJECT_TEST_EXECUTABLES "${CMAKE_CURRENT_BINARY_DIR}/${add_boost_tests_TARGET}${CMAKE_EXECUTABLE_SUFFIX}"
-      )
+    if(WIN32)
+        # In multi-configuration environment lets put a marker tag to be replaced
+        # later w/ actual configuration name. To do so, one may use `string(CONFIGURE ...)`.
+        # NOTE Do nothing, if no configurations has been specified!
+        if(CMAKE_CONFIGURATION_TYPES)
+            set(_cfg_placeholder "@CURRENT_CONFIGURATION@/")
+            set(_need_to_set_registration_property ON)
+        endif()
+    else()
+        # For single configuration generators, just register a pure path w/o any placeholders.
+        set(_need_to_set_registration_property ON)
+    endif()
+
+    if(_need_to_set_registration_property)
+        # TODO There is no easy way to access a `LOCATION` property of the target,
+        # so use a workaround... build it from parts!
+        set_property(
+            GLOBAL APPEND PROPERTY
+            PROJECT_TEST_EXECUTABLES "${CMAKE_CURRENT_BINARY_DIR}/${_cfg_placeholder}${add_boost_tests_TARGET}${CMAKE_EXECUTABLE_SUFFIX}"
+          )
+    endif()
 
     # Scan source files for well known boost test framework macros and add test by found name
     foreach(source ${add_boost_tests_FILTERED_SOURCES})
@@ -305,7 +320,7 @@ endfunction(add_boost_tests)
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddBoostTests.cmake
-# X-Chewy-Version: 5.5
+# X-Chewy-Version: 5.6
 # X-Chewy-Description: Integrate Boost unit tests into CMake infrastructure
 # X-Chewy-AddonFile: TeamCityIntegration.cmake
 # X-Chewy-AddonFile: unit_tests_main_skeleton.cc.in
