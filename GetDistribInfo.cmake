@@ -214,7 +214,7 @@ if(NOT DISTRIB_ID)
 
     elseif(EXISTS /etc/gentoo-release)
 
-        set(DISTRIB_ID "gentoo")
+        set(DISTRIB_ID "Gentoo")
         set(DISTRIB_PKG_FMT "TBZ2")
         set(DISTRIB_SRC_PKG_FMT "TBZ2")
         # Try to tune DISTRIB_ARCH
@@ -258,30 +258,6 @@ if(NOT DISTRIB_ID)
 
     _make_distrib_file_part()
 
-    # TODO Add other package managers here
-    if(DISTRIB_PKG_FMT STREQUAL "RPM")
-        if(NOT DEFINED DISTRIB_PKG_VERSION)
-            set(DISTRIB_PKG_VERSION 1)
-        endif()
-        if(DISTRIB_ID STREQUAL "CentOS")
-            if(DISTRIB_VERSION VERSION_LESS 6)
-                string(APPEND DISTRIB_PKG_VERSION ".el5.centos")
-            elseif(DISTRIB_VERSION VERSION_LESS 7)
-                string(APPEND DISTRIB_PKG_VERSION ".el6.centos")
-            elseif(DISTRIB_VERSION VERSION_LESS 8)
-                string(APPEND DISTRIB_PKG_VERSION ".el7.centos")
-            endif()
-        elseif(DISTRIB_ID STREQUAL "RHEL")
-            if(DISTRIB_VERSION VERSION_LESS 6)
-                string(APPEND DISTRIB_PKG_VERSION ".el5")
-            elseif(DISTRIB_VERSION VERSION_LESS 7)
-                string(APPEND DISTRIB_PKG_VERSION ".el6")
-            elseif(DISTRIB_VERSION VERSION_LESS 8)
-                string(APPEND DISTRIB_PKG_VERSION ".el7")
-            endif()
-        endif()
-    endif()
-
     if(DISTRIB_ID)
         set(_distrib_info_line "${DISTRIB_ID}")
 
@@ -303,5 +279,5 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GetDistribInfo.cmake
-# X-Chewy-Version: 2.22
+# X-Chewy-Version: 2.24
 # X-Chewy-Description: Get a distribution codename
