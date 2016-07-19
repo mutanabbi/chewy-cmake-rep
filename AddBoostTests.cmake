@@ -197,6 +197,14 @@ function(add_boost_tests)
         endif()
     endif()
 
+    # Try to render templated header files
+    file(GLOB _conf_files "${CMAKE_CURRENT_SOURCE_DIR}/*.h.in")
+    foreach(_f IN LISTS _conf_files)
+        get_filename_component(_fname "${_f}" NAME)
+        string(REGEX REPLACE ".in$" "" _fname "${_fname}")
+        configure_file("${_f}" "${CMAKE_CURRENT_BINARY_DIR}/${_fname}" @ONLY)
+    endforeach()
+
     # Set `PROJECT_TEST_EXECUTABLES` global property to help identify full names of test executables.
     # It can be reported to a CI server (by a project's `CMakeLists.txt`), so it wouldn't be necessarry to specify
     # tests to run manually :-)
@@ -320,7 +328,7 @@ endfunction(add_boost_tests)
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddBoostTests.cmake
-# X-Chewy-Version: 5.6
+# X-Chewy-Version: 5.7
 # X-Chewy-Description: Integrate Boost unit tests into CMake infrastructure
 # X-Chewy-AddonFile: TeamCityIntegration.cmake
 # X-Chewy-AddonFile: unit_tests_main_skeleton.cc.in
