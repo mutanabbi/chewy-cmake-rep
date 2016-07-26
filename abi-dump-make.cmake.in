@@ -1,0 +1,24 @@
+include("@add_abi_check_target_COMMON_CMAKE_CODE@")
+
+get_filename_component(_lib "${add_abi_check_target_TARGET_FILE_NAME}" NAME_WE)
+
+execute_process(
+    COMMAND
+        "${ABI_COMPLIANCE_CHECKER_EXECUTABLE}"
+            -lib "${_lib}"
+            -dump "${add_abi_check_target_XML_DESCRIPTOR}"
+            -log-path "${add_abi_check_target_ABI_CHECKER_DIR}/dump.log"
+            -dump-path "${add_abi_check_target_DUMP_FILE}"
+            ${add_abi_check_target_ABI_CHECK_OPTIONS}
+    RESULT_VARIABLE _abi_ec
+    WORKING_DIRECTORY "${add_abi_check_target_ABI_CHECKER_DIR}"
+  )
+
+if(NOT _abi_ec EQUAL 0)
+    message(WARNING "ABI dump exit code: ${_abi_ec}")
+    set(_log "${add_abi_check_target_ABI_CHECKER_DIR}/dump.log")
+    if(EXISTS "${_log}")
+        execute_process(COMMAND /bin/cat "${_log}")
+    endif()
+    message(FATAL_ERROR "Unexpected error on ABI dump!")
+endif()

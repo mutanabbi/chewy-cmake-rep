@@ -1,0 +1,9 @@
+items.find(
+    {
+        "$and": [
+            {"repo": {"$eq": "@_artifactory_get_latest_abi_dump_REPOSITORY@"}}
+          , {"path": {"$eq": "@_artifactory_get_latest_abi_dump_PATH@"}}
+          , {"name": {"$match": "@_artifactory_get_latest_abi_dump_FILENAME_GLOB@"}}
+        ]
+    }
+  ).include("@version")

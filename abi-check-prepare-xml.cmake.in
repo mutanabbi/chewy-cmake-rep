@@ -1,0 +1,80 @@
+include("@add_abi_check_target_COMMON_CMAKE_CODE@")
+
+_debug_spam("Selected directory: ${add_abi_check_target_DIRECTORY}")
+_debug_spam("Going to analyse library: ${add_abi_check_target_TARGET_FILE_NAME}")
+_debug_spam("Considering sources for ${add_abi_check_target_TARGET} target")
+
+# Make sure compile DB exists
+if(NOT EXISTS "${add_abi_check_target_COMPILE_DB}")
+    message(
+        FATAL_ERROR "Compile DB file required for `add_abi_check_target()`. Use -DCMAKE_EXPORT_COMPILE_COMMANDS=ON when run `cmake`"
+        )
+endif()
+
+# Collect compiler flags
+foreach(_source ${add_abi_check_target_SOURCES})
+    get_filename_component(_abs_path "${add_abi_check_target_CURRENT_SOURCE_DIR}/${_source}" ABSOLUTE)
+    _debug_spam(${_abs_path})
+    _debug_spam("JQ: .[] | select(.directory==\"${add_abi_check_target_DIRECTORY}\") | select(.file==\"${_abs_path}\") | .command")
+
+    execute_process(
+        COMMAND "${JQ_EXECUTABLE}" -r
+            ".[] | select(.directory==\"${add_abi_check_target_DIRECTORY}\") | select(.file==\"${_abs_path}\") | .command"
+            "${add_abi_check_target_COMPILE_DB}"
+        OUTPUT_VARIABLE _compile_cmd
+        RESULT_VARIABLE _jq_ec
+        ERROR_QUIET
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+      )
+
+    if(NOT _jq_ec EQUAL 0)
+        _debug_spam("`jq` exited with error code ${_jq_ec}")
+        continue()
+    endif()
+
+    _debug_spam("COMPILE COMMAND: ${_compile_cmd}")
+
+    separate_arguments(_compile_cmd UNIX_COMMAND ${_compile_cmd})
+
+    # Classify options
+    set(_skip_next OFF)
+    foreach(_opt ${_compile_cmd})
+        _debug_spam("${_opt}")
+
+        if(_skip_next)
+            set(_skip_next OFF)
+        elseif(_opt MATCHES "-I(.*)")                   # Select #include path into a list of paths
+            list(APPEND _include_paths "${CMAKE_MATCH_1}")
+        elseif(_opt STREQUAL "-o" OR _opt STREQUAL "-c")
+            set(_skip_next ON)
+        elseif(_opt IN_LIST _compiler_options_to_ignore)
+            # Ignore
+        elseif(_opt MATCHES "(-.*)")                    # Collect other compiler flags
+            list(APPEND _cxx_flags "${CMAKE_MATCH_1}")
+        endif()
+    endforeach()
+
+endforeach()
+
+if(_cxx_flags)
+    list(REMOVE_DUPLICATES _cxx_flags)
+    _join("${_cxx_flags}" "\n    " add_abi_check_target_GCC_OPTIONS)
+endif()
+
+if(_include_paths)
+    list(REMOVE_DUPLICATES _include_paths)
+    _join("${_include_paths}" "\n    " add_abi_check_target_INCLUDE_PATHS)
+endif()
+
+if(add_abi_check_target_HEADERS)
+    list(REMOVE_DUPLICATES add_abi_check_target_HEADERS)
+    _join("${add_abi_check_target_HEADERS}" "\n    " add_abi_check_target_HEADERS)
+endif()
+
+if(add_abi_check_target_SKIP_HEADERS)
+    list(REMOVE_DUPLICATES add_abi_check_target_SKIP_HEADERS)
+    _join("${add_abi_check_target_SKIP_HEADERS}" "\n    " add_abi_check_target_SKIP_HEADERS)
+    set(add_abi_check_target_SKIP_HEADERS "<skip_headers>\n    ${add_abi_check_target_SKIP_HEADERS}\n</skip_headers>")
+endif()
+
+configure_file("${add_abi_check_target_XML_TEMPLATE}" "${add_abi_check_target_XML_DESCRIPTOR}")

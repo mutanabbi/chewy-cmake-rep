@@ -11,7 +11,7 @@
 </headers>
 
 <libs>
-    @add_abi_check_target_LIBRARY@
+    @add_abi_check_target_TARGET_FILE_DIR@/@add_abi_check_target_TARGET_FILE_NAME@
 </libs>
 
 <gcc_options>

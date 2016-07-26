@@ -1,0 +1,52 @@
+set(add_abi_check_target_SKIP_XML_RENDERING ON)
+include("@add_abi_check_target_COMMON_CMAKE_CODE@")
+include("@_ADD_ABI_CHECK_TARGET_LIST_DIR@/Artifactory.cmake")
+
+set(
+    _repo_path
+    "${add_abi_check_target_PROJECT_NAME}/${add_abi_check_target_BUILD_TYPE}-gcc-${add_abi_check_target_COMPILER_VERSION}${add_abi_check_target_CXX_STANDARD}"
+  )
+_debug_spam("Repository path: ${_repo_path}")
+
+get_filename_component(_library_name_glob "${add_abi_check_target_TARGET_FILE_NAME}" NAME_WE)
+string(APPEND _library_name_glob "*")
+_debug_spam("Library name glob: ${add_abi_check_target_TARGET_FILE_NAME}")
+
+macro(_try_get_latest_abi_dump)
+    artifactory_get_latest_abi_dump(
+        "${add_abi_check_target_LATEST_DUMP_FILE}"
+        REPOSITORY_URL "${add_abi_check_target_ARTIFACTORY_REPO}"
+        PATH "${_repo_path}"
+        FILENAME_GLOB "${_library_name_glob}"
+        USER "@add_abi_check_target_ARTIFACTORY_USER@"
+        PASS "@add_abi_check_target_ARTIFACTORY_PASS@"
+        WORKING_DIRECTORY "${add_abi_check_target_CURRENT_BINARY_DIR}"
+        RESULT_VARIABLE _got_it
+      )
+endmacro()
+
+_try_get_latest_abi_dump()
+
+# ATTENTION If there is no ABI dumps found, lets upload the first one...?
+if(_got_it EQUAL 0)
+    # Ok... continue to check the dump file...
+elseif(_got_it EQUAL 1)
+    if(ABI_CHECK_SEND_IF_NOT_FOUND)
+        message(STATUS "No ABI dump found, going to send the current one...")
+        execute_process(
+            COMMAND "${CMAKE_COMMAND}" --build . --target ${add_abi_check_target_TARGET}-update-abi-dump
+            RESULT_VARIABLE _send_result
+        )
+        if(_send_result EQUAL 0)
+            message(STATUS "Current ABI dump has been sent")
+            _try_get_latest_abi_dump()
+        endif()
+    endif()
+else()
+    message(FATAL_ERROR "Unexpected error happened while getting a latest ABI dump")
+endif()
+
+if(NOT EXISTS "${add_abi_check_target_LATEST_DUMP_FILE}")
+    message(FATAL_ERROR "There is no any ABI dump found at Artifactory repository `${add_abi_check_target_ARTIFACTORY_REPO}/${_repo_path}`")
+    return()
+endif()

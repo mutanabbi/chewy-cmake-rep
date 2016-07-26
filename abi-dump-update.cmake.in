@@ -1,41 +1,24 @@
-include(@add_abi_check_target_COMMON_CMAKE_CODE@)
+set(add_abi_check_target_SKIP_XML_RENDERING ON)
+include("@add_abi_check_target_COMMON_CMAKE_CODE@")
 
-get_filename_component(_lib "${add_abi_check_target_LIBRARY}" NAME_WE)
+# Update generated dump at the Artifactory server
+if(EXISTS "${add_abi_check_target_DUMP_FILE}")
+    message(STATUS "Going to send: ${add_abi_check_target_DUMP_FILE}")
 
-execute_process(
-    COMMAND "${ABI_COMPIANCE_CHECKER_EXECUABLE}" -lib "${_lib}" -dump "${add_abi_check_target_OUTPUT}"
-    RESULT_VARIABLE _abi_ec
-    WORKING_DIRECTORY "${add_abi_check_target_DIRECTORY}"
-  )
-
-if(NOT _abi_ec EQUAL 0)
-    message(WARNING "ABI compliance checker has exited with non zero return code!")
-    set(_log "${add_abi_check_target_DIRECTORY}/logs/${_lib}/${add_abi_check_target_VERSION}/log.txt")
-    if(EXISTS "${_log}")
-        execute_process(COMMAND /bin/cat "${_log}")
-    endif()
-endif()
-
-# Update dump in the source tree:
-# 0) make sure `.abi` directory exists
-if(NOT EXISTS "${add_abi_check_target_ABI_SRC_DIR}")
-    file(MAKE_DIRECTORY "${add_abi_check_target_ABI_SRC_DIR}")
-endif()
-
-set(_src_dir "${add_abi_check_target_CURRENT_BINARY_DIR}/abi_dumps/${_lib}")
-set(_src_tar "${_src_dir}/${_lib}_${add_abi_check_target_VERSION}.abi.tar.gz")
-if(EXISTS "${_src_tar}")
-    file(COPY "${_src_tar}" DESTINATION "${add_abi_check_target_ABI_SRC_DIR}")
+    include("@_ADD_ABI_CHECK_TARGET_LIST_DIR@/Artifactory.cmake")
+    artifactory_send_files(
+        URL_TEMPLATE
+            "${add_abi_check_target_ARTIFACTORY_REPO}/${add_abi_check_target_PROJECT_NAME}/${add_abi_check_target_BUILD_TYPE}-gcc-${add_abi_check_target_COMPILER_VERSION}${add_abi_check_target_CXX_STANDARD}/%(file)"
+        USER "@add_abi_check_target_ARTIFACTORY_USER@"
+        PASS "@add_abi_check_target_ARTIFACTORY_PASS@"
+        WORKING_DIRECTORY "${add_abi_check_target_ABI_CHECKER_DIR}"
+        FILES "${add_abi_check_target_DUMP_FILE}"
+        PROPERTIES
+            "version=${add_abi_check_target_VERSION}"
+            "compiler=gcc-${add_abi_check_target_COMPILER_VERSION}"
+            "library=${add_abi_check_target_TARGET_FILE_NAME}"
+      )
 else()
-    message(WARNING "Dump file not found: ${_src_tar}")
+    message(WARNING "Dump file not found: ${add_abi_check_target_DUMP_FILE}")
     return()
 endif()
-
-# 1) Make a symlink to the latest dump
-if(EXISTS "${_src_dir}/${_lib}_latest.abi.tar.gz")
-    file(REMOVE "${_src_dir}/${_lib}_latest.abi.tar.gz")
-endif()
-execute_process(
-    COMMAND "${CMAKE_COMMAND}" -E create_symlink "${_lib}_${add_abi_check_target_VERSION}.abi.tar.gz" "${_lib}_latest.abi.tar.gz"
-    WORKING_DIRECTORY "${add_abi_check_target_ABI_SRC_DIR}"
-  )

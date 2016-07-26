@@ -1,32 +1,42 @@
-include(@add_abi_check_target_COMMON_CMAKE_CODE@)
+include("@add_abi_check_target_COMMON_CMAKE_CODE@")
 
-get_filename_component(_lib "${add_abi_check_target_LIBRARY}" NAME_WE)
+get_filename_component(_lib "${add_abi_check_target_TARGET_FILE_NAME}" NAME_WE)
+set(_report_file "${add_abi_check_target_ABI_CHECKER_DIR}/report.html")
 
-set(_latest_tar "${add_abi_check_target_ABI_SRC_DIR}/${_lib}_latest.abi.tar.gz")
+if(EXISTS "${add_abi_check_target_LATEST_DUMP_FILE}")
+    _debug_spam("Going to check `${_lib}` having `${add_abi_check_target_LATEST_DUMP_FILE}`")
+    execute_process(
+        COMMAND "${ABI_COMPLIANCE_CHECKER_EXECUTABLE}"
+            -lib "${_lib}"
+            -old "${add_abi_check_target_LATEST_DUMP_FILE}"
+            -new "${add_abi_check_target_XML_DESCRIPTOR}"
+            -log-path "${add_abi_check_target_ABI_CHECKER_DIR}/check.log"
+            -dump-path "${add_abi_check_target_DUMP_FILE}"
+            -report-path "${_report_file}"
+            ${add_abi_check_target_ABI_CHECK_OPTIONS}
+        RESULT_VARIABLE _abi_ec
+        WORKING_DIRECTORY "${add_abi_check_target_ABI_CHECKER_DIR}"
+      )
 
-execute_process(
-    COMMAND "${ABI_COMPIANCE_CHECKER_EXECUABLE}" -lib "${_lib}" -old "${_latest_tar}" -d2 "${add_abi_check_target_OUTPUT}"
-    RESULT_VARIABLE _abi_ec
-    WORKING_DIRECTORY "${add_abi_check_target_DIRECTORY}"
-  )
+    if(_abi_ec EQUAL 0 OR _abi_ec EQUAL 1)
+        # NOTE Error code `0` and `1` is Ok (see http://ispras.linuxbase.org/index.php/ABI_compliance_checker#Error_Codes).
+        # Everything else means that some error has happened.
 
-if(NOT _abi_ec EQUAL 0)
-    message(WARNING "ABI compliance checker has exited with non zero return code!")
-    set(_log "${add_abi_check_target_DIRECTORY}/logs/${_lib}/${add_abi_check_target_VERSION}/log.txt")
-    if(EXISTS "${_log}")
-        execute_process(COMMAND /bin/cat "${_log}")
+        if(EXISTS _report_file)
+            include("@_ADD_ABI_CHECK_TARGET_LIST_DIR@/TeamCityIntegration.cmake")
+            is_running_under_teamcity(_under_tc)
+            if(_under_tc)
+                tc_publish_artefacts("${_report_file}")
+            endif()
+        endif()
+    else()
+        message(WARNING "ABI compliance checker has exited with non zero return code!")
+        set(_log "${add_abi_check_target_ABI_CHECKER_DIR}/check.log")
+        if(EXISTS "${_log}")
+            execute_process(COMMAND /bin/cat "${_log}")
+        endif()
+        message(FATAL_ERROR "Unexpected error on execution of `${ABI_COMPLIANCE_CHECKER_EXECUTABLE}`")
     endif()
-endif()
-
-file(
-    GLOB_RECURSE _rep
-    "${add_abi_check_target_DIRECTORY}/compat_reports/${_lib}/*_to_${add_abi_check_target_VERSION}/compat_report.html"
-  )
-
-if(_rep)
-    include("@_ADD_ABI_CHECK_TARGET_LIST_DIR@/TeamCityIntegration.cmake")
-    is_running_under_teamcity(_under_tc)
-    if(_under_tc)
-        tc_publish_artefacts(${_rep})
-    endif()
+else()
+    message(FATAL_ERROR "There is no ABI dump found at Artifactory repository `${add_abi_check_target_ARTIFACTORY_REPO}/${_repo_path}`")
 endif()
