@@ -1,5 +1,10 @@
 include("@add_abi_check_target_COMMON_CMAKE_CODE@")
 
+function(_join VALUES GLUE OUTPUT)
+  string(REPLACE ";" "${GLUE}" _tmp_str "${VALUES}")
+  set(${OUTPUT} "${_tmp_str}" PARENT_SCOPE)
+endfunction()
+
 _debug_spam("Selected directory: ${add_abi_check_target_DIRECTORY}")
 _debug_spam("Going to analyse library: ${add_abi_check_target_TARGET_FILE_NAME}")
 _debug_spam("Considering sources for ${add_abi_check_target_TARGET} target")
@@ -14,7 +19,7 @@ endif()
 # Collect compiler flags
 foreach(_source ${add_abi_check_target_SOURCES})
     get_filename_component(_abs_path "${add_abi_check_target_CURRENT_SOURCE_DIR}/${_source}" ABSOLUTE)
-    _debug_spam(${_abs_path})
+    _debug_spam("Source: ${_abs_path}")
     _debug_spam("JQ: .[] | select(.directory==\"${add_abi_check_target_DIRECTORY}\") | select(.file==\"${_abs_path}\") | .command")
 
     execute_process(
@@ -32,25 +37,35 @@ foreach(_source ${add_abi_check_target_SOURCES})
         continue()
     endif()
 
-    _debug_spam("COMPILE COMMAND: ${_compile_cmd}")
+    _debug_spam("Compile command: ${_compile_cmd}")
 
     separate_arguments(_compile_cmd UNIX_COMMAND ${_compile_cmd})
 
     # Classify options
     set(_skip_next OFF)
     foreach(_opt ${_compile_cmd})
-        _debug_spam("${_opt}")
-
         if(_skip_next)
             set(_skip_next OFF)
-        elseif(_opt MATCHES "-I(.*)")                   # Select #include path into a list of paths
-            list(APPEND _include_paths "${CMAKE_MATCH_1}")
+            _debug_spam("           Skip option: ${_opt}")
+        elseif(_opt MATCHES "^-D(.*)")                   # Select define path into a list of defines
+            _debug_spam("                Define: ${_opt}")
+            list(APPEND _defines "${CMAKE_MATCH_1}")
+            list(APPEND _cxx_flags "${_opt}")
+        elseif(_opt MATCHES "^-I(.*)")                   # Select #include path into a list of paths
+            _debug_spam("   Include path option: ${_opt}")
+            set(_inc "${CMAKE_MATCH_1}")
+            list(APPEND add_abi_check_target_INCLUDE_PATHS "${_inc}")
         elseif(_opt STREQUAL "-o" OR _opt STREQUAL "-c")
             set(_skip_next ON)
+            _debug_spam(" Skip option with next: ${_opt}")
         elseif(_opt IN_LIST _compiler_options_to_ignore)
             # Ignore
-        elseif(_opt MATCHES "(-.*)")                    # Collect other compiler flags
-            list(APPEND _cxx_flags "${CMAKE_MATCH_1}")
+            _debug_spam("         Ignore option: ${_opt}")
+        elseif(_opt MATCHES "^(-.*)")                    # Collect other compiler flags
+            list(APPEND _cxx_flags "${_opt}")
+            _debug_spam("    Add to GCC options: ${_opt}")
+        else()
+            _debug_spam("        Not recognized: ${_opt}")
         endif()
     endforeach()
 
@@ -61,9 +76,21 @@ if(_cxx_flags)
     _join("${_cxx_flags}" "\n    " add_abi_check_target_GCC_OPTIONS)
 endif()
 
-if(_include_paths)
-    list(REMOVE_DUPLICATES _include_paths)
-    _join("${_include_paths}" "\n    " add_abi_check_target_INCLUDE_PATHS)
+if(add_abi_check_target_INCLUDE_PATHS)
+    list(REMOVE_DUPLICATES add_abi_check_target_INCLUDE_PATHS)
+    _join("${add_abi_check_target_INCLUDE_PATHS}" "\n    " add_abi_check_target_INCLUDE_PATHS)
+endif()
+
+if(_defines)
+    list(REMOVE_DUPLICATES _defines)
+    foreach(_d IN LISTS _defines)
+        if(_d MATCHES "([^=]+)=(.*)")
+            list(APPEND add_abi_check_target_DEFINES "#define ${CMAKE_MATCH_1} ${CMAKE_MATCH_2}")
+        else()
+            list(APPEND add_abi_check_target_DEFINES "#define ${_d}")
+        endif()
+    endforeach()
+    _join("${add_abi_check_target_DEFINES}" "\n    " add_abi_check_target_DEFINES)
 endif()
 
 if(add_abi_check_target_HEADERS)

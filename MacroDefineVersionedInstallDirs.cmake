@@ -20,11 +20,9 @@
 include(CMakeParseArguments)
 
 # Define install destination dirs
-if(CMAKE_VERSION VERSION_LESS 3.4)
-    include("${CMAKE_CURRENT_LIST_DIR}/GNUInstallDirs.cmake")
-else()
-    include(GNUInstallDirs)
-endif()
+# ATTENTION CMake >= 3.5 required!
+# TODO How to assert that?
+include(GNUInstallDirs)
 
 macro(define_versioned_install_paths)
     set(options )
@@ -34,13 +32,18 @@ macro(define_versioned_install_paths)
 
     if(NOT _define_versioned_install_paths_VERSIONED_PART)
         if(NOT _define_versioned_install_paths_PROJECT_NAME)
-            set(_define_versioned_install_paths_PROJECT_NAME "${PROJECT_NAME}")
+            if(PROJECT_NAME)
+                set(_define_versioned_install_paths_PROJECT_NAME "${PROJECT_NAME}")
+            else()
+                message(FATAL_ERROR "No `PROJECT_NAME` provided in call to `define_versioned_install_paths()` and no `PROJECT_NAME` defined")
+            endif()
         endif()
         if(NOT _define_versioned_install_paths_VERSION)
-            set(
-                _define_versioned_install_paths_VERSION
-                "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
-              )
+            if(PROJECT_VERSION)
+                set(_define_versioned_install_paths_VERSION "${PROJECT_VERSION}")
+            else()
+                message(FATAL_ERROR "No `VERSION` provided in call to `define_versioned_install_paths()` and no `PROJECT_VERSION` defined")
+            endif()
         endif()
         set(
             _define_versioned_install_paths_VERSIONED_PART
@@ -65,7 +68,7 @@ macro(define_versioned_install_paths)
           )
     endif()
 
-    foreach(_dir ${_define_versioned_install_paths_PATHS})
+    foreach(_dir IN LISTS _define_versioned_install_paths_PATHS)
         # Handle special cases:
         #  - DOCDIR already contains a PROJECT_NAME, so need to rebuild this path starting from DATAROOTDIR
         if(_dir STREQUAL "DOCDIR")
@@ -81,6 +84,6 @@ endmacro()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: MacroDefineVersionedInstallDirs.cmake
-# X-Chewy-Version: 1.3
+# X-Chewy-Version: 1.4
 # X-Chewy-Description: Macro to redefine some install paths to have versioned component
 # X-Chewy-AddonFile: GNUInstallDirs.cmake

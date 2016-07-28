@@ -1,14 +1,16 @@
-set(add_abi_check_target_SKIP_XML_RENDERING ON)
 include("@add_abi_check_target_COMMON_CMAKE_CODE@")
 
 # Update generated dump at the Artifactory server
 if(EXISTS "${add_abi_check_target_DUMP_FILE}")
+    include("@_ADD_ABI_CHECK_TARGET_LIST_DIR@/TeamCityIntegration.cmake")
+    tc_progress_start("Uploading ABI dump of ${add_abi_check_target_TARGET_FILE_NAME}")
+
     message(STATUS "Going to send: ${add_abi_check_target_DUMP_FILE}")
 
     include("@_ADD_ABI_CHECK_TARGET_LIST_DIR@/Artifactory.cmake")
     artifactory_send_files(
         URL_TEMPLATE
-            "${add_abi_check_target_ARTIFACTORY_REPO}/${add_abi_check_target_PROJECT_NAME}/${add_abi_check_target_BUILD_TYPE}-gcc-${add_abi_check_target_COMPILER_VERSION}${add_abi_check_target_CXX_STANDARD}/%(file)"
+            "${add_abi_check_target_ARTIFACTORY_REPO}/${add_abi_check_target_PROJECT_NAME}/${add_abi_check_target_DISTRIB}/${add_abi_check_target_BUILD_TYPE}-gcc-${add_abi_check_target_COMPILER_VERSION}${add_abi_check_target_CXX_STANDARD}/%(file)"
         USER "@add_abi_check_target_ARTIFACTORY_USER@"
         PASS "@add_abi_check_target_ARTIFACTORY_PASS@"
         WORKING_DIRECTORY "${add_abi_check_target_ABI_CHECKER_DIR}"
@@ -18,6 +20,9 @@ if(EXISTS "${add_abi_check_target_DUMP_FILE}")
             "compiler=gcc-${add_abi_check_target_COMPILER_VERSION}"
             "library=${add_abi_check_target_TARGET_FILE_NAME}"
       )
+
+    tc_progress_end("Uploading ABI dump of ${add_abi_check_target_TARGET_FILE_NAME}")
+
 else()
     message(WARNING "Dump file not found: ${add_abi_check_target_DUMP_FILE}")
     return()

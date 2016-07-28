@@ -20,6 +20,12 @@ find_program(CURL_EXECUTABLE curl)
 
 set(_ARTIFACTORY_LIST_DIR "${CMAKE_CURRENT_LIST_DIR}")
 
+function(artifactory_verbose msg)
+    if($ENV{VERBOSE})
+        message("[Artifactory] ${msg}")
+    endif()
+endfunction()
+
 function(artifactory_send_files)
     if(NOT CURL_EXECUTABLE)
         message(FATAL_ERROR "`curl` not found, but required for sending to Artifactory")
@@ -174,22 +180,21 @@ function(artifactory_get_latest_abi_dump OUTPUT_FILENAME)
     # TODO Strip '/' if present!
 
     # Ok, render AQL to be send
-    configure_file(
-        "${_ARTIFACTORY_LIST_DIR}/artifactory_get_dumps.aql.in"
-        "${CMAKE_CURRENT_BINARY_DIR}/${add_abi_check_target_TARGET}_get_dumps.aql"
-        @ONLY
-      )
+    file(READ "${_ARTIFACTORY_LIST_DIR}/artifactory_get_dumps.aql.in" _template)
+    string(CONFIGURE "${_template}" _aql @ONLY)
+    artifactory_verbose("Going to send AQL:\n${_aql}")
 
     # Search for ABI dumps at specified repository and get `version` and `name` properties
     # transforming from JSON into a CSV format. If no files found, return `NOTFOUND` which
     # is synonym of `false` for CMake.
     execute_process(
+        COMMAND "${CMAKE_COMMAND}" -E echo "${_aql}"
         COMMAND "${CURL_EXECUTABLE}"
             ${_verbose}
             ${_credentials}
             -m "${_artifactory_get_latest_abi_dump_TIMEOUT}"
             -H "Content-Type: application/json"
-            -d "@${CMAKE_CURRENT_BINARY_DIR}/${add_abi_check_target_TARGET}_get_dumps.aql"
+            -d "@-"
             "${_artifactory_get_latest_abi_dump_SEARCH_URL}"
         COMMAND "${JQ_EXECUTABLE}" "-r"
             "if .range.total == 0 then \"NOTFOUND\" else .results[]|[.properties[].value, .name]|join(\",\") end"

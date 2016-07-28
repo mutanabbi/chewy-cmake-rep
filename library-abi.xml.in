@@ -10,6 +10,10 @@
     @add_abi_check_target_HEADERS@
 </headers>
 
+<defines>
+    @add_abi_check_target_DEFINES@
+</defines>
+
 <libs>
     @add_abi_check_target_TARGET_FILE_DIR@/@add_abi_check_target_TARGET_FILE_NAME@
 </libs>

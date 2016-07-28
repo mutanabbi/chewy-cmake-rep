@@ -65,7 +65,33 @@ macro(_ace_find_component_via_pkg_config _ace_comp)
         # Copy other than `-I' flags to `XXX_DEFINITIONS' variable,
         # according CMake guide (/usr/share/cmake/Modules/readme.txt)
         set(ACE_${_ace_comp_up}_DEFINITIONS ${ACE_${_ace_comp_up}_CFLAGS_OTHER})
-        list(APPEND ACE_DEFINITIONS "${ACE_${_ace_comp_up}_DEFINITIONS}")
+        # Transform libraries into full paths if ACE installed to non standard location
+        if(ACE_${_ace_comp_up}_LIBRARY_DIRS)
+            foreach(_l IN LISTS ACE_${_ace_comp_up}_LIBRARIES)
+                if(_l MATCHES ACE)
+                    if(ACE_AS_STATIC_LIBS)
+                        set(_ace_pref_names ${CMAKE_STATIC_LIBRARY_PREFIX}${_l}${CMAKE_STATIC_LIBRARY_SUFFIX})
+                    else()
+                        set(_ace_pref_names ${CMAKE_SHARED_LIBRARY_PREFIX}${_l}${CMAKE_SHARED_LIBRARY_SUFFIX})
+                    endif()
+                    find_library(
+                        _ACE_${_ace_comp_up}_LIB_${_l}_FP
+                        NAMES ${_ace_pref_names} ${_l}
+                        PATHS "${ACE_${_ace_comp_up}_LIBRARY_DIRS}"
+                        NO_DEFAULT_PATH
+                        NO_CMAKE_ENVIRONMENT_PATH
+                        NO_CMAKE_PATH
+                        NO_SYSTEM_ENVIRONMENT_PATH
+                        NO_CMAKE_SYSTEM_PATH
+                        NO_CMAKE_FIND_ROOT_PATH
+                    )
+                    list(APPEND _ace_${_ace_comp}_libs_list "${_ACE_${_ace_comp_up}_LIB_${_l}_FP}")
+                else()
+                    list(APPEND _ace_${_ace_comp}_libs_list "${_l}")
+                endif()
+            endforeach()
+            set(ACE_${_ace_comp_up}_LIBRARIES ${_ace_${_ace_comp}_libs_list})
+        endif()
     endif()
 endmacro()
 
@@ -102,51 +128,70 @@ macro(_ace_find_component_via_cmake _ace_comp _ace_cfg)
 
     # NOTE Allow to override default location(s) via
     # CMake CLI -DACE_INCLUDEDIR=PATH
-    list(APPEND _${_ace_comp_up}_include_hints "${ACE_INCLUDEDIR}")
-    list(APPEND _${_ace_comp_up}_include_hints "${ACE_ROOT}/include")
-    list(APPEND _${_ace_comp_up}_include_hints "${ACE_ROOT}")
-    # FHS standard location
-    list(APPEND _${_ace_comp_up}_include_hints "/usr/include")
-    list(APPEND _${_ace_comp_up}_include_hints "/usr/local/include")
-    # Try to use "standard" environment variables
-    list(APPEND _${_ace_comp_up}_include_hints "$ENV{ACE_ROOT}/include")
-    list(APPEND _${_ace_comp_up}_include_hints "$ENV{ACE_ROOT}")
-    # Windows specific "standard" (?) location
-    list(APPEND _${_ace_comp_up}_include_hints "$ENV{ProgramW6432}/ACE/include")
-    list(APPEND _${_ace_comp_up}_include_hints "$ENV{ProgramFiles}/ACE/include")
+    unset(_${_ace_comp_up}_include_hints)
+    if(ACE_INCLUDEDIR)
+        # Use only given hint!
+        list(APPEND _${_ace_comp_up}_include_hints "${ACE_INCLUDEDIR}")
+    else()
+        list(APPEND _${_ace_comp_up}_include_hints "${ACE_ROOT}/include")
+        list(APPEND _${_ace_comp_up}_include_hints "${ACE_ROOT}")
+        # FHS standard location
+        list(APPEND _${_ace_comp_up}_include_hints "/usr/include")
+        list(APPEND _${_ace_comp_up}_include_hints "/usr/local/include")
+        # Try to use "standard" environment variables
+        if(ENV{ACE_ROOT})
+            list(APPEND _${_ace_comp_up}_include_hints "$ENV{ACE_ROOT}/include")
+            list(APPEND _${_ace_comp_up}_include_hints "$ENV{ACE_ROOT}")
+        endif()
+        # Windows specific "standard" (?) location
+        if(ENV{ProgramW6432})
+            list(APPEND _${_ace_comp_up}_include_hints "$ENV{ProgramW6432}/ACE/include")
+        endif()
+        if(ENV{ProgramFiles})
+            list(APPEND _${_ace_comp_up}_include_hints "$ENV{ProgramFiles}/ACE/include")
+        endif()
+    endif()
+    _ace_debug_msg("    searching for: ${_ace_manual_find_headers}")
     _ace_debug_msg("    include hints: ${_${_ace_comp_up}_include_hints}")
     find_path(
-        ACE_${_ace_comp_up}_INCLUDE_DIR
+        ACE_${_ace_comp_up}_INCLUDE_DIRS
         NAMES ${_ace_manual_find_headers}
         PATHS ${_${_ace_comp_up}_include_hints}
       )
-    mark_as_advanced(ACE_${_ace_comp_up}_INCLUDE_DIR)
+    mark_as_advanced(ACE_${_ace_comp_up}_INCLUDE_DIRS)
     _ace_debug_msg("    after searching include dir: ${ACE_${_ace_comp_up}_INCLUDE_DIR}")
 
     # Try to find a libraries then
     _ace_find_component_via_cmake_get_libs(${_ace_comp})
-    # NOTE Allow to override default location(s) via
-    # CMake CLI -DACE_LIB_DIR=PATH
-    list(APPEND _${_ace_comp_up}_lib_hints "${ACE_LIBDIR${_ace_cfg_up_sfx}}")
-    list(APPEND _${_ace_comp_up}_lib_hints "${ACE_ROOT}/lib")
-    # FHS standard location
-    list(APPEND _${_ace_comp_up}_lib_hints "/usr/lib")
-    list(APPEND _${_ace_comp_up}_lib_hints "/usr/local/lib")
-    # Try to use "standard" environment variables
-    list(APPEND _${_ace_comp_up}_lib_hints "$ENV{ACE_ROOT}/lib")
-    list(APPEND _${_ace_comp_up}_lib_hints "$ENV{ACE_ROOT}")
-    # Windows specific "standard" (?) location
-    list(APPEND _${_ace_comp_up}_lib_hints "$ENV{ProgramFiles}/ACE/lib/")
-    _ace_debug_msg("    lib hints: ${_${_ace_comp_up}_lib_hints}")
+    # NOTE Allow to override default location(s) via CMake CLI:
+    # * `-DACE_LIBDIR=PATH` for single configuration generators
+    # * -DACE_LIBDIR_<CFG>=PATH for multiple configuration generators
+    unset(_${_ace_comp_up}_lib_hints${_ace_cfg_up_sfx})
+    if(ACE_LIBDIR${_ace_cfg_up_sfx})
+        # Use only given hint!
+        list(APPEND _${_ace_comp_up}_lib_hints${_ace_cfg_up_sfx} "${ACE_LIBDIR${_ace_cfg_up_sfx}}")
+    else()
+        list(APPEND _${_ace_comp_up}_lib_hints${_ace_cfg_up_sfx} "${ACE_ROOT}/lib")
+        # FHS standard location
+        list(APPEND _${_ace_comp_up}_lib_hints${_ace_cfg_up_sfx} "/usr/lib")
+        list(APPEND _${_ace_comp_up}_lib_hints${_ace_cfg_up_sfx} "/usr/local/lib")
+        # Try to use "standard" environment variables
+        list(APPEND _${_ace_comp_up}_lib_hints${_ace_cfg_up_sfx} "$ENV{ACE_ROOT}/lib")
+        list(APPEND _${_ace_comp_up}_lib_hints${_ace_cfg_up_sfx} "$ENV{ACE_ROOT}")
+        # Windows specific "standard" (?) location
+        list(APPEND _${_ace_comp_up}_lib_hints${_ace_cfg_up_sfx} "$ENV{ProgramFiles}/ACE/lib/")
+    endif()
+    _ace_debug_msg("    searching for: ${_ace_manual_find_libraries}")
+    _ace_debug_msg("    lib hints: ${_${_ace_comp_up}_lib_hints${_ace_cfg_up_sfx}}")
     find_library(
-        ACE_${_ace_comp_up}_LIBRARIES
+        ACE_${_ace_comp_up}_LIBRARIES${_ace_cfg_up_sfx}
         NAMES ${_ace_manual_find_libraries}
-        PATHS ${_${_ace_comp_up}_lib_hints}
+        PATHS ${_${_ace_comp_up}_lib_hints${_ace_cfg_up_sfx}}
       )
-    mark_as_advanced(ACE_${_ace_comp_up}_LIBRARIES)
-    _ace_debug_msg("    after searching lib dir: ${ACE_${_ace_comp_up}_LIBRARIES}")
-    if(ACE_${_ace_comp_up}_LIBRARIES)
-        set(ACE_${_ace_comp_up}_FOUND _FOUND)
+    mark_as_advanced(ACE_${_ace_comp_up}_LIBRARIES${_ace_cfg_up_sfx})
+    _ace_debug_msg("    after searching lib dir: ${ACE_${_ace_comp_up}_LIBRARIES${_ace_cfg_up_sfx}}")
+    if(ACE_${_ace_comp_up}_LIBRARIES${_ace_cfg_up_sfx})
+        set(ACE_${_ace_comp_up}${_ace_cfg_up_sfx}_FOUND _FOUND)
     endif()
 endmacro()
 
@@ -158,8 +203,8 @@ macro(_ace_add_import_targets _ace_comp _ace_cfg)
     endif()
 
     # Do nothing if nothing has found
-    if(NOT ACE_${_ace_comp_up}_FOUND)
-        _ace_debug_msg("     do not add an imported target! ACE_${_ace_comp_up}_FOUND=${ACE_${_ace_comp_up}_FOUND}")
+    if(NOT ACE_${_ace_comp_up}${_ace_cfg_up_sfx}_FOUND)
+        _ace_debug_msg("     do not add an imported target! ${_ace_comp} not found!")
         return()
     endif()
 
@@ -178,10 +223,10 @@ macro(_ace_add_import_targets _ace_comp _ace_cfg)
             ACE::${_ace_comp}
             PROPERTIES
                 IMPORTED_LINK_INTERFACE_LANGUAGES "CXX"
-                IMPORTED_LOCATION${_ace_cfg_up_sfx} ${ACE_${_ace_comp_up}_LIBRARIES}
-                INTERFACE_COMPILE_DEFINITIONS -DACE_AS_STATIC_LIBS=1
+                IMPORTED_LOCATION${_ace_cfg_up_sfx} ${ACE_${_ace_comp_up}_LIBRARIES${_ace_cfg_up_sfx}}
+                INTERFACE_COMPILE_DEFINITIONS ACE_AS_STATIC_LIBS=1
           )
-        _ace_debug_msg("     set IMPORTED_LOCATION${_ace_cfg_up_sfx}: ${ACE_${_ace_comp_up}_LIBRARIES}")
+        _ace_debug_msg("     set IMPORTED_LOCATION${_ace_cfg_up_sfx}: ${ACE_${_ace_comp_up}_LIBRARIES${_ace_cfg_up_sfx}}")
     else()
         if(NOT TARGET ACE::${_ace_comp})
             add_library(ACE::${_ace_comp} INTERFACE IMPORTED)
@@ -189,11 +234,11 @@ macro(_ace_add_import_targets _ace_comp _ace_cfg)
         else()
             _ace_debug_msg("     updating ACE::${_ace_comp} [${_ace_cfg}]")
         endif()
-        _ace_debug_msg("     set INTERFACE_LINK_LIBRARIES${_ace_cfg_up_sfx}: ${ACE_${_ace_comp_up}_LIBRARIES}")
+        _ace_debug_msg("     set INTERFACE_LINK_LIBRARIES${_ace_cfg_up_sfx}: ${ACE_${_ace_comp_up}_LIBRARIES${_ace_cfg_up_sfx}}")
         set_target_properties(
             ACE::${_ace_comp}
             PROPERTIES
-                INTERFACE_LINK_LIBRARIES "${ACE_${_ace_comp_up}_LIBRARIES}"
+                INTERFACE_LINK_LIBRARIES "${ACE_${_ace_comp_up}_LIBRARIES${_ace_cfg_up_sfx}}"
           )
     endif()
 
@@ -202,11 +247,12 @@ macro(_ace_add_import_targets _ace_comp _ace_cfg)
         APPEND PROPERTY INTERFACE_LINK_LIBRARIES Threads::Threads
         )
 
-    if(ACE_${_ace_comp_up}_INCLUDE_DIR)
+    if(ACE_${_ace_comp_up}_INCLUDE_DIRS)
+        _ace_debug_msg("     set INTERFACE_INCLUDE_DIRECTORIES: ${ACE_${_ace_comp_up}_INCLUDE_DIRS}")
         set_target_properties(
             ACE::${_ace_comp}
             PROPERTIES
-                INTERFACE_INCLUDE_DIRECTORIES "${ACE_${_ace_comp_up}_INCLUDE_DIR}"
+                INTERFACE_INCLUDE_DIRECTORIES "${ACE_${_ace_comp_up}_INCLUDE_DIRS}"
           )
     endif()
 endmacro()
@@ -222,13 +268,13 @@ macro(_ace_find_component _ace_comp)
     else()
         _ace_debug_msg("    *NIX detected, try `pkg-config`...")
         _ace_find_component_via_pkg_config(${_ace_comp})
-        _ace_add_import_targets(${_ace_comp} ${_ace_find_configurations})
+        _ace_add_import_targets(${_ace_comp} "")
         string(TOUPPER "${_ace_comp}" _ace_comp_up)
         if(NOT ACE_${_ace_comp_up}_FOUND)
             _ace_debug_msg("    fallback to manual search via cmake...")
             # Trying "manual" way...
             _ace_find_component_via_cmake(${_ace_comp} "")
-            _ace_add_import_targets(${_ace_comp} ${_ace_find_configurations})
+            _ace_add_import_targets(${_ace_comp} "")
         endif()
     endif()
 endmacro()
@@ -277,6 +323,7 @@ if(NOT ACE_LIBRARIES)
         if(TARGET ACE::${_ace_comp})
             _ace_debug_msg("  found component: ${_ace_comp}")
             list(APPEND ACE_LIBRARIES "ACE::${_ace_comp}")
+            list(APPEND ACE_INCLUDE_DIRS "${ACE_${_ace_comp_up}_INCLUDE_DIRS}")
         else()
             _ace_debug_msg("  component not found: ${_ace_comp}")
             # No! Check if that component is mandatory
@@ -304,13 +351,13 @@ if(NOT ACE_LIBRARIES)
         _ace_debug_msg("ACE version detected: ${ACE_VERSION}")
     endif()
 
-    _ace_debug_msg("Final ACE_FOUND=${ACE_FOUND}")
+    _ace_debug_msg("Final ACE_FOUND=${ACE_FOUND}, ACE_VERSION=${ACE_VERSION}")
 
     include(FindPackageHandleStandardArgs)
     find_package_handle_standard_args(
         ACE
         FOUND_VAR ACE_FOUND
-        REQUIRED_VARS ACE_LIBRARIES
+        REQUIRED_VARS ACE_LIBRARIES ACE_VERSION
         VERSION_VAR ACE_VERSION
       )
 endif()

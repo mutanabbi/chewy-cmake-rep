@@ -1,10 +1,14 @@
 include("@add_abi_check_target_COMMON_CMAKE_CODE@")
+include("@_ADD_ABI_CHECK_TARGET_LIST_DIR@/TeamCityIntegration.cmake")
 
 get_filename_component(_lib "${add_abi_check_target_TARGET_FILE_NAME}" NAME_WE)
 set(_report_file "${add_abi_check_target_ABI_CHECKER_DIR}/report.html")
 
 if(EXISTS "${add_abi_check_target_LATEST_DUMP_FILE}")
     _debug_spam("Going to check `${_lib}` having `${add_abi_check_target_LATEST_DUMP_FILE}`")
+
+    tc_progress_start("Checking ABI of ${add_abi_check_target_TARGET_FILE_NAME}")
+
     execute_process(
         COMMAND "${ABI_COMPLIANCE_CHECKER_EXECUTABLE}"
             -lib "${_lib}"
@@ -14,9 +18,12 @@ if(EXISTS "${add_abi_check_target_LATEST_DUMP_FILE}")
             -dump-path "${add_abi_check_target_DUMP_FILE}"
             -report-path "${_report_file}"
             ${add_abi_check_target_ABI_CHECK_OPTIONS}
+            ${add_abi_check_target_ABI_CHECK_EXTRA_OPTIONS}
         RESULT_VARIABLE _abi_ec
         WORKING_DIRECTORY "${add_abi_check_target_ABI_CHECKER_DIR}"
       )
+
+    tc_progress_end("Checking ABI of ${add_abi_check_target_TARGET_FILE_NAME}")
 
     if(_abi_ec EQUAL 0 OR _abi_ec EQUAL 1)
         # NOTE Error code `0` and `1` is Ok (see http://ispras.linuxbase.org/index.php/ABI_compliance_checker#Error_Codes).
