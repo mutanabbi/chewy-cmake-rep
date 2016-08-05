@@ -23,7 +23,8 @@ PythonInstall.cmake 2.1 Helper+to+install+Python+3.x+scripts PythonSourceInstall
 FindLibURIParser.cmake 1.3 Find+uriparser+library+using+%60pkg-config%60
 DefineSkeletonGenerationTargetsIfPossible.cmake 6.13 Add+targets+to+generate+class+header%2Fimplementation+and+unit-tests+skeleton+files TestCMakeLists.txt.in class.tpl.in class_tester.tpl.in new_class_tester_post.cmake.in render_template.cmake.in
 SASS2CSS.cmake 1.4 Preprocess+SASS+to+CSS
-TeamCityIntegration.cmake 1.2 Interact+w%2F+TeamCity+via+service+messages
+FindGLibC.cmake 1.0 GNU+libc+extensions+finder GetGNULibCVersion.cmake glibc_get_version.c
+TeamCityIntegration.cmake 1.3 Interact+w%2F+TeamCity+via+service+messages
 PythonMacros.cmake 1.5 Helper+to+install+Python+scripts PythonCompile.py
 FindXercesC.cmake 1.2 Find+Xerces-C+librarary+using+%60pkg-config%60
 AddPackage.cmake 4.6 Add+a+target+to+make+a+.deb%2F.rpm+package CPackCommonPackageOptions.cmake.in CPackPackageConfig.cmake.in
@@ -39,6 +40,7 @@ MacroSetUnitTestTargetName.cmake 1.1 Function+to+set+a+target+name+for+unit+test
 GetDistribInfo.cmake 2.24 Get+a+distribution+codename
 FindExiv2.cmake 1.3 Find+Exiv2+library+using+%60pkg-config%60
 FindZooKeeperC.cmake 1.0 Find+Apache+ZooKeeper+C+API+libraries zookeeper_get_version.cc
+CheckGNULibCExtensions.cmake 1.0 Check+if+a+function+requires+linking+w%2F+GNU+libc+runtime+extensions+%28librt%29
 GuessBuildType.cmake 1.7 Guess+build+type+if+not+specified+explicitly
 MacroEnableSanitizers.cmake 1.1 Macro+to+expand+a+list+of+sanitizers+to+compiler+options UseCompilerOption.cmake
 DefineDoxyDocsTargetIfPossible.cmake 2.19 Define+%60make+doxygen%60+target+to+build+API+documentation+using+%60doxygen%60 Doxyfile.in DoxygenInstall.cmake.in DoxygenDefaults.cmake
