@@ -242,6 +242,8 @@ function(add_boost_tests)
             set(_skip_scan OFF)
         endif()
         if(NOT _skip_scan)
+            set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${source})
+
             if(add_boost_tests_DEBUG)
                 message(STATUS "  [add_boost_tests] Checking source file '${source}'")
             endif()
@@ -328,7 +330,7 @@ endfunction(add_boost_tests)
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddBoostTests.cmake
-# X-Chewy-Version: 5.7
+# X-Chewy-Version: 5.8
 # X-Chewy-Description: Integrate Boost unit tests into CMake infrastructure
 # X-Chewy-AddonFile: TeamCityIntegration.cmake
 # X-Chewy-AddonFile: unit_tests_main_skeleton.cc.in
