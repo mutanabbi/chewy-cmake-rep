@@ -29,6 +29,8 @@
 # (To distribute this file outside of this repository, substitute the full
 #  License text for the above reference.)
 
+include("${CMAKE_CURRENT_LIST_DIR}/GetKeyValueFromShellLikeConfig.cmake")
+
 set(DEFAULT_DISTRIB_CODENAME "auto" CACHE STRING "Target distribution codename")
 set(DEFAULT_DISTRIB_ID "auto" CACHE STRING "Target distribution")
 
@@ -151,6 +153,36 @@ if(NOT DISTRIB_ID)
             set(DISTRIB_ARCH "-noarch")
         endif()
 
+    # Trying CentOS distros
+    elseif(EXISTS /etc/centos-release)
+        # ATTENTION CentOS has a symlink /etc/redhat-release -> /etc/centos-release,
+        # so it mut be handled before!
+        # NOTE /etc/centos-release
+        _try_check_centos(/etc/centos-release)
+
+    # Trying RedHat distros
+    elseif(EXISTS /etc/redhat-release)
+
+        file(STRINGS /etc/redhat-release _release_string)
+        if(_release_string MATCHES "CentOS")
+            _try_check_centos(/etc/redhat-release)
+        elseif(_release_string MATCHES "Red Hat")
+            _try_check_redhat(${_release_string})
+        endif()
+        # TODO Detect a real RH releases
+
+    elseif(EXISTS /etc/gentoo-release)
+
+        set(DISTRIB_ID "Gentoo")
+        set(DISTRIB_PKG_FMT "TBZ2")
+        set(DISTRIB_SRC_PKG_FMT "TBZ2")
+        # Try to tune DISTRIB_ARCH
+        if(DISTRIB_ARCH STREQUAL "x86_64")
+            # 64-bit packets usualy named amd64 here...
+            set(DISTRIB_ARCH "amd64")
+        endif()
+        # TODO Get more details
+
     # Trying LSB conformant distros like Ubuntu, RHEL or CentOS w/
     # corresponding package installed. What else?
     elseif(EXISTS /usr/bin/lsb_release)
@@ -192,37 +224,28 @@ if(NOT DISTRIB_ID)
                 # 64-bit packets usualy named amd64 here...
                 set(DISTRIB_ARCH "amd64")
             endif()
+        else()
+            # TODO Anything else?
+            _debug("LSB compliant distro detected, but not fully recognized")
         endif()
 
-    # Trying CentOS distros
-    elseif(EXISTS /etc/centos-release)
-        # ATTENTION CentOS has a symlink /etc/redhat-release -> /etc/centos-release,
-        # so it mut be handled before!
-        # NOTE /etc/centos-release
-        _try_check_centos(/etc/centos-release)
-
-    # Trying RedHat distros
-    elseif(EXISTS /etc/redhat-release)
-
-        file(STRINGS /etc/redhat-release _release_string)
-        if(_release_string MATCHES "CentOS")
-            _try_check_centos(/etc/redhat-release)
-        elseif(_release_string MATCHES "Red Hat")
-            _try_check_redhat(${_release_string})
+    # Trying LSB conformant distros but w/o corresponding package installed.
+    elseif(EXISTS /etc/lsb-release)
+        get_value_from_config_file(/etc/lsb-release KEY "DISTRIB_ID" OUTPUT_VARIABLE DISTRIB_ID)
+        get_value_from_config_file(/etc/lsb-release KEY "DISTRIB_RELEASE" OUTPUT_VARIABLE DISTRIB_VERSION)
+        get_value_from_config_file(/etc/lsb-release KEY "DISTRIB_CODENAME" OUTPUT_VARIABLE DISTRIB_CODENAME)
+        if(DISTRIB_ID STREQUAL "Ubuntu")
+            set(DISTRIB_PKG_FMT "DEB")
+            set(DISTRIB_HAS_PACKAGE_MANAGER TRUE)
+            # Try tune DISTRIB_ARCH
+            if(DISTRIB_ARCH STREQUAL "x86_64")
+                # 64-bit packets usualy named amd64 here...
+                set(DISTRIB_ARCH "amd64")
+            endif()
+        else()
+            # TODO What other distros??
+            _debug("/etc/lsb-release exists, but not fully recognized")
         endif()
-        # TODO Detect a real RH releases
-
-    elseif(EXISTS /etc/gentoo-release)
-
-        set(DISTRIB_ID "Gentoo")
-        set(DISTRIB_PKG_FMT "TBZ2")
-        set(DISTRIB_SRC_PKG_FMT "TBZ2")
-        # Try to tune DISTRIB_ARCH
-        if(DISTRIB_ARCH STREQUAL "x86_64")
-            # 64-bit packets usualy named amd64 here...
-            set(DISTRIB_ARCH "amd64")
-        endif()
-        # TODO Get more details
 
     else()
         # Try generic way
@@ -279,5 +302,6 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GetDistribInfo.cmake
-# X-Chewy-Version: 2.24
+# X-Chewy-Version: 3.0
 # X-Chewy-Description: Get a distribution codename
+# X-Chewy-AddonFile: GetKeyValueFromShellLikeConfig.cmake
