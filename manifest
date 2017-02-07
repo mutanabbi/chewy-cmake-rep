@@ -33,7 +33,7 @@ GetKeyValueFromShellLikeConfig.cmake 1.0 Getting+values+from+trivial+shell+compa
 AddCompileTests.cmake 1.2 Check+if+source%28s%29+can+be+compiled+well+%28or+not%29 TeamCityIntegration.cmake compile_test.cmake.in
 FindTasn1.cmake 1.2 Find+Tasn1+librarary+using+%60pkg-config%60
 AddOpenTarget.cmake 1.2 Define+a+target+to+open+a+file%2FURI+in+the+user%27s+preferred+application
-FindACE.cmake 2.0 Find+ACE+library+%28and+components%29+using+%60pkg-config%60+if+available ace_get_version.cpp
+FindACE.cmake 2.1 Find+ACE+library+%28and+components%29+using+%60pkg-config%60+if+available ace_get_version.cpp
 GenerateDoxygenDocumentation.cmake 2.0 Add+a+target+to+generate+doxygen+documentation Doxyfile.in DoxygenDefaults.cmake
 FindUnixODBC.cmake 1.0 Find+UnixODBC+librarary
 FindOpenLDAP.cmake 1.0 Find+OpenLDAP+libraries

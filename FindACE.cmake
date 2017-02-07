@@ -159,7 +159,7 @@ macro(_ace_find_component_via_cmake _ace_comp _ace_cfg)
         PATHS ${_${_ace_comp_up}_include_hints}
       )
     mark_as_advanced(ACE_${_ace_comp_up}_INCLUDE_DIRS)
-    _ace_debug_msg("    after searching include dir: ${ACE_${_ace_comp_up}_INCLUDE_DIR}")
+    _ace_debug_msg("    after searching include dir: ${ACE_${_ace_comp_up}_INCLUDE_DIRS}")
 
     # Try to find a libraries then
     _ace_find_component_via_cmake_get_libs(${_ace_comp})
@@ -348,6 +348,8 @@ if(NOT ACE_LIBRARIES)
             COMPILE_OUTPUT_VARIABLE _ace_get_version_compile_output
             RUN_OUTPUT_VARIABLE ACE_VERSION
           )
+        # TODO Add some spam to see the reason of the problem, if `ACE_VERSION`
+        # is not set...
         _ace_debug_msg("ACE version detected: ${ACE_VERSION}")
     endif()
 
@@ -364,6 +366,6 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: FindACE.cmake
-# X-Chewy-Version: 2.0
+# X-Chewy-Version: 2.1
 # X-Chewy-Description: Find ACE library (and components) using `pkg-config` if available
 # X-Chewy-AddonFile: ace_get_version.cpp
