@@ -18,7 +18,7 @@ FindPoco.cmake 1.0 Find+Poco+libraries
 FindCppUnit.cmake 1.0 CppUnit+finder
 CheckForOldGNULibC.cmake 1.0 Check+if+GNU+libc+%3C+2.17%2C+so+librt+needs+for+RT+extensions
 FindLibClang.cmake 2.1 Find+clang+C+API+library libclang_get_version.cpp
-AddABICheckTarget.cmake 3.1 Use+%60abi-compliance-checker%60+from+CMake+build AddABICheckTarget.cmake.in AddOpenTarget.cmake Artifactory.cmake GetDistribInfo.cmake TeamCityIntegration.cmake abi-check.cmake.in abi-check-prepare-xml.cmake.in abi-dump-get-latest.cmake.in abi-dump-make.cmake.in abi-dump-update.cmake.in artifactory_get_dumps.aql library-abi.xml.in
+AddABICheckTarget.cmake 3.4 Use+%60abi-compliance-checker%60+from+CMake+build AddABICheckTarget.cmake.in AddOpenTarget.cmake Artifactory.cmake GetDistribInfo.cmake TeamCityIntegration.cmake abi-check.cmake.in abi-check-prepare-xml.cmake.in abi-dump-get-latest.cmake.in abi-dump-make.cmake.in abi-dump-update.cmake.in artifactory_get_dumps.aql library-abi.xml.in
 PythonInstall.cmake 2.1 Helper+to+install+Python+3.x+scripts PythonSourceInstallTemplate.cmake.in
 FindLibURIParser.cmake 1.3 Find+uriparser+library+using+%60pkg-config%60
 DefineSkeletonGenerationTargetsIfPossible.cmake 6.13 Add+targets+to+generate+class+header%2Fimplementation+and+unit-tests+skeleton+files TestCMakeLists.txt.in class.tpl.in class_tester.tpl.in new_class_tester_post.cmake.in render_template.cmake.in

@@ -2,6 +2,7 @@
 #
 # TODO Docs
 # TODO Make it possible to store ABI dumps at arbitrary service
+# TODO Need to review dependencies, so changing `CMakeLists.txt` would rebuild an XML descriptor
 #
 # Simple example:
 # add_abi_check_target(
@@ -29,41 +30,94 @@
 
 include(CMakeParseArguments)
 
-find_program(ABI_COMPLIANCE_CHECKER_EXECUTABLE abi-compliance-checker)
-if(ABI_COMPLIANCE_CHECKER_EXECUTABLE)
-    message(STATUS "Found abi-compliance-checker: ${ABI_COMPLIANCE_CHECKER_EXECUTABLE}")
-else()
-    message(STATUS "WARNING: `abi-compliance-checker` not found. Won't check ABI compliance...")
-endif()
-
-find_program(JQ_EXECUTABLE jq)
-if(JQ_EXECUTABLE)
-    message(STATUS "Found jq: ${JQ_EXECUTABLE}")
-else()
-    message(STATUS "WARNING: `jq` not found. Won't check ABI compliance...")
-endif()
-
-if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    message(STATUS "WARNING: To check ABI compliance GCC is the must...")
-endif()
-
-set(_ADD_ABI_CHECK_TARGET_LIST_FILE "${CMAKE_CURRENT_LIST_FILE}")
-set(_ADD_ABI_CHECK_TARGET_LIST_DIR "${CMAKE_CURRENT_LIST_DIR}")
-set(_ADD_ABI_CHECK_TARGET_XML_TEMPLATE "${CMAKE_CURRENT_LIST_DIR}/library-abi.xml.in")
-
 if(NOT ADD_ABI_CHECK_TARGET_DEBUG AND "$ENV{ADD_ABI_CHECK_TARGET_DEBUG}")
     set(ADD_ABI_CHECK_TARGET_DEBUG ON)
 endif()
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+if(ABI_CHECK_DEFAULT_REPO)
+    set(add_abi_check_target_ARTIFACTORY_REPO "${ABI_CHECK_DEFAULT_REPO}")
+else()
+    message(STATUS "WARNING: No `ABI_CHECK_DEFAULT_REPO` has set/given. Checking ABI compliance wouldn't be possible.")
+endif()
 
-include("${_ADD_ABI_CHECK_TARGET_LIST_DIR}/AddOpenTarget.cmake")
-include("${_ADD_ABI_CHECK_TARGET_LIST_DIR}/GetDistribInfo.cmake")
-include("${_ADD_ABI_CHECK_TARGET_LIST_DIR}/TeamCityIntegration.cmake")
+if(NOT WIN32)
+    find_program(ABI_COMPLIANCE_CHECKER_EXECUTABLE abi-compliance-checker)
+    if(ABI_COMPLIANCE_CHECKER_EXECUTABLE)
+        message(STATUS "Found abi-compliance-checker: ${ABI_COMPLIANCE_CHECKER_EXECUTABLE}")
+    else()
+        message(STATUS "WARNING: `abi-compliance-checker` not found. Won't check ABI compliance...")
+    endif()
+
+    find_program(JQ_EXECUTABLE jq)
+    if(JQ_EXECUTABLE)
+        message(STATUS "Found jq: ${JQ_EXECUTABLE}")
+    else()
+        message(STATUS "WARNING: `jq` not found. Won't check ABI compliance...")
+    endif()
+
+    if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        message(STATUS "WARNING: To check ABI compliance GCC is the must...")
+    endif()
+
+    set(_ADD_ABI_CHECK_TARGET_LIST_FILE "${CMAKE_CURRENT_LIST_FILE}")
+    set(_ADD_ABI_CHECK_TARGET_LIST_DIR "${CMAKE_CURRENT_LIST_DIR}")
+    set(_ADD_ABI_CHECK_TARGET_XML_TEMPLATE "${CMAKE_CURRENT_LIST_DIR}/library-abi.xml.in")
+
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+    include("${_ADD_ABI_CHECK_TARGET_LIST_DIR}/AddOpenTarget.cmake")
+    include("${_ADD_ABI_CHECK_TARGET_LIST_DIR}/GetDistribInfo.cmake")
+    include("${_ADD_ABI_CHECK_TARGET_LIST_DIR}/TeamCityIntegration.cmake")
+
+    # NOTE A "global" target to check ABI of requested libraries
+    # (i.e. targets for which `add_abi_check_target()` was called)
+    add_custom_target(abi-check)
+endif()
+
+function(_abi_check_target_debug_msg msg)
+    if(add_abi_check_target_DEBUG)
+        message(STATUS "[add_abi_check_target] ${msg}")
+    endif()
+endfunction()
+
+function(_collect_include_paths_recursively RESULT_VAR STATE_VAR)
+    set(_state "${${STATE_VAR}}")
+    _abi_check_target_debug_msg("libs to process: ${ARGN}")
+    _abi_check_target_debug_msg("seen libs on entry: ${_state}")
+
+    foreach(_l IN LISTS ARGN)
+        if(TARGET ${_l} AND NOT ${_l} IN_LIST _state)
+            list(APPEND _state "${_l}")
+            get_target_property(_is_imported ${_l} IMPORTED)
+            if(_is_imported)
+                get_target_property(_includes ${_l} INTERFACE_INCLUDE_DIRECTORIES)
+                if(_includes)
+                    list(APPEND _include_paths "${_includes}")
+                    list(REMOVE_DUPLICATES _include_paths)
+                    _abi_check_target_debug_msg("add include path for imported target `${_l}`: ${_includes}")
+                endif()
+                get_target_property(_libs ${_l} INTERFACE_LINK_LIBRARIES)
+                if(_libs)
+                    _abi_check_target_debug_msg("got a list of depenencies for `${_l}`: ${_libs}")
+                    _collect_include_paths_recursively(_more_include_paths _state ${_libs})
+                    if(_more_include_paths)
+                        list(APPEND _include_paths "${_more_include_paths}")
+                        list(REMOVE_DUPLICATES _include_paths)
+                    endif()
+                endif()
+            endif()
+        endif()
+    endforeach()
+
+    set(${STATE_VAR} "${_state}" PARENT_SCOPE)
+    set(${RESULT_VAR} "${_include_paths}" PARENT_SCOPE)
+
+    _abi_check_target_debug_msg("seen libs on exit: ${_state}")
+endfunction()
 
 function(add_abi_check_target TGT2CHECK)
     set(options DEBUG)
-    set(one_value_args ABI_CHECK_EXTRA_OPTIONS ARTIFACTORY_REPO ARTIFACTORY_USER ARTIFACTORY_PASS DIRECTORY VERSION)
+    set(one_value_args ABI_CHECK_EXTRA_OPTIONS DIRECTORY VERSION)
     set(multi_value_args HEADERS SKIP_HEADERS SOURCES)
     cmake_parse_arguments(add_abi_check_target "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
@@ -74,26 +128,21 @@ function(add_abi_check_target TGT2CHECK)
 
     # `abi-compliance-checker` needs GCC
     if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR WIN32)
-        if(add_abi_check_target_DEBUG)
-            message(STATUS "  [add_abi_check_target] CXX compiler is not GCC for *nix. Exiting...")
-        endif()
+        _abi_check_target_debug_msg("CXX compiler is not GCC for *nix. Exiting...")
         return()
     endif()
 
     # Check that `jq` is here...
     if(NOT JQ_EXECUTABLE)
-        if(add_abi_check_target_DEBUG)
-            message(STATUS "  [add_abi_check_target] `jq` wasn't found. Exiting...")
-        endif()
+        _abi_check_target_debug_msg("`jq` wasn't found. Exiting...")
         return()
     endif()
 
-    if(NOT add_abi_check_target_ARTIFACTORY_REPO)
-        if(ABI_CHECK_DEFAULT_REPO)
-            set(add_abi_check_target_ARTIFACTORY_REPO "${ABI_CHECK_DEFAULT_REPO}")
-        else()
-            message(FATAL_ERROR "No `ARTIFACTORY_REPO` has been given in call to `add_abi_check_target()`")
-        endif()
+    if(ABI_CHECK_DEFAULT_REPO)
+        set(add_abi_check_target_ARTIFACTORY_REPO "${ABI_CHECK_DEFAULT_REPO}")
+    else()
+        _abi_check_target_debug_msg("`ABI_CHECK_DEFAULT_REPO` not set. Exiting...")
+        return()
     endif()
 
     # `TARGET` is a mandatory argument
@@ -126,7 +175,7 @@ function(add_abi_check_target TGT2CHECK)
     # (impossible) to get a full path and a filename of it in currently executed `CMakeLists.txt`.
     # So here is a trick: render a `*.cmake` file w/ needed properties and include it at the moment
     # of custom targets execution.
-    # ATTENTION At the very first time, a file generated is not immediatly flushed!
+    # ATTENTION At the very first time, a file generated is not immediately flushed!
     # So, do not even try to `include()` it right after generation!
     set(
         add_abi_check_target_TARGET_PROPS_FILE
@@ -167,19 +216,9 @@ function(add_abi_check_target TGT2CHECK)
 
     # Gather include paths of imported dependencies
     get_target_property(_link_libraries ${add_abi_check_target_TARGET} LINK_LIBRARIES)
-    foreach(_l IN LISTS _link_libraries)
-        if(TARGET ${_l})
-            get_target_property(_is_imported ${_l} IMPORTED)
-            if(_is_imported)
-                get_target_property(_includes ${_l} INTERFACE_INCLUDE_DIRECTORIES)
-                if(_includes)
-                    list(APPEND add_abi_check_target_INCLUDE_PATHS "${_includes}")
-                endif()
-            endif()
-        endif()
-    endforeach()
+    _collect_include_paths_recursively(add_abi_check_target_INCLUDE_PATHS _seen_libs ${_link_libraries})
 
-    # Distribution info needed to distinct ABI dumps at Artifactory repo
+    # Distribution info needed to distinct ABI dumps in the repo
     set(add_abi_check_target_DISTRIB "${DISTRIB_ID}")
     if(DISTRIB_VERSION_MAJOR)
         string(APPEND add_abi_check_target_DISTRIB "-${DISTRIB_VERSION_MAJOR}")
@@ -225,6 +264,9 @@ function(add_abi_check_target TGT2CHECK)
         COMMAND "${CMAKE_COMMAND}" -P "${add_abi_check_target_ABI_CHECKER_DIR}/${add_abi_check_target_TARGET}-prepare-xml.cmake"
         BYPRODUCTS "${add_abi_check_target_XML_DESCRIPTOR}"
         COMMENT "Generating XML descriptor for `${add_abi_check_target_TARGET}` to check ABI compatibility"
+        DEPENDS
+            "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt"
+            "${add_abi_check_target_ABI_CHECKER_DIR}/${add_abi_check_target_TARGET}-prepare-xml.cmake"
       )
 
     # Add target to produce ABI dump
@@ -295,17 +337,13 @@ function(add_abi_check_target TGT2CHECK)
             "${add_abi_check_target_ABI_CHECKER_DIR}/${add_abi_check_target_TARGET}-abi-check.cmake"
             "${add_abi_check_target_XML_DESCRIPTOR}"
             "${add_abi_check_target_LATEST_DUMP_FILE}"
-            "${add_abi_check_target_TARGET}"
       )
     add_dependencies(${add_abi_check_target_TARGET}-abi-check ${add_abi_check_target_TARGET})
-    set_property(
-        GLOBAL
-        APPEND
-        PROPERTY ABI_CHECK_TARGETS "${add_abi_check_target_TARGET}-abi-check"
-      )
+    add_dependencies(abi-check ${add_abi_check_target_TARGET}-abi-check)
 
     is_running_under_teamcity(_under_tc)
-    if(NOT _under_tc)
+    # ATTENTION `add_open_target` won't add any target if `xdg-open` is not available!
+    if(NOT _under_tc AND XDG_OPEN_EXECUTABLE)
         add_open_target(
             ${add_abi_check_target_TARGET}-show-abi-check-report
             "${add_abi_check_target_ABI_CHECKER_DIR}/report.html"
@@ -319,7 +357,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddABICheckTarget.cmake
-# X-Chewy-Version: 3.1
+# X-Chewy-Version: 3.4
 # X-Chewy-Description: Use `abi-compliance-checker` from CMake build
 # X-Chewy-AddonFile: AddABICheckTarget.cmake.in
 # X-Chewy-AddonFile: AddOpenTarget.cmake
