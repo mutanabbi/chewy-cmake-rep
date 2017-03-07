@@ -20,6 +20,28 @@ find_program(CURL_EXECUTABLE curl)
 
 set(_ARTIFACTORY_LIST_DIR "${CMAKE_CURRENT_LIST_DIR}")
 
+# Check if user/pass has given explicitly at configure step
+if(ARTIFACTORY_USER AND ARTIFACTORY_PASS)
+    set(_ARTIFACTORY_DEFAULT_CREDENTIALS "-u" "${ARTIFACTORY_USER}:${ARTIFACTORY_PASS}")
+elseif(ARTIFACTORY_API_KEY)
+    set(_ARTIFACTORY_DEFAULT_CREDENTIALS "-H" "X-JFrog-Art-Api:${ARTIFACTORY_API_KEY}")
+# Ok, lets check environment variables
+elseif($ENV{ARTIFACTORY_USER} AND $ENV{ARTIFACTORY_PASS})
+    set(_ARTIFACTORY_DEFAULT_CREDENTIALS "-u" "$ENV{ARTIFACTORY_USER}:$ENV{ARTIFACTORY_PASS}")
+elseif($ENV{ARTIFACTORY_API_KEY})
+    set(_ARTIFACTORY_DEFAULT_CREDENTIALS "-H" "X-JFrog-Art-Api:$ENV{ARTIFACTORY_API_KEY}")
+# Then finally try to find credentials from the RC file in the user's HOME
+elseif(EXISTS "$ENV{HOME}/.artifactoryrc.cmake")
+    include("$ENV{HOME}/.artifactoryrc.cmake" RESULT_VARIABLE _artrc)
+    if(_artrc)
+        if(DEFINED USER AND DEFINED PASS)
+            set(_ARTIFACTORY_DEFAULT_CREDENTIALS "-u" "${USER}:${PASS}")
+        elseif(DEFINED API_KEY)
+            set(_ARTIFACTORY_DEFAULT_CREDENTIALS "-H" "X-JFrog-Art-Api:${API_KEY}")
+        endif()
+    endif()
+endif()
+
 function(artifactory_verbose msg)
     if($ENV{VERBOSE})
         message("[Artifactory] ${msg}")
@@ -32,7 +54,7 @@ function(artifactory_send_files)
     endif()
 
     set(_options)
-    set(_one_value_args PASS TIMEOUT URL_TEMPLATE USER WORKING_DIRECTORY)
+    set(_one_value_args TIMEOUT URL_TEMPLATE WORKING_DIRECTORY)
     set(_multi_value_args FILES PROPERTIES)
     cmake_parse_arguments(_artifactory_send_files "${_options}" "${_one_value_args}" "${_multi_value_args}" ${ARGN})
 
@@ -48,19 +70,6 @@ function(artifactory_send_files)
 
     if(NOT _artifactory_send_files_WORKING_DIRECTORY)
         set(_artifactory_send_files_WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
-    endif()
-
-    if(_artifactory_send_files_USER AND _artifactory_send_files_PASS)
-        set(_credentials "-u" "${_artifactory_send_files_USER}:${_artifactory_send_files_PASS}")
-    else()
-        if(EXISTS "$ENV{HOME}/.artifactoryrc.cmake")
-            include("$ENV{HOME}/.artifactoryrc.cmake" RESULT_VARIABLE _artrc)
-            if(_artrc)
-                if(DEFINED USER AND DEFINED PASS)
-                    set(_credentials "-u" "${USER}:${PASS}")
-                endif()
-            endif()
-        endif()
     endif()
 
     if(_artifactory_send_files_PROPERTIES)
@@ -95,7 +104,7 @@ function(artifactory_send_files)
         execute_process(
             COMMAND "${CURL_EXECUTABLE}"
                 ${_verbose}
-                ${_credentials}
+                ${_ARTIFACTORY_DEFAULT_CREDENTIALS}
                 -m ${_artifactory_send_files_TIMEOUT}
                 ${_headers}
                 -T "${_file}"
@@ -113,7 +122,7 @@ endfunction()
 
 function(artifactory_get_latest_abi_dump OUTPUT_FILENAME)
     set(_options)
-    set(_one_value_args FILENAME_GLOB PASS PATH REPOSITORY_URL RESULT_VARIABLE TIMEOUT USER WORKING_DIRECTORY)
+    set(_one_value_args FILENAME_GLOB PATH REPOSITORY_URL RESULT_VARIABLE TIMEOUT WORKING_DIRECTORY)
     set(_multi_value_args)
     cmake_parse_arguments(_artifactory_get_latest_abi_dump "${_options}" "${_one_value_args}" "${_multi_value_args}" ${ARGN})
 
@@ -137,22 +146,6 @@ function(artifactory_get_latest_abi_dump OUTPUT_FILENAME)
 
     if(NOT _artifactory_get_latest_abi_dump_TIMEOUT)
         set(_artifactory_get_latest_abi_dump_TIMEOUT "20")
-    endif()
-
-    # Prepare parameter for `-u` CLI option:
-    # in case when no user+pass explicitly has given, try to read it from
-    # per user "configuration" file: `~/.artifactoryrc.cmake`
-    if(_artifactory_get_latest_abi_dump_USER AND _artifactory_get_latest_abi_dump_PASS)
-        set(_credentials "-u" "${_artifactory_get_latest_abi_dump_USER}:${_artifactory_get_latest_abi_dump_PASS}")
-    else()
-        if(EXISTS "$ENV{HOME}/.artifactoryrc.cmake")
-            include("$ENV{HOME}/.artifactoryrc.cmake" RESULT_VARIABLE _artrc)
-            if(_artrc)
-                if(DEFINED USER AND DEFINED PASS)
-                    set(_credentials "-u" "${USER}:${PASS}")
-                endif()
-            endif()
-        endif()
     endif()
 
     # Listen to `VERBOSE` environment variable -- it'll provided by `make`
@@ -191,9 +184,9 @@ function(artifactory_get_latest_abi_dump OUTPUT_FILENAME)
         COMMAND "${CMAKE_COMMAND}" -E echo "${_aql}"
         COMMAND "${CURL_EXECUTABLE}"
             ${_verbose}
-            ${_credentials}
+            ${_ARTIFACTORY_DEFAULT_CREDENTIALS}
             -m "${_artifactory_get_latest_abi_dump_TIMEOUT}"
-            -H "Content-Type: application/json"
+            -H "Content-Type: text/plain"
             -d "@-"
             "${_artifactory_get_latest_abi_dump_SEARCH_URL}"
         COMMAND "${JQ_EXECUTABLE}" "-r"
@@ -265,7 +258,7 @@ function(artifactory_get_latest_abi_dump OUTPUT_FILENAME)
     execute_process(
         COMMAND "${CURL_EXECUTABLE}"
             ${_verbose}
-            ${_credentials}
+            ${_ARTIFACTORY_DEFAULT_CREDENTIALS}
             -m "${_artifactory_get_latest_abi_dump_TIMEOUT}"
             -o "${OUTPUT_FILENAME}"
             "${_url}"
@@ -283,3 +276,8 @@ function(artifactory_get_latest_abi_dump OUTPUT_FILENAME)
     endif()
     set(${_artifactory_get_latest_abi_dump_RESULT_VARIABLE} 0 PARENT_SCOPE)
 endfunction()
+
+# X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
+# X-Chewy-Path: Artifactory.cmake
+# X-Chewy-Version: 1.1
+# X-Chewy-Description: Helper functions to talk to JFrog Artifactory server via REST API
