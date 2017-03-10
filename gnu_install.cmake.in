@@ -1,0 +1,11 @@
+set(files @_gnu_install_FILES@)
+set(destination "@_gnu_install_DESTINATION@")
+
+# TODO Handle installs into `/opt/*` as well
+if(CMAKE_INSTALL_PREFIX MATCHES "^/usr")
+    if(destination MATCHES "^etc/.*" OR destination MATCHES "^var/.*")
+        file(INSTALL DESTINATION "/${destination}" TYPE FILE FILES ${files})
+    else()
+        file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/${destination}" TYPE FILE FILES ${files})
+    endif()
+endif()
