@@ -47,7 +47,7 @@ if(DOXYGEN_FOUND)
         NAMES mscgen
         DOC "Message Sequence Chart renderer (http://www.mcternan.me.uk/mscgen/)"
       )
-    mark_as_advanced(mark_as_advanced)
+    mark_as_advanced(DOXYGEN_MSCGEN_EXECUTABLE)
     if(NOT mark_as_advanced)
         message(
             STATUS
