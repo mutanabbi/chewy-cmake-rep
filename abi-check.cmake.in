@@ -1,17 +1,16 @@
 include("@add_abi_check_target_COMMON_CMAKE_CODE@")
 include("@_ADD_ABI_CHECK_TARGET_LIST_DIR@/TeamCityIntegration.cmake")
 
-get_filename_component(_lib "${add_abi_check_target_TARGET_FILE_NAME}" NAME_WE)
 set(_report_file "${add_abi_check_target_ABI_CHECKER_DIR}/report.html")
 
 if(EXISTS "${add_abi_check_target_LATEST_DUMP_FILE}")
-    _debug_spam("Going to check `${_lib}` having `${add_abi_check_target_LATEST_DUMP_FILE}`")
+    _debug_spam("Going to check `${add_abi_check_target_TARGET_FILE_NAME}` having `${add_abi_check_target_LATEST_DUMP_FILE}`")
 
     tc_progress_start("Checking ABI of ${add_abi_check_target_TARGET_FILE_NAME}")
 
     execute_process(
         COMMAND "${ABI_COMPLIANCE_CHECKER_EXECUTABLE}"
-            -lib "${_lib}"
+            -lib "${add_abi_check_target_TARGET_FILE_NAME}"
             -old "${add_abi_check_target_LATEST_DUMP_FILE}"
             -new "${add_abi_check_target_XML_DESCRIPTOR}"
             -log-path "${add_abi_check_target_ABI_CHECKER_DIR}/check.log"
@@ -29,7 +28,7 @@ if(EXISTS "${add_abi_check_target_LATEST_DUMP_FILE}")
         # NOTE Error code `0` and `1` is Ok (see http://ispras.linuxbase.org/index.php/ABI_compliance_checker#Error_Codes).
         # Everything else means that some error has happened.
 
-        if(EXISTS _report_file)
+        if(EXISTS "${_report_file}")
             include("@_ADD_ABI_CHECK_TARGET_LIST_DIR@/TeamCityIntegration.cmake")
             is_running_under_teamcity(_under_tc)
             if(_under_tc)

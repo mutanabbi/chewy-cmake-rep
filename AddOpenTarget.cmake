@@ -28,7 +28,7 @@
 #
 
 #=============================================================================
-# Copyright 2014 by Alex Turbov <i.zaufi@gmail.com>
+# Copyright 2014-2017 by Alex Turbov <i.zaufi@gmail.com>
 #
 # Distributed under the OSI-approved BSD License (the "License");
 # see accompanying file LICENSE for details.
@@ -48,6 +48,7 @@ if(NOT WIN32 AND NOT XDG_OPEN_EXECUTABLE)
         NAMES xdg-open
         DOC "opens a file or URL in the user's preferred application"
       )
+    mark_as_advanced(XDG_OPEN_EXECUTABLE)
     if(XDG_OPEN_EXECUTABLE)
         message(STATUS "Found xdg-open: ${XDG_OPEN_EXECUTABLE}")
     endif()
@@ -111,5 +112,5 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddOpenTarget.cmake
-# X-Chewy-Version: 1.2
+# X-Chewy-Version: 1.3
 # X-Chewy-Description: Define a target to open a file/URI in the user's preferred application

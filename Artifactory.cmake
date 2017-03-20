@@ -4,7 +4,7 @@
 #
 
 #=============================================================================
-# Copyright 2016 by Alex Turbov <i.zaufi@gmail.com>
+# Copyright 2016-2017 by Alex Turbov <i.zaufi@gmail.com>
 #
 # Distributed under the OSI-approved BSD License (the "License");
 # see accompanying file LICENSE for details.
@@ -17,6 +17,7 @@
 #  License text for the above reference.)
 
 find_program(CURL_EXECUTABLE curl)
+mark_as_advanced(CURL_EXECUTABLE)
 
 set(_ARTIFACTORY_LIST_DIR "${CMAKE_CURRENT_LIST_DIR}")
 
@@ -279,5 +280,5 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: Artifactory.cmake
-# X-Chewy-Version: 1.1
+# X-Chewy-Version: 1.2
 # X-Chewy-Description: Helper functions to talk to JFrog Artifactory server via REST API

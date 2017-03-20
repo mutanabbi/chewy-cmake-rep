@@ -20,7 +20,7 @@
 #
 
 #=============================================================================
-# Copyright 2014-2015 by Alex Turbov <i.zaufi@gmail.com>
+# Copyright 2014-2017 by Alex Turbov <i.zaufi@gmail.com>
 #
 # Distributed under the OSI-approved BSD License (the "License");
 # see accompanying file LICENSE for details.
@@ -47,7 +47,8 @@ if(DOXYGEN_FOUND)
         NAMES mscgen
         DOC "Message Sequence Chart renderer (http://www.mcternan.me.uk/mscgen/)"
       )
-    if(NOT DOXYGEN_MSCGEN_EXECUTABLE)
+    mark_as_advanced(mark_as_advanced)
+    if(NOT mark_as_advanced)
         message(
             STATUS
                 "WARNING: Message Sequence Chart renderer not found. "
@@ -60,6 +61,7 @@ if(DOXYGEN_FOUND)
         NAMES dia
         DOC "Diagram/flowchart creation program (https://wiki.gnome.org/Apps/Dia)"
       )
+    mark_as_advanced(DOXYGEN_DIA_EXECUTABLE)
     if(NOT DOXYGEN_DIA_EXECUTABLE)
         message(
             STATUS
@@ -111,11 +113,18 @@ function(generate_doxygen_documentation target)
     # Set some variables before generate a config file
     set(DOXYGEN_STRIP_FROM_PATH "\"${PROJECT_SOURCE_DIR}\" \"${PROJECT_BINARY_DIR}\"")
     set(DOXYGEN_HAVE_DOT ${DOXYGEN_DOT_FOUND})
+    if(DOXYGEN_DOT_EXECUTABLE)
+        get_filename_component(DOXYGEN_DOT_PATH "${DOXYGEN_DOT_EXECUTABLE}" PATH CACHE)
+        set(DOT_MULTI_TARGETS YES)
+        set(DOT_CLEANUP YES)
+    endif()
     if(DOXYGEN_MSCGEN_EXECUTABLE)
         get_filename_component(DOXYGEN_MSCGEN_PATH "${DOXYGEN_MSCGEN_EXECUTABLE}" PATH CACHE)
+        mark_as_advanced(DOXYGEN_MSCGEN_PATH)
     endif()
     if(DOXYGEN_DIA_EXECUTABLE)
         get_filename_component(DOXYGEN_DIA_PATH "${DOXYGEN_DIA_EXECUTABLE}" PATH CACHE)
+        mark_as_advanced(DOXYGEN_DIA_PATH)
     endif()
 
     # Set some sane defaults, but only if they are not defined yet
@@ -177,7 +186,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GenerateDoxygenDocumentation.cmake
-# X-Chewy-Version: 2.0
+# X-Chewy-Version: 2.1
 # X-Chewy-Description: Add a target to generate doxygen documentation
 # X-Chewy-AddonFile: Doxyfile.in
 # X-Chewy-AddonFile: DoxygenDefaults.cmake

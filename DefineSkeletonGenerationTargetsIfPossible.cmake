@@ -20,7 +20,7 @@
 #
 
 #=============================================================================
-# Copyright 2011-2014 by Alex Turbov <i.zaufi@gmail.com>
+# Copyright 2011-2017 by Alex Turbov <i.zaufi@gmail.com>
 #
 # Distributed under the OSI-approved BSD License (the "License");
 # see accompanying file LICENSE for details.
@@ -36,8 +36,9 @@ include(CMakeParseArguments)
 
 set(_DSGT_BASE_DIR "${CMAKE_CURRENT_LIST_DIR}")
 
-# Check if `autogen` installed
+# Check if `autogen` and `awk` both are installed
 find_program(AUTOGEN_EXECUTABLE autogen)
+mark_as_advanced(AUTOGEN_EXECUTABLE)
 
 
 function(define_skeleton_generation_targets)

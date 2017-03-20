@@ -17,7 +17,7 @@
 #
 
 #=============================================================================
-# Copyright 2012-2016 by Alex Turbov <i.zaufi@gmail.com>
+# Copyright 2012-2017 by Alex Turbov <i.zaufi@gmail.com>
 #
 # Distributed under the OSI-approved BSD License (the "License");
 # see accompanying file LICENSE for details.
@@ -32,7 +32,10 @@
 include("${CMAKE_CURRENT_LIST_DIR}/GetKeyValueFromShellLikeConfig.cmake")
 
 set(DEFAULT_DISTRIB_CODENAME "auto" CACHE STRING "Target distribution codename")
+mark_as_advanced(DEFAULT_DISTRIB_CODENAME)
+
 set(DEFAULT_DISTRIB_ID "auto" CACHE STRING "Target distribution")
+mark_as_advanced(DEFAULT_DISTRIB_ID)
 
 #
 # Form a filename part for the current distro
@@ -120,6 +123,7 @@ if(NOT DISTRIB_ID)
             NAMES uname
             DOC "Print certain system information"
           )
+        mark_as_advanced(UNAME_EXECUTABLE)
         if(UNAME_EXECUTABLE)
             execute_process(
                 COMMAND "${UNAME_EXECUTABLE}" -m
@@ -302,6 +306,6 @@ endif()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GetDistribInfo.cmake
-# X-Chewy-Version: 3.0
+# X-Chewy-Version: 3.1
 # X-Chewy-Description: Get a distribution codename
 # X-Chewy-AddonFile: GetKeyValueFromShellLikeConfig.cmake

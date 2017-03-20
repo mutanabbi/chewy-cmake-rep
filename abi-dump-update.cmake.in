@@ -11,8 +11,6 @@ if(EXISTS "${add_abi_check_target_DUMP_FILE}")
     artifactory_send_files(
         URL_TEMPLATE
             "${add_abi_check_target_ARTIFACTORY_REPO}/${add_abi_check_target_PROJECT_NAME}/${add_abi_check_target_DISTRIB}/${add_abi_check_target_BUILD_TYPE}-gcc-${add_abi_check_target_COMPILER_VERSION}${add_abi_check_target_CXX_STANDARD}/%(file)"
-        USER "@add_abi_check_target_ARTIFACTORY_USER@"
-        PASS "@add_abi_check_target_ARTIFACTORY_PASS@"
         WORKING_DIRECTORY "${add_abi_check_target_ABI_CHECKER_DIR}"
         FILES "${add_abi_check_target_DUMP_FILE}"
         PROPERTIES
@@ -20,6 +18,8 @@ if(EXISTS "${add_abi_check_target_DUMP_FILE}")
             "compiler=gcc-${add_abi_check_target_COMPILER_VERSION}"
             "library=${add_abi_check_target_TARGET_FILE_NAME}"
       )
+
+    unset(_abi_dump_update_cred)
 
     tc_progress_end("Uploading ABI dump of ${add_abi_check_target_TARGET_FILE_NAME}")
 

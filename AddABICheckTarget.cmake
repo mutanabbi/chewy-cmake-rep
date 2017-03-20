@@ -36,11 +36,11 @@ endif()
 
 if(ABI_CHECK_DEFAULT_REPO)
     set(add_abi_check_target_ARTIFACTORY_REPO "${ABI_CHECK_DEFAULT_REPO}")
-else()
+elseif(UNIX)
     message(STATUS "WARNING: No `ABI_CHECK_DEFAULT_REPO` has set/given. Checking ABI compliance wouldn't be possible.")
 endif()
 
-if(NOT WIN32)
+if(UNIX)
     find_program(ABI_COMPLIANCE_CHECKER_EXECUTABLE abi-compliance-checker)
     if(ABI_COMPLIANCE_CHECKER_EXECUTABLE)
         message(STATUS "Found abi-compliance-checker: ${ABI_COMPLIANCE_CHECKER_EXECUTABLE}")
@@ -49,6 +49,7 @@ if(NOT WIN32)
     endif()
 
     find_program(JQ_EXECUTABLE jq)
+    mark_as_advanced(JQ_EXECUTABLE)
     if(JQ_EXECUTABLE)
         message(STATUS "Found jq: ${JQ_EXECUTABLE}")
     else()
@@ -357,7 +358,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddABICheckTarget.cmake
-# X-Chewy-Version: 3.4
+# X-Chewy-Version: 3.5
 # X-Chewy-Description: Use `abi-compliance-checker` from CMake build
 # X-Chewy-AddonFile: AddABICheckTarget.cmake.in
 # X-Chewy-AddonFile: AddOpenTarget.cmake

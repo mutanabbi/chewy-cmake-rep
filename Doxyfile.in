@@ -2408,3 +2408,5 @@ GENERATE_LEGEND        = @DOXYGEN_GENERATE_LEGEND@
 # This tag requires that the tag HAVE_DOT is set to YES.
 
 DOT_CLEANUP            = @DOXYGEN_DOT_CLEANUP@
+
+# kate: hl doxyfie;

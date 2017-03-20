@@ -22,6 +22,7 @@ message(STATUS "Looking for SASS preprocessor")
 # Look for `sass` first if `compass` not preferred
 if(NOT SASS2CSS_PREFER_COMPASS_OVER_SASS)
     find_program(SASS_EXECUTABLE sass)
+    mark_as_advanced(SASS_EXECUTABLE)
 endif()
 if(SASS_EXECUTABLE)
     message(STATUS "Looking for SASS preprocessor - found")
@@ -48,6 +49,7 @@ if(SASS_EXECUTABLE)
 else()
     # Ok, try to find `compass` then...
     find_program(COMPASS_EXECUTABLE compass)
+    mark_as_advanced(COMPASS_EXECUTABLE)
     if(COMPASS_EXECUTABLE)
         message(STATUS "Looking for SASS preprocessor - found")
         message(STATUS "Found SASS preprocessor: ${COMPASS_EXECUTABLE}")
@@ -160,5 +162,5 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: SASS2CSS.cmake
-# X-Chewy-Version: 1.4
+# X-Chewy-Version: 1.5
 # X-Chewy-Description: Preprocess SASS to CSS

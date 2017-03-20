@@ -17,8 +17,6 @@ macro(_try_get_latest_abi_dump)
         REPOSITORY_URL "${add_abi_check_target_ARTIFACTORY_REPO}"
         PATH "${_repo_path}"
         FILENAME_GLOB "${add_abi_check_target_TARGET}*"
-        USER "@add_abi_check_target_ARTIFACTORY_USER@"
-        PASS "@add_abi_check_target_ARTIFACTORY_PASS@"
         WORKING_DIRECTORY "${add_abi_check_target_CURRENT_BINARY_DIR}"
         RESULT_VARIABLE _got_it
       )
