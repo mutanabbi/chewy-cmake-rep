@@ -48,7 +48,7 @@ if(DOXYGEN_FOUND)
         DOC "Message Sequence Chart renderer (http://www.mcternan.me.uk/mscgen/)"
       )
     mark_as_advanced(DOXYGEN_MSCGEN_EXECUTABLE)
-    if(NOT mark_as_advanced)
+    if(NOT DOXYGEN_MSCGEN_EXECUTABLE)
         message(
             STATUS
                 "WARNING: Message Sequence Chart renderer not found. "
@@ -186,7 +186,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GenerateDoxygenDocumentation.cmake
-# X-Chewy-Version: 2.1
+# X-Chewy-Version: 2.2
 # X-Chewy-Description: Add a target to generate doxygen documentation
 # X-Chewy-AddonFile: Doxyfile.in
 # X-Chewy-AddonFile: DoxygenDefaults.cmake

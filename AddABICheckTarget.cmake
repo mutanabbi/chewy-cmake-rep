@@ -41,14 +41,21 @@ elseif(UNIX)
 endif()
 
 if(UNIX)
-    find_program(ABI_COMPLIANCE_CHECKER_EXECUTABLE abi-compliance-checker)
+    find_program(
+        ABI_COMPLIANCE_CHECKER_EXECUTABLE abi-compliance-checker
+        DOC "path to ABI compliance checker executable"
+      )
+    mark_as_advanced(ABI_COMPLIANCE_CHECKER_EXECUTABLE)
     if(ABI_COMPLIANCE_CHECKER_EXECUTABLE)
         message(STATUS "Found abi-compliance-checker: ${ABI_COMPLIANCE_CHECKER_EXECUTABLE}")
     else()
         message(STATUS "WARNING: `abi-compliance-checker` not found. Won't check ABI compliance...")
     endif()
 
-    find_program(JQ_EXECUTABLE jq)
+    find_program(
+        JQ_EXECUTABLE jq
+        DOC "path to command-line JSON processor executable"
+      )
     mark_as_advanced(JQ_EXECUTABLE)
     if(JQ_EXECUTABLE)
         message(STATUS "Found jq: ${JQ_EXECUTABLE}")
@@ -358,7 +365,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: AddABICheckTarget.cmake
-# X-Chewy-Version: 3.5
+# X-Chewy-Version: 3.6
 # X-Chewy-Description: Use `abi-compliance-checker` from CMake build
 # X-Chewy-AddonFile: AddABICheckTarget.cmake.in
 # X-Chewy-AddonFile: AddOpenTarget.cmake
