@@ -157,7 +157,7 @@ function(generate_doxygen_documentation target)
     # Handle appendable options
     set(
         DOXYGEN_EXCLUDE_PATTERNS
-        "${DOXYGEN_EXCLUDE_PATTERNS} */.git/* */.svn/* */.hg/* *_tester.cc */CMakeFiles/* */cmake/* */_CPack_Packages/* DartConfiguration.tcl"
+        "${DOXYGEN_EXCLUDE_PATTERNS} */.git/* */.svn/* */.hg/* *_tester.cc */CMakeFiles/* */cmake/* */_CPack_Packages/* DartConfiguration.tcl CMakeLists.txt CMakeCache.txt"
       )
 
     # Transform lists into space separated strings
@@ -186,7 +186,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GenerateDoxygenDocumentation.cmake
-# X-Chewy-Version: 2.2
+# X-Chewy-Version: 2.3
 # X-Chewy-Description: Add a target to generate doxygen documentation
 # X-Chewy-AddonFile: Doxyfile.in
 # X-Chewy-AddonFile: DoxygenDefaults.cmake
