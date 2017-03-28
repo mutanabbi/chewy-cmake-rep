@@ -90,7 +90,7 @@ endfunction()
 function(generate_doxygen_documentation target)
     set(_options)
     set(_one_value_args COMMENT CONFIG OUTPUT_CONFIG)
-    set(_multi_value_args )
+    set(_multi_value_args SOURCES)
     cmake_parse_arguments(_gdd "${_options}" "${_one_value_args}" "${_multi_value_args}" ${ARGN})
 
     if(NOT _gdd_CONFIG)
@@ -172,12 +172,17 @@ function(generate_doxygen_documentation target)
     # Prepare doxygen configuration file
     configure_file("${_gdd_CONFIG}" "${_gdd_OUTPUT_CONFIG}")
 
+    if(_gdd_SOURCES)
+        list(INSERT _gdd_SOURCES 0 "SOURCES")
+    endif()
+
     # Add a new target
     add_custom_target(
         ${target}
         COMMAND "${DOXYGEN_EXECUTABLE}" "${_gdd_OUTPUT_CONFIG}"
         DEPENDS "${_gdd_CONFIG}" "${_gdd_OUTPUT_CONFIG}"
         COMMENT "${_gdd_COMMENT}"
+        ${_gdd_SOURCES}
       )
 
     # Cleanup $build/docs on "make clean"
@@ -186,7 +191,7 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GenerateDoxygenDocumentation.cmake
-# X-Chewy-Version: 2.3
+# X-Chewy-Version: 2.4
 # X-Chewy-Description: Add a target to generate doxygen documentation
 # X-Chewy-AddonFile: Doxyfile.in
 # X-Chewy-AddonFile: DoxygenDefaults.cmake
