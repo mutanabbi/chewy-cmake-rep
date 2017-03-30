@@ -35,7 +35,7 @@ AddCompileTests.cmake 1.2 Check+if+source%28s%29+can+be+compiled+well+%28or+not%
 FindTasn1.cmake 1.2 Find+Tasn1+librarary+using+%60pkg-config%60
 AddOpenTarget.cmake 1.3 Define+a+target+to+open+a+file%2FURI+in+the+user%27s+preferred+application
 FindACE.cmake 2.1 Find+ACE+library+%28and+components%29+using+%60pkg-config%60+if+available ace_get_version.cpp
-GenerateDoxygenDocumentation.cmake 2.4 Add+a+target+to+generate+doxygen+documentation Doxyfile.in DoxygenDefaults.cmake
+GenerateDoxygenDocumentation.cmake 3.1 Add+a+target+to+generate+doxygen+documentation
 FindUnixODBC.cmake 1.0 Find+UnixODBC+librarary
 FindOpenLDAP.cmake 1.0 Find+OpenLDAP+libraries
 MacroSetUnitTestTargetName.cmake 1.1 Function+to+set+a+target+name+for+unit+test+binary
@@ -46,6 +46,5 @@ CheckGNULibCExtensions.cmake 1.0 Check+if+a+function+requires+linking+w%2F+GNU+l
 GuessBuildType.cmake 1.7 Guess+build+type+if+not+specified+explicitly
 MacroEnableSanitizers.cmake 1.1 Macro+to+expand+a+list+of+sanitizers+to+compiler+options UseCompilerOption.cmake
 Artifactory.cmake 1.2 Helper+functions+to+talk+to+JFrog+Artifactory+server+via+REST+API
-DefineDoxyDocsTargetIfPossible.cmake 2.19 Define+%60make+doxygen%60+target+to+build+API+documentation+using+%60doxygen%60 Doxyfile.in DoxygenInstall.cmake.in DoxygenDefaults.cmake
 FindOTL.cmake 1.0 Find+OTL+header otl_get_version.cc
 GetGNULibCVersion.cmake 1.0 Helper+to+get+GNU+libc+version glibc_get_version.c
