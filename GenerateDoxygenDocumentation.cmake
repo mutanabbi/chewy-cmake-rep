@@ -169,8 +169,8 @@ function(generate_doxygen_documentation target)
     set(DOXYGEN_HAVE_DOT ${DOXYGEN_DOT_FOUND})
     if(DOXYGEN_DOT_EXECUTABLE)
         get_filename_component(DOXYGEN_DOT_PATH "${DOXYGEN_DOT_EXECUTABLE}" PATH CACHE)
-        set(DOT_MULTI_TARGETS YES)
-        set(DOT_CLEANUP YES)
+        set(DOXYGEN_DOT_MULTI_TARGETS YES)
+        set(DOXYGEN_DOT_CLEANUP YES)
     endif()
     if(DOXYGEN_MSCGEN_EXECUTABLE)
         get_filename_component(DOXYGEN_MSCGEN_PATH "${DOXYGEN_MSCGEN_EXECUTABLE}" PATH CACHE)
@@ -234,6 +234,7 @@ function(generate_doxygen_documentation target)
     add_custom_target(
         ${target}
         COMMAND "${DOXYGEN_EXECUTABLE}" "${_gdd_OUTPUT_CONFIG}"
+        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
         DEPENDS "${_gdd_CONFIG}" "${_gdd_OUTPUT_CONFIG}"
         COMMENT "${_gdd_COMMENT}"
         ${_gdd_SOURCES}
@@ -246,5 +247,5 @@ endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: GenerateDoxygenDocumentation.cmake
-# X-Chewy-Version: 3.1
+# X-Chewy-Version: 3.2
 # X-Chewy-Description: Add a target to generate doxygen documentation
