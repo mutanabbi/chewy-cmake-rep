@@ -34,8 +34,6 @@
 
 include(CMakeParseArguments)
 
-set(_GDD_BASE_DIR "${CMAKE_CURRENT_LIST_DIR}")
-
 # check if doxygen is even installed
 find_package(Doxygen)
 
