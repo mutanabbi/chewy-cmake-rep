@@ -43,25 +43,33 @@ foreach(_source ${add_abi_check_target_SOURCES})
 
     # Classify options
     set(_skip_next OFF)
+    set(_next_is_include_path OFF)
     foreach(_opt ${_compile_cmd})
         if(_skip_next)
             set(_skip_next OFF)
             _debug_spam("           Skip option: ${_opt}")
-        elseif(_opt MATCHES "^-D(.*)")                   # Select define path into a list of defines
+        elseif(_next_is_include_path)
+            set(_next_is_include_path OFF)
+            _debug_spam("  System inlclude path: ${_opt}")
+            list(APPEND add_abi_check_target_INCLUDE_PATHS "${_opt}")
+        elseif(_opt MATCHES "^-D(.*)")                      # Select define path into a list of defines
             _debug_spam("                Define: ${_opt}")
             list(APPEND _defines "${CMAKE_MATCH_1}")
             list(APPEND _cxx_flags "${_opt}")
-        elseif(_opt MATCHES "^-I(.*)")                   # Select #include path into a list of paths
+        elseif(_opt MATCHES "^-I(.*)")                      # Select #include path into a list of paths
             _debug_spam("   Include path option: ${_opt}")
             set(_inc "${CMAKE_MATCH_1}")
             list(APPEND add_abi_check_target_INCLUDE_PATHS "${_inc}")
+        elseif(_opt MATCHES "^-isystem$")                   # Next arg is #include path
+            _debug_spam(" System include option: ${_opt}")
+            set(_next_is_include_path ON)
         elseif(_opt STREQUAL "-o" OR _opt STREQUAL "-c")
             set(_skip_next ON)
             _debug_spam(" Skip option with next: ${_opt}")
         elseif(_opt IN_LIST _compiler_options_to_ignore)
             # Ignore
             _debug_spam("         Ignore option: ${_opt}")
-        elseif(_opt MATCHES "^(-.*)")                    # Collect other compiler flags
+        elseif(_opt MATCHES "^(-.*)")                       # Collect other compiler flags
             list(APPEND _cxx_flags "${_opt}")
             _debug_spam("    Add to GCC options: ${_opt}")
         else()

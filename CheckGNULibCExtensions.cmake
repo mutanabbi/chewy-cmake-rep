@@ -37,31 +37,37 @@ function(check_glibc_extension_function _FUNC)
         add_library(GLibC::${_check_glibc_extension_function_IN_LIBRARY} INTERFACE IMPORTED)
     endif()
 
-    # Maybe we don't need to search twice?
     string(TOUPPER "${_FUNC}" _func_up)
     string(TOUPPER "${_check_glibc_extension_function_IN_LIBRARY}" _lib_up)
+
+    check_symbol_exists(${_FUNC} "${_check_glibc_extension_function_HEADER}" HAVE_${_func_up})
     if(NOT HAVE_${_func_up})
-        check_symbol_exists(${_FUNC} "${_check_glibc_extension_function_HEADER}" HAVE_${_func_up})
-        if(NOT HAVE_${_func_up})
-            unset(HAVE_${_func_up} CACHE)
-            # Try to find it in runtime extensions library
-            check_library_exists(${_check_glibc_extension_function_IN_LIBRARY} ${_FUNC} "" HAVE_${_func_up})
-            get_target_property(_libs GLibC::${_check_glibc_extension_function_IN_LIBRARY} INTERFACE_LINK_LIBRARIES)
-            if(HAVE_${_func_up} AND NOT _libs)
-                find_library(
-                    GLIBC_${_lib_up}_LIBRARY
-                    ${_check_glibc_extension_function_IN_LIBRARY}
-                  )
-                set_property(
-                    TARGET GLibC::${_check_glibc_extension_function_IN_LIBRARY}
-                    PROPERTY INTERFACE_LINK_LIBRARIES "${GLIBC_${_lib_up}_LIBRARY}"
-                  )
-            endif()
+        # Try to find it in runtime extensions library
+        check_library_exists(${_check_glibc_extension_function_IN_LIBRARY} ${_FUNC} "" HAVE_${_func_up}_IN_${_lib_up})
+        if(HAVE_${_func_up}_IN_${_lib_up})
+            find_library(
+                GLIBC_${_lib_up}_LIBRARY
+                ${_check_glibc_extension_function_IN_LIBRARY}
+              )
+            set_property(
+                TARGET GLibC::${_check_glibc_extension_function_IN_LIBRARY}
+                PROPERTY INTERFACE_LINK_LIBRARIES "${GLIBC_${_lib_up}_LIBRARY}"
+              )
+        endif()
+    else()
+        # Ok, it seems somehow the symbol was found.
+        # Lets check if any library required for it, otherwise no library required to get this symbol,
+        # so leave the `GlibC::xxx` target as is.
+        if(HAVE_${_func_up}_IN_${_lib_up})
+            set_property(
+                TARGET GLibC::${_check_glibc_extension_function_IN_LIBRARY}
+                PROPERTY INTERFACE_LINK_LIBRARIES "${GLIBC_${_lib_up}_LIBRARY}"
+              )
         endif()
     endif()
 endfunction()
 
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: CheckGNULibCExtensions.cmake
-# X-Chewy-Version: 1.0
+# X-Chewy-Version: 1.1
 # X-Chewy-Description: Check if a function requires linking w/ GNU libc runtime extensions (librt)
