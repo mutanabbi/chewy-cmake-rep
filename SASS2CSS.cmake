@@ -1,8 +1,12 @@
-# - Add command to preprocess SASS to CSS using `compass` or `sass`
-# TODO More elaborate description
+#.rst:
+# SASS2CSS
+# --------
+#
+# Add the function to preprocess SASS to CSS using `compass` or `sass`.
+#
 
 #=============================================================================
-# Copyright 2016 by Alex Turbov <i.zaufi@gmail.com>
+# Copyright 2016-2017 by Alex Turbov <i.zaufi@gmail.com>
 #
 # Distributed under the OSI-approved BSD License (the "License");
 # see accompanying file LICENSE for details.
@@ -17,24 +21,20 @@
 # TODO Not needed for CMake >= 3.5
 include(CMakeParseArguments)
 
-message(STATUS "Looking for SASS preprocessor")
+get_property(_sass_name TARGET Sass::processor PROPERTY SASS_PROCESSOR_NAME)
+if(_sass_name STREQUAL "sass")
 
-# Look for `sass` first if `compass` not preferred
-if(NOT SASS2CSS_PREFER_COMPASS_OVER_SASS)
-    find_program(SASS_EXECUTABLE sass)
-    mark_as_advanced(SASS_EXECUTABLE)
-endif()
-if(SASS_EXECUTABLE)
-    message(STATUS "Looking for SASS preprocessor - found")
-    message(STATUS "Found SASS preprocessor: ${SASS_EXECUTABLE}")
-
-    function(_preprocess_sass_helper INPUT_FILE OUTPUT_FILE COMPRESSED)
+    # Declare the helper function, which is capable to call `sass` executable
+    function(_sass2css_process_helper INPUT_FILE OUTPUT_FILE COMPRESSED)
         if(COMPRESSED)
             set(_style_opt "--style=compressed")
         endif()
+
+        get_filename_component(_css_dir "${OUTPUT_FILE}" DIRECTORY)
+
         add_custom_command(
             OUTPUT "${OUTPUT_FILE}"
-            COMMAND "${SASS_EXECUTABLE}"
+            COMMAND Sass::processor
                 --no-cache
                 ${_style_opt}
                 --sourcemap=none
@@ -46,46 +46,56 @@ if(SASS_EXECUTABLE)
           )
     endfunction()
 
+elseif(_sass_name STREQUAL "compass")
+
+    # Declare helper function which is capable to call `compass` executable
+    function(_sass2css_process_helper INPUT_FILE OUTPUT_FILE COMPRESSED)
+        if(COMPRESSED)
+            set(_style_opt "--output-style=compressed")
+        endif()
+
+        get_filename_component(_sass_dir "${INPUT_FILE}" DIRECTORY)
+        get_filename_component(_css_dir "${OUTPUT_FILE}" DIRECTORY)
+
+        add_custom_command(
+            OUTPUT "${OUTPUT_FILE}"
+            COMMAND Sass::processor
+                compile
+                ${_style_opt}
+                --no-debug-info
+                --no-sourcemap
+                --environment=production
+                --sass-dir="${_sass_dir}"
+                # TODO Introduce some option to specify images directory?
+                --images-dir="${_sass_dir}"
+                --css-dir="${_css_dir}"
+                "${INPUT_FILE}"
+            DEPENDS "${INPUT_FILE}"
+            COMMENT "Preprocessing ${INPUT_FILE}"
+            WORKING_DIRECTORY "${_css_dir}"
+          )
+        # TODO Rename output file if `OUTPUT_FILE` filename really not the same as input
+    endfunction()
+
 else()
-    # Ok, try to find `compass` then...
-    find_program(COMPASS_EXECUTABLE compass)
-    mark_as_advanced(COMPASS_EXECUTABLE)
-    if(COMPASS_EXECUTABLE)
-        message(STATUS "Looking for SASS preprocessor - found")
-        message(STATUS "Found SASS preprocessor: ${COMPASS_EXECUTABLE}")
-        function(_preprocess_sass_helper INPUT_FILE OUTPUT_FILE COMPRESSED)
-            if(COMPRESSED)
-                set(_style_opt "--output-style=compressed")
-            endif()
-
-            get_filename_component(_sass_dir "${INPUT_FILE}" DIRECTORY)
-            get_filename_component(_css_dir "${OUTPUT_FILE}" DIRECTORY)
-
-            add_custom_command(
-                OUTPUT "${OUTPUT_FILE}"
-                COMMAND "${COMPASS_EXECUTABLE}"
-                    compile
-                    ${_style_opt}
-                    --no-debug-info
-                    --no-sourcemap
-                    --environment=production
-                    --sass-dir="${_sass_dir}"
-                    # TODO Introduce some option to specify images directory?
-                    --images-dir="${_sass_dir}"
-                    --css-dir="${_css_dir}"
-                    "${INPUT_FILE}"
-                DEPENDS "${INPUT_FILE}"
-                COMMENT "Preprocessing ${INPUT_FILE}"
-                WORKING_DIRECTORY "${_css_dir}"
-              )
-            # TODO Rename output file if `OUTPUT_FILE` filename really not the same as input
-        endfunction()
-    else()
-        message(STATUS "Looking for SASS preprocessor - not found")
-    endif()
+    function(_sass2css_process_helper INPUT_FILE OUTPUT_FILE COMPRESSED)
+    endfunction()
 endif()
 
-function(preprocess_sass)
+#.rst:
+#
+# .. cmake:command:`sass2css_process_file`
+#
+# .. code-block:: cmake
+#
+#   sass2css_process_file(
+#       INPUT_FILE "<filename>"
+#       [OUTPUT_FILE "<filename>"]
+#       [DEFINE_UPDATE_TARGET]
+#       [DESTINATION "path"]
+#     )
+#
+function(sass2css_process_file)
     set(_options COMPRESSED DEFINE_UPDATE_TARGET)
     set(_one_value_args INPUT_FILE OUTPUT_FILE DESTINATION)
     set(_multi_value_args )
@@ -129,8 +139,8 @@ function(preprocess_sass)
     endif()
 
     # Append generation rules only if any SASS preprocessor has found
-    if(COMPASS_EXECUTABLE OR SASS_EXECUTABLE)
-        _preprocess_sass_helper(
+    if(TARGET Sass::processor)
+        _sass2css_process_helper(
             "${preprocess_sass_INPUT_FILE}"
             "${preprocess_sass_OUTPUT_FILE}"
             "${preprocess_sass_COMPRESSED}"
@@ -157,10 +167,14 @@ function(preprocess_sass)
                 COMMENT "Updating ${preprocess_sass_DESTINATION}/${_input_file_name_we}.css"
               )
         endif()
+    else()
+        message(STATUS "WARNING: SASS processor was not found. `sass2css_process_file()` will do nothing!")
     endif()
 endfunction()
 
+unset(_sass_name)
+
 # X-Chewy-RepoBase: https://raw.githubusercontent.com/mutanabbi/chewy-cmake-rep/master/
 # X-Chewy-Path: SASS2CSS.cmake
-# X-Chewy-Version: 1.5
+# X-Chewy-Version: 2.0
 # X-Chewy-Description: Preprocess SASS to CSS

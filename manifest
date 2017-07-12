@@ -15,6 +15,7 @@ MakeJARExecutable.cmake 1.0 Function+to+set+an+entry+point+in+the+JAR+file%2C+so
 FindVMime.cmake 1.2 Find+VMime+librarary+using+%60pkg-config%60
 FindGlog.cmake 1.3 Find+Google+Log+library+using+%60pkg-config%60
 FindPoco.cmake 1.0 Find+Poco+libraries
+FindSASSProcessor.cmake 1.0 Search+for+SASS+preprocessor+%28%60sass%60+or+%60compass%60%29
 FindCppUnit.cmake 1.0 CppUnit+finder
 GNUInstallHelpers.cmake 1.0 Workaround+to+proper+install+files+to+%60SYSCONFDIR%60+and+%60LOCALSTATEDIR%60 gnu_install.cmake.in
 CheckForOldGNULibC.cmake 1.0 Check+if+GNU+libc+%3C+2.17%2C+so+librt+needs+for+RT+extensions
@@ -23,7 +24,7 @@ AddABICheckTarget.cmake 3.7 Use+%60abi-compliance-checker%60+from+CMake+build Ad
 PythonInstall.cmake 2.1 Helper+to+install+Python+3.x+scripts PythonSourceInstallTemplate.cmake.in
 FindLibURIParser.cmake 1.3 Find+uriparser+library+using+%60pkg-config%60
 DefineSkeletonGenerationTargetsIfPossible.cmake 6.13 Add+targets+to+generate+class+header%2Fimplementation+and+unit-tests+skeleton+files TestCMakeLists.txt.in class.tpl.in class_tester.tpl.in new_class_tester_post.cmake.in render_template.cmake.in
-SASS2CSS.cmake 1.5 Preprocess+SASS+to+CSS
+SASS2CSS.cmake 2.0 Preprocess+SASS+to+CSS
 FindGLibC.cmake 1.0 GNU+libc+extensions+finder GetGNULibCVersion.cmake glibc_get_version.c
 TeamCityIntegration.cmake 1.3 Interact+w%2F+TeamCity+via+service+messages
 PythonMacros.cmake 1.5 Helper+to+install+Python+scripts PythonCompile.py
